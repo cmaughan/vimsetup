@@ -1,5 +1,5 @@
 cmd /c git config --global alias.squash "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --format=%%B --reverse HEAD..HEAD@{1})\"; };f"
-cmd /c git config --global alias.lol "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+cmd /c git config --global alias.lol "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 cmd /c git config --global user.email "mornymorny@gmail.com"
 cmd /c git config --global user.name "Morny"
 
