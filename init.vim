@@ -88,6 +88,10 @@ let &errorformat="%f:%l:%c: %t%*[^:]:%m,%f:%l: %t%*[^:]:%m," . &errorformat
 filetype plugin indent on
 filetype plugin on
 
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#confirm() : "\<Tab>"
+
 " Vim Rainbow
 let g:rainbow_active = 1
 
@@ -305,6 +309,7 @@ autocmd GUIEnter * simalt ~x
 autocmd FocusLost * :wa
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd BufEnter * lcd %:p:h
+
 " Options {{{1
 set omnifunc=syntaxcomplete#Complete
 "set guioptions-=m  "remove menu bar
@@ -341,7 +346,7 @@ set ruler
 set backspace=indent,eol,start
 
 " Breaks VC - adds an extra white box in vsvim
-set laststatus=2
+" set laststatus=2
 
 set relativenumber
 set ignorecase
@@ -396,17 +401,6 @@ map <C-k><C-W> :FSLeft<CR>
 
 " File tree, Tagbar tree
 map <C-t> :NERDTreeToggle<CR>
-" map <C-i> :NERDTreeToggle %<CR>
-"map <C-T> :TagbarToggle<CR>
-"map <C-p> :CtrlPMixed<CR>
-",nnoremap <C-i> :CtrlPTag<CR>
-
-"vmap <C-c> y<Esc>i
-"vmap <C-x> d<Esc>i
-"imap <C-v> <Esc>pi
-"imap <C-y> <Esc>ddi
-"map <C-z> <Esc>
-"imap <C-z> <Esc>ui
 
 " Control + motion for window move
 nnoremap <C-h> <C-w>h
@@ -457,4 +451,4 @@ nnoremap <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 " }}} vim: fdm=marker
 " External Scripts {{{1
 " Load Others
-runtime coc.vim
+" runtime coc.vim
