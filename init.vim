@@ -72,6 +72,8 @@ Plug 'neovim/nvim-lspconfig'
 
 Plug 'frazrepo/vim-rainbow'
 
+runtime vsinit.vim
+
 call plug#end()
 
 " Thanks to https://forums.handmadehero.org/index.php/forum?view=topic&catid=4&id=704#3982
@@ -235,18 +237,11 @@ nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
 
 " Leaders {{{1
 
-" ** Leader keys Comma is easier to reach
-let mapleader = ","
-let maplocalleader = ","
-
 nnoremap <Leader>gd :Gvdiff<CR>
 
 " Searching
 nnoremap <Leader>, :Find <CR>
 nnoremap <Leader>. :CtrlPTag<cr>
-
-" Remove all white space trailing
-nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
 
 " Tag list and tag jump
 nnoremap <Leader>gt g<C-]>
@@ -258,23 +253,11 @@ nnoremap <leader>v V`]
 "nnoremap <leader>fp :args **/*.vcxproj<cr>:silent! argdo %s/<ClCompile.*\.h.*//g<cr>
 
 nnoremap <Leader>f :set nomore<Bar>:ls<Bar>:set more<CR>:b<Space>
-" switch to a second window
-"nnoremap <leader>ws <c-w>v<c-w>l
-
-" Remove highlight selection
-nnoremap <leader><space> :noh<cr> :MarkClear<cr>
-
-" Replace with last yanked
-"nnoremap <leader>s diw"0P
-
-" Replace word under cursor
-nnoremap <Leader>rw :%s/\<<C-r><C-w>\>//g<Left><Left>
 
 " Insert date
 nnoremap <Leader>d i<C-R>=strftime("%F - %A %d %B\n\n")<cr>
 
 nnoremap <Leader>. :CtrlPTag<cr>
-"nnoremap <leader>sw :call SetGitDir()<CR>
 
 " Edit in window at current directory
 " Edit in split at current directory
@@ -344,19 +327,7 @@ set nocursorline
 set ttyfast
 set ruler
 set backspace=indent,eol,start
-
-" Breaks VC - adds an extra white box in vsvim
-" set laststatus=2
-
-set relativenumber
-set ignorecase
-set smartcase
-set incsearch
 set showmatch
-set hlsearch
-
-" Use system clipboard
-:set clipboard=unnamed
 
 "set guifont=h11:cANSI:qDRAFT
 
@@ -367,24 +338,11 @@ set background=dark
 colorscheme gruvbox
 
 " Mappings {{{1
-" My prefered escape character (j then k)
-inoremap jk <esc>
-tnoremap jk <C-\><C-n>
-
-" Move by buffer lines
-nnoremap j gj
-nnoremap k gk
-nnoremap gk k
-nnoremap gj j
 
 "" Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
-
-" H and L for tab switching
-nnoremap H gT
-nnoremap L gt
 
 " F9 folds
 inoremap <F9> <C-O>za
@@ -402,17 +360,13 @@ map <C-k><C-W> :FSLeft<CR>
 " File tree, Tagbar tree
 map <C-t> :NERDTreeToggle<CR>
 
-" Control + motion for window move
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
+" Terminal fixes
 " conflict with searches.  Used to switch windows while editing
 tnoremap <C-h> <C-\><C-N><C-w>h
 tnoremap <C-j> <C-\><C-N><C-w>j
 tnoremap <C-k> <C-\><C-N><C-w>k
 tnoremap <C-l> <C-\><C-N><C-w>l
+tnoremap jk <C-\><C-n>
 
 nnoremap <C-k><C-d> gg=G''
 
@@ -423,14 +377,6 @@ nnoremap <silent> <A-Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
 nnoremap <silent> <A-Right> :execute 'silent! tabmove ' . (tabpagenr()+1)<CR>
 let notabs = 0
 nnoremap <silent> <F6> :let notabs=!notabs<Bar>:if notabs<Bar>:tabo<Bar>:else<Bar>:tab ball<Bar>:tabn<Bar>:endif<CR>
-"function! s:check_back_space() abort "{{{
-"  let col = col('.') - 1
-"  return !col || getline('.')[col - 1]  =~ '\s'
-"endfunction"}}}
-"inoremap <silent><expr> <TAB>
-"      \ pumvisible() ? "\<C-n>" :
-"      \ <SID>check_back_space() ? "\<TAB>" :
-"      \ deoplete#manual_complete()
 
 " Functions {{{1
 function! SetGitDir()
