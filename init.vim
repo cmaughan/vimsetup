@@ -10,6 +10,13 @@ let loaded_matchit = 1
 let g:python3_host_prog = expand('~/.pyenv/pyenv-win/shims/python')
 
 call plug#begin('~/.vim/plugged')
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-tree/nvim-web-devicons'
+
+Plug 'BurntSushi/ripgrep'
 Plug 'tpope/vim-fugitive'            " Git support
 Plug 'scrooloose/nerdtree'           " Tree browser
 Plug 'tpope/vim-surround'            " Surround section with ', etc.
@@ -50,7 +57,7 @@ Plug 'sk1418/HowMuch'
 " Animated and auto sizing windows
 Plug 'camspiers/animate.vim'
 Plug 'camspiers/lens.vim'
-
+Plug 'EdenEast/nightfox.nvim'
 Plug 'neoclide/coc.nvim', { 'branch' : 'release'}
 
 " Janet
@@ -103,6 +110,37 @@ inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#confirm() : "\<Tab>"
 
 " Vim Rainbow
 let g:rainbow_active = 1
+
+"Telescope {{{2
+" Find files using Telescope command-line sugar.
+"nnoremap <leader>ff <cmd>Telescope find_files<cr>
+"nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+"nnoremap <leader>fb <cmd>Telescope buffers<cr>
+"nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" Using Lua functions
+nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+
+lua << EOF
+require('telescope').setup{
+  defaults = {
+    -- Default configuration for telescope goes here:
+    -- config_key = value,
+    mappings = {
+      i = {
+        -- map actions.which_key to <C-h> (default: <C-/>)
+        -- actions.which_key shows the mappings for your picker,
+        -- e.g. git_{create, delete, ...}_branch for the git_branches picker
+        ["<C-j>"] = "move_selection_next",
+        ["<C-k>"] = "move_selection_previous"
+      }
+    }
+  },
+}
+EOF
 
 " FSwitch {{{2
 let g:fsnonewfiles=1
@@ -338,7 +376,6 @@ set wildmenu
 set wildmode=list:longest
 set foldmethod=marker
 set equalalways
-set termguicolors
 
 "vimwiki
 set nocompatible
@@ -355,7 +392,8 @@ set showmatch
 
 " Dark goodness
 set background=dark
-colorscheme molokai
+set termguicolors
+colorscheme carbonfox
 
 " Mappings {{{1
 
