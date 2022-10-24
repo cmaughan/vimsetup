@@ -316,18 +316,10 @@ nnoremap <Leader>f :set nomore<Bar>:ls<Bar>:set more<CR>:b<Space>
 " Insert date
 nnoremap <Leader>d i<C-R>=strftime("%F - %A %d %B\n\n")<cr>
 
-nnoremap <Leader>. :CtrlPTag<cr>
-
-" Edit in window at current directory
 " Edit in split at current directory
 " Open VimRC in window
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
-nnoremap <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
-nnoremap <leader>es :vsp <C-R>=expand("%:p:h") . "/" <CR>
-nnoremap <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
-" Run a git friendly cmake build
-noremap <leader>b :AsyncRun cd <root>/build && cmake --build . <cr>
 
 " Commands {{{1
 command! MakeTags !ctags -R .
