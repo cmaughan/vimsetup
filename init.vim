@@ -3,13 +3,11 @@ set nocompatible
 
 " GVim required the runtime path to contain the startup script folder
 let &runtimepath.=','.escape(expand('<sfile>:p:h'), '\,')
-let &runtimepath.=','.escape(expand('<sfile>:p:h').'/colors', '\,')
 let &runtimepath.=','.escape(expand('<sfile>:p:h').'/bundle', '\,')
 filetype off
 
 let loaded_matchit = 1
-let g:python3_host_prog=$MYPYTHON3
-let g:python_host_prog=$MYPYTHON2
+let g:python3_host_prog = expand('~/.pyenv/pyenv-win/shims/python')
 
 call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'            " Git support
@@ -30,11 +28,20 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'szw/vim-maximizer'             " F3 to min/max the current buffer
 Plug 'junegunn/vim-easy-align'
 Plug 'RRethy/vim-illuminate'
-Plug 'gruvbox-community/gruvbox'
+
 " Lisp
 Plug 'kovisoft/paredit', { 'for': 'scheme' }
 Plug 'yegappan/taglist'
 Plug 'majutsushi/tagbar'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+Plug 'lervag/vimtex'
+
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_mode=0
+set conceallevel=1
 
 " Swift
 Plug 'keith/swift.vim'
@@ -143,6 +150,20 @@ let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBufs = 1
 let g:miniBufExplModSelTarget = 1
+
+" UltiSnips {{{2 
+let g:UltiSnipsSnippetStorageDirectoryForUltiSnipsEdit = $MYDROPBOX . '/Snippets'
+let g:UltiSnipsSnippetDirectories = [$MYDROPBOX . '/Snippets']
+
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+let g:UltiSnipsExpandTrigger="<c-,>"
+let g:UltiSnipsJumpForwardTrigger="<c-f>"
+let g:UltiSnipsJumpBackwardTrigger="<c-b>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
 
 " VimWiki {{{2
 let g:vimwiki_list = [{'path': $MYDROPBOX.'/vimwiki/'},
@@ -286,12 +307,13 @@ command! -bang -nargs=* GGrep
 
 " Auto Commands {{{1
 autocmd FileType c,cpp setlocal equalprg=clang-format
-autocmd GUIEnter * simalt ~x
+" autocmd GUIEnter * simalt ~x
 
 " Save when focus is lost
 autocmd FocusLost * :wa
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd BufEnter * lcd %:p:h
+
 
 " Options {{{1
 set omnifunc=syntaxcomplete#Complete
@@ -333,9 +355,7 @@ set showmatch
 
 " Dark goodness
 set background=dark
-
-"let g:gruvbox_contrast_dark='gruvbox_contrast_dark'
-colorscheme gruvbox
+colorscheme molokai
 
 " Mappings {{{1
 
@@ -370,6 +390,10 @@ tnoremap jk <C-\><C-n>
 
 nnoremap <C-k><C-d> gg=G''
 
+set spell
+set spell spelllang=en_us
+inoremap <C-L> <c-g>u<Esc>[s1z=`]a<c-g>u
+
 " Tabs
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <C-Right> :tabnext<CR>
@@ -398,3 +422,4 @@ nnoremap <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 " External Scripts {{{1
 " Load Others
 " runtime coc.vim
+
