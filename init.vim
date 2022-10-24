@@ -11,22 +11,21 @@ let g:python3_host_prog = expand('~/.pyenv/pyenv-win/shims/python')
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-tree/nvim-web-devicons'
+Plug 'neovim/nvim-lspconfig'
 
 Plug 'BurntSushi/ripgrep'
 Plug 'tpope/vim-fugitive'            " Git support
 Plug 'scrooloose/nerdtree'           " Tree browser
 Plug 'tpope/vim-surround'            " Surround section with ', etc.
 Plug 'tpope/vim-unimpaired'          " Useful mappings ([<space etc)
-Plug 'bling/vim-airline'             " Fancy status bar
-Plug 'airblade/vim-gitgutter'        " git info in the gutter, hunk
 Plug 'easymotion/vim-easymotion'     " easy jumping around - ,,w
 Plug 'derekwyatt/vim-fswitch'        " Switch between cpp/header. FSHere, FSRight
 Plug 'mtth/scratch.vim'              " gs scratch window
-Plug 'ctrlpvim/ctrlp.vim'            " Fuzzy tag/file search
 Plug 'kien/rainbow_parentheses.vim'  " Color brackets
 Plug 'dahu/VimRegexTutor'            " Regex tutorial; need to do this
 Plug 'vim-scripts/mru.vim'           " :MRU
@@ -45,8 +44,9 @@ Plug 'honza/vim-snippets'
 
 Plug 'lervag/vimtex'
 
+Plug 'arcticicestudio/nord-vim'
+
 let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
 set conceallevel=1
 
@@ -58,7 +58,7 @@ Plug 'sk1418/HowMuch'
 Plug 'camspiers/animate.vim'
 Plug 'camspiers/lens.vim'
 Plug 'EdenEast/nightfox.nvim'
-Plug 'neoclide/coc.nvim', { 'branch' : 'release'}
+" Plug 'neoclide/coc.nvim', { 'branch' : 'release'}
 
 " Janet
 Plug 'Olical/conjure'
@@ -86,6 +86,8 @@ Plug 'neovim/nvim-lspconfig'
 
 Plug 'frazrepo/vim-rainbow'
 
+Plug 'nvim-lualine/lualine.nvim'
+
 runtime vsinit.vim
 
 call plug#end()
@@ -106,7 +108,7 @@ filetype plugin on
 
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#confirm() : "\<Tab>"
+" inoremap <silent><expr> <Tab> coc#pum#visible() ? coc#pum#confirm() : "\<Tab>"
 
 " Vim Rainbow
 let g:rainbow_active = 1
@@ -120,6 +122,7 @@ let g:rainbow_active = 1
 
 " Using Lua functions
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
@@ -165,14 +168,6 @@ let g:mucomplete#enable_auto_at_startup = 1
 " NERDTree {{{2
 let NERDTreeHijackNetrw=1
 
-" CtrlP {{{2
-set grepprg=rg\ --color=never
-let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-let g:ctrlp_use_caching = 1
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_switch_buffer = 'Et'
-let g:ctrlp_root_markers = ['Grfx']
-set wildignore+=*/tmp/*,*.swp
 
 nnoremap <Leader>g :silent lgrep<Space>
 
@@ -385,7 +380,8 @@ set showmatch
 " Dark goodness
 set background=dark
 set termguicolors
-colorscheme carbonfox
+" colorscheme carbonfox
+colorscheme tokyonight-night
 
 " Mappings {{{1
 
@@ -449,7 +445,9 @@ endfunction
 nnoremap <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
 " }}} vim: fdm=marker
-" External Scripts {{{1
-" Load Others
-" runtime coc.vim
 
+lua << EOF
+
+require('config')
+
+EOF
