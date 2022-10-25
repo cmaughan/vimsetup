@@ -1,7 +1,11 @@
+-- disable netrw at the very start of your init.lua (strongly advised)
+
+-- Unless you are still migrating, remove the deprecated commands from v1.x
+vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+
 require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all"
     ensure_installed = { "c", "lua", "rust", "cpp" },
-
 
     -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
@@ -40,7 +44,7 @@ require'nvim-treesitter.configs'.setup {
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = false,
-    },
+    }
 }
 
 require('lualine').setup {
@@ -86,4 +90,6 @@ require'lspconfig'.clangd.setup{
     on_attach = on_attach,
     flags = lsp_flags
 }
+
+require("neo-tree").setup()
 

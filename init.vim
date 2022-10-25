@@ -1,5 +1,13 @@
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
+
 " Setup {{{1
 set nocompatible
+
+let $PATH .= ';' . $MYDROPBOX . '/Dev/bin/LLVM/bin'
+
+lua require('plugins')
+lua require('config')
 
 " GVim required the runtime path to contain the startup script folder
 let &runtimepath.=','.escape(expand('<sfile>:p:h'), '\,')
@@ -10,17 +18,15 @@ let loaded_matchit = 1
 let g:python3_host_prog = expand('~/.pyenv/pyenv-win/shims/python')
 
 call plug#begin('~/.vim/plugged')
-
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-tree/nvim-web-devicons'
-Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-tree/nvim-tree.lua'
 
 Plug 'BurntSushi/ripgrep'
 Plug 'tpope/vim-fugitive'            " Git support
-Plug 'scrooloose/nerdtree'           " Tree browser
 Plug 'tpope/vim-surround'            " Surround section with ', etc.
 Plug 'tpope/vim-unimpaired'          " Useful mappings ([<space etc)
 Plug 'easymotion/vim-easymotion'     " easy jumping around - ,,w
@@ -57,8 +63,6 @@ Plug 'sk1418/HowMuch'
 " Animated and auto sizing windows
 Plug 'camspiers/animate.vim'
 Plug 'camspiers/lens.vim'
-Plug 'EdenEast/nightfox.nvim'
-" Plug 'neoclide/coc.nvim', { 'branch' : 'release'}
 
 " Janet
 Plug 'Olical/conjure'
@@ -81,8 +85,6 @@ Plug 'mh21/errormarker.vim'
 
 Plug 'inkarkat/vim-ingo-library'
 Plug 'inkarkat/vim-mark'
-
-Plug 'neovim/nvim-lspconfig'
 
 Plug 'frazrepo/vim-rainbow'
 
@@ -165,9 +167,6 @@ let g:mucomplete#enable_auto_at_startup = 1
 "inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
 "inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
 
-" NERDTree {{{2
-let NERDTreeHijackNetrw=1
-
 
 nnoremap <Leader>g :silent lgrep<Space>
 
@@ -232,13 +231,6 @@ endfunction
 
 " VimScratch {{{2
 let g:scratch_persistence_file=$MYDROPBOX.'/vimscratch.txt'
-
-" Deoplte {{2
-let g:deoplete#enable_at_startup = 1
-
-" Haskell {{2
-let g:ghcid_keep_open = 1
-" ----- neovimhaskell/haskell-vim -----
 
 " Align 'then' two spaces after 'if'
 let g:haskell_indent_if = 2
@@ -403,9 +395,6 @@ map <C-k><C-l> :FSRight<CR>
 map <C-k><C-v> :FSSplitRight<CR>
 map <C-k><C-W> :FSLeft<CR>
 
-" File tree, Tagbar tree
-map <C-t> :NERDTreeToggle<CR>
-
 " Terminal fixes
 " conflict with searches.  Used to switch windows while editing
 tnoremap <C-h> <C-\><C-N><C-w>h
@@ -445,9 +434,3 @@ endfunction
 nnoremap <leader>et :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
 " }}} vim: fdm=marker
-
-lua << EOF
-
-require('config')
-
-EOF
