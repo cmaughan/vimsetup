@@ -67,3 +67,5 @@ map('n', '<leader>n', ':NvimTreeFindFile<CR>')      -- search file
 
 -- Tagbar
 map('n', '<leader>z', ':TagbarToggle<CR>')          -- open/close
+
+map('n', '<leader>ev', '<C-w><C-v><C-l>:e $MYVIMRC<cr>')
