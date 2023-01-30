@@ -27,7 +27,7 @@ map('', '<right>', '<nop>')
 map('i', 'jk', '<Esc>')
 
 -- Clear search highlighting with <leader> and c
-map('n', '<leader>c', ':nohl<CR>')
+map('n', '<leader><space>', ':nohl<CR>')
 
 -- Toggle auto-indenting for code paste
 map('n', '<F2>', ':set invpaste paste?<CR>')
@@ -68,4 +68,6 @@ map('n', '<leader>n', ':NvimTreeFindFile<CR>')      -- search file
 -- Tagbar
 map('n', '<leader>z', ':TagbarToggle<CR>')          -- open/close
 
-map('n', '<leader>ev', '<C-w><C-v><C-l>:e $MYVIMRC<cr>')
+map('n', '<leader>ev', '<C-w><C-v><C-l>:e $MYVIMRC<CR>') -- edit vim
+map('n', '<leader>cd', ':cd %:p:h<CR>:pwd<CR>') -- change directory to path of current file
+
