@@ -66,10 +66,10 @@ return packer.startup(function(use)
   use 'preservim/tagbar'
 
   -- Treesitter interface
-  use {
-    'nvim-treesitter/nvim-treesitter',
-    run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
-  }
+  -- use {
+  --  'nvim-treesitter/nvim-treesitter',
+  --  run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
+  --  }
 
   -- Color schemes
   use 'navarasu/onedark.nvim'
@@ -77,7 +77,7 @@ return packer.startup(function(use)
   use { 'rose-pine/neovim', as = 'rose-pine' }
 
   -- LSP
-  use 'neovim/nvim-lspconfig'
+  -- use 'neovim/nvim-lspconfig'
 
   -- Autocomplete
   use {
