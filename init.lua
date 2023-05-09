@@ -6,6 +6,8 @@ Website: https://github.com/brainfucksec/neovim-lua
 
 --]]
 
+vim.g.python3_host_prog = 'C:/Users/cmaughan/.pyenv/pyenv-win/versions/3.10.4/python.exe'
+
 -- Import Lua modules
 require('packer_init')
 require('core/options')

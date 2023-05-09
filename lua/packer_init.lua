@@ -106,10 +106,13 @@ return packer.startup(function(use)
     end
   }
 
-  -- Dashboard (start screen)
+  -- Start screen
   use {
-    'goolord/alpha-nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' },
+      'goolord/alpha-nvim',
+      requires = { 'nvim-tree/nvim-web-devicons' },
+      config = function ()
+          require'alpha'.setup(require'alpha.themes.startify'.config)
+      end
   }
 
   use {
@@ -120,6 +123,19 @@ return packer.startup(function(use)
   use {
     'vimwiki/vimwiki', branch=dev
   }
+
+  use {
+    "airblade/vim-gitgutter"
+  }
+
+  use {
+    "williamboman/mason.nvim",
+    run = ":MasonUpdate", -- :MasonUpdate updates registry contents
+    config = function()
+      require('mason').setup{}
+    end
+  }
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then
