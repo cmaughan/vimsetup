@@ -23,4 +23,3 @@ require('plugins/nvim-cmp')
 require('plugins/alpha-nvim')
 require('plugins/vim-telescope')
 require('plugins/vimwiki')
-
