@@ -73,7 +73,7 @@ return packer.startup(function(use)
 
   -- Color schemes
   use 'navarasu/onedark.nvim'
-  use 'tanvirtin/monokai.nvim'
+  -- use 'tanvirtin/monokai.nvim'
   use { 'rose-pine/neovim', as = 'rose-pine' }
 
   -- LSP
@@ -130,10 +130,15 @@ return packer.startup(function(use)
 
   use {
     "williamboman/mason.nvim",
+    opts = {
+      ensure_installed = {
+        "rust-analyzer",
+      },
+    },
     run = ":MasonUpdate", -- :MasonUpdate updates registry contents
     config = function()
       require('mason').setup{}
-    end
+    end,
   }
 
   -- Automatically set up your configuration after cloning packer.nvim
