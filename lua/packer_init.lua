@@ -65,6 +65,7 @@ return packer.startup(function(use)
   -- Tag viewer
   use 'preservim/tagbar'
 
+  use 'mtth/scratch.vim'
   -- Treesitter interface
   -- use {
   --  'nvim-treesitter/nvim-treesitter',
