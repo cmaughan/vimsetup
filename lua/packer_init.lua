@@ -51,6 +51,13 @@ return packer.startup(function(use)
   -- Indent line
   use 'lukas-reineke/indent-blankline.nvim'
 
+  -- Rust
+  use 'neovim/nvim-lspconfig'
+  use 'mfussenegger/nvim-dap'
+  use 'nvim-lua/plenary.nvim'
+  use 'simrat39/rust-tools.nvim'
+  use 'glepnir/lspsaga.nvim'
+
   -- Autopair
   use {
     'windwp/nvim-autopairs',
