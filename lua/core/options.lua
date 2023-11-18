@@ -1,5 +1,11 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+-----------------------------------------------------------
+-- General
+-----------------------------------------------------------
+vim.opt.mouse = 'a'                       -- Enable mouse support
+vim.opt.clipboard = 'unnamedplus'         -- Copy/paste to system clipboard
+
+vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 
 vim.opt.backspace = '2'
 vim.opt.showcmd = true
@@ -9,8 +15,8 @@ vim.opt.cursorline = true
 vim.opt.autoread = true
 
 -- use spaces for tabs and whatnot
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.shiftround = true
 vim.opt.expandtab = true
 
@@ -19,3 +25,6 @@ vim.cmd [[ set termguicolors ]]
 
 --Line numbers
 vim.wo.number = true
+
+vim.g.vimwiki_list = { { path = os.getenv("MYDROPBOX") .. "/vimwiki/" } };
+
