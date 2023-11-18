@@ -1,27 +1,20 @@
---[[
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
-Neovim init file
-Maintainer: brainf+ck
-Website: https://github.com/brainfucksec/neovim-lua
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
---]]
-
-vim.g.python3_host_prog = 'C:/Users/cmaughan/.pyenv/pyenv-win/versions/3.10.4/python.exe'
-
--- Import Lua modules
-require('packer_init')
-require('core/options')
-require('core/autocmds')
-require('core/keymaps')
-require('core/colors')
-require('core/statusline')
--- require('lsp/lspconfig')
-require('plugins/nvim-tree')
-require('plugins/indent-blankline')
-require('plugins/nvim-cmp')
--- require('plugins/nvim-treesitter')
-require('plugins/alpha-nvim')
-require('plugins/vim-telescope')
-require('plugins/vimwiki')
-require('plugins/scratch')
-require('plugins/rust')
+require("core.options")
+require("core.keymaps")
+require("core.plugins")
+require("core.plugin_config")
