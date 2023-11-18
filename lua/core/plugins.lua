@@ -7,7 +7,7 @@ require("lazy").setup({
     'nvim-lua/plenary.nvim',
     'mfussenegger/nvim-dap',
     'rcarriga/nvim-dap-ui',
-
+    'theHamsta/nvim-dap-virtual-text',
     { 'vimwiki/vimwiki', branch = "dev" },
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
     'tpope/vim-commentary',
