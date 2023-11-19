@@ -27,3 +27,14 @@ nnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>
 inoremap <silent><RightMouse> <Esc>:call GuiShowContextMenu()<CR>
 xnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>gv
 snoremap <silent><RightMouse> <C-G>:call GuiShowContextMenu()<CR>gv
+
+let s:fontsize = 12
+function! AdjustFontSize(amount)
+let s:fontsize = s:fontsize+a:amount
+:execute "GuiFont! CaskaydiaCove NF:h" . s:fontsize
+endfunction
+
+noremap <C-=> :call AdjustFontSize(1)<CR>
+noremap <C--> :call AdjustFontSize(-1)<CR>
+inoremap <C-=> <Esc>:call AdjustFontSize(1)<CR>a
+inoremap <C--> <Esc>:call AdjustFontSize(-1)<CR>a

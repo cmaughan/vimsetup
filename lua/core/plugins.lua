@@ -2,6 +2,8 @@ require("lazy").setup({
     'simrat39/rust-tools.nvim',
     'equalsraf/neovim-gui-shim',
     'mtth/scratch.vim',
+    'hiphish/rainbow-delimiters.nvim',
+    {"lukas-reineke/indent-blankline.nvim", main = 'ibl', opts={} },
 
     -- Debugging
     'nvim-lua/plenary.nvim',
@@ -9,7 +11,9 @@ require("lazy").setup({
     'rcarriga/nvim-dap-ui',
     'theHamsta/nvim-dap-virtual-text',
     { 'vimwiki/vimwiki', branch = "dev" },
-    { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+    --{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+    'navarasu/onedark.nvim',
+    --{ "olimorris/onedarkpro.nvim", priority = 1000 },
     'tpope/vim-commentary',
     'mattn/emmet-vim',
     'nvim-tree/nvim-tree.lua',

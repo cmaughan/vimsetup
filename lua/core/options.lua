@@ -20,6 +20,12 @@ vim.opt.shiftwidth = 4
 vim.opt.shiftround = true
 vim.opt.expandtab = true
 
+vim.opt.showmatch = true
+vim.opt.foldmethod = 'marker'
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.linebreak = true
+
 vim.cmd [[ set noswapfile ]]
 vim.cmd [[ set termguicolors ]]
 

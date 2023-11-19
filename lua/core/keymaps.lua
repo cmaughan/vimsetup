@@ -7,6 +7,12 @@ vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
 vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
 vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 
+vim.keymap.set('n', 'j', 'gj')
+vim.keymap.set('n', 'k', 'gk')
+vim.keymap.set('n', 'gj', 'j')
+vim.keymap.set('n', 'gk', 'k')
+vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
+
 vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
 
 -- Disable arrow keys

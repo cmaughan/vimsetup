@@ -1,5 +1,5 @@
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "solargraph", "tsserver", "rust_analyzer", "codelldb"  }
+    ensure_installed = { "lua_ls", "solargraph", "tsserver", "rust_analyzer"  }
 })
 
 local lspconfig = require('lspconfig')

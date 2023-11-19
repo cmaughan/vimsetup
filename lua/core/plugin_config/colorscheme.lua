@@ -1,8 +1,14 @@
-require("catppuccin").setup({
-  flavour = "mocha",
-  transparent_background = true,
+require("onedark").setup({
+    -- transparent = false,
+    style = 'darker'
 })
 
 vim.o.termguicolors = true
-vim.o.background = "dark"
-vim.cmd[[colorscheme catppuccin]]
+vim.cmd [[colorscheme onedark]]
+
+require("ibl").setup({
+    scope = {
+        enabled = false
+    }
+
+})
