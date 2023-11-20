@@ -47,3 +47,6 @@ vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')                    -- exit
 
 vim.keymap.set('n', '<leader>ev', '<C-w><C-v><C-l>:e $MYVIMRC<CR>') -- edit vim
 
+vim.keymap.set('n', '<leader>z', ':ZenMode<CR>')
+
+vim.keymap.set('n', '<leader>ws', ':call WindowSwap#EasyWindowSwap()<CR>')

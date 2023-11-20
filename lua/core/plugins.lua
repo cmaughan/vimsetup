@@ -1,4 +1,6 @@
 require("lazy").setup({
+    'folke/zen-mode.nvim',
+    'wesQ3/vim-windowswap',
     'simrat39/rust-tools.nvim',
     'equalsraf/neovim-gui-shim',
     'mtth/scratch.vim',

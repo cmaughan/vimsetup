@@ -34,3 +34,4 @@ vim.wo.number = true
 
 vim.g.vimwiki_list = { { path = os.getenv("MYDROPBOX") .. "/vimwiki/" } };
 
+vim.g.windowswap_map_keys = 0;
