@@ -1,6 +1,6 @@
 require("onedark").setup({
     -- transparent = false,
-    style = 'darker'
+    style = 'darker',
 })
 
 vim.o.termguicolors = true
