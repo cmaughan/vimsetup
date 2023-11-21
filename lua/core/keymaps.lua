@@ -1,11 +1,17 @@
 -- esc --
 vim.keymap.set('i', 'jk', '<ESC>')
+vim.keymap.set('t', 'jk', [[<C-\><C-n>]])
 
 -- Navigate vim panes better
 vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
 vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
 vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
 vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
+
+vim.keymap.set('t', '<c-k>', '<C-\\><C-n> :wincmd k<CR>')
+vim.keymap.set('t', '<c-j>', '<C-\\><C-n> :wincmd j<CR>')
+vim.keymap.set('t', '<c-h>', '<C-\\><C-n> :wincmd h<CR>')
+vim.keymap.set('t', '<c-l>', '<C-\\><C-n> :wincmd l<CR>')
 
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')

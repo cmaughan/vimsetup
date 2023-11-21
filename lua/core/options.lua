@@ -26,6 +26,8 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.linebreak = true
 
+vim.opt.relativenumber = true
+
 vim.cmd [[ set noswapfile ]]
 vim.cmd [[ set termguicolors ]]
 
@@ -35,3 +37,6 @@ vim.wo.number = true
 vim.g.vimwiki_list = { { path = os.getenv("MYDROPBOX") .. "/vimwiki/" } };
 
 vim.g.windowswap_map_keys = 0;
+
+vim.cmd[[autocmd BufWinEnter,WinEnter term://* startinsert]]
+
