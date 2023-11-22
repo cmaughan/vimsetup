@@ -1,8 +1,8 @@
 require("zen-mode").setup({
     window = {
         options = {
-            number = false,
-            relativenumber = false
+            number = true,
+            relativenumber = true
         }
     }
 
