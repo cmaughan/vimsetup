@@ -12,9 +12,11 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
 
-vim.keymap.set("n", "<Leader>dt", ':DapToggleBreakpoint<CR>')
 vim.keymap.set("n", "<Leader>dx", ':DapTerminate<CR>')
-vim.keymap.set("n", "<Leader>do", ':DapStepOver<CR>')
+
+vim.keymap.set("n", "<c-i>", ':DapToggleBreakpoint<CR>')
+vim.keymap.set("n", "<F10>do", ':DapStepOver<CR>')
+vim.keymap.set("n", "<F11>do", ':DapStepInto<CR>')
 
 require('dap').configurations.rust = {
     type = "rust"

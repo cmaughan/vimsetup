@@ -1,4 +1,8 @@
 require("lazy").setup({
+    'neomake/neomake',
+    'folke/trouble.nvim',
+    'smoka7/hop.nvim',
+    'rmagatti/auto-session',
     'folke/zen-mode.nvim',
     'wesQ3/vim-windowswap',
     'simrat39/rust-tools.nvim',
