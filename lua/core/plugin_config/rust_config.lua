@@ -15,6 +15,8 @@ else
     liblldb_path = extension_path .. "lldb/lib/liblldb.so"
 end
 
+vim.cmd [[autocmd FileType rust setlocal makeprg=cargo]]
+
 rt.setup({
   dap = {
     adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),

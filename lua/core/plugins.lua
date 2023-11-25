@@ -1,6 +1,7 @@
 require("lazy").setup({
+    'Zeioth/compiler.nvim',
     'neomake/neomake',
-    'folke/trouble.nvim',
+    --'folke/trouble.nvim',
     'smoka7/hop.nvim',
     'rmagatti/auto-session',
     'folke/zen-mode.nvim',
@@ -9,14 +10,14 @@ require("lazy").setup({
     'equalsraf/neovim-gui-shim',
     'mtth/scratch.vim',
     'hiphish/rainbow-delimiters.nvim',
-    {"lukas-reineke/indent-blankline.nvim", main = 'ibl', opts={} },
+    { "lukas-reineke/indent-blankline.nvim", main = 'ibl',  opts = {} },
 
     -- Debugging
     'nvim-lua/plenary.nvim',
     'mfussenegger/nvim-dap',
     'rcarriga/nvim-dap-ui',
     'theHamsta/nvim-dap-virtual-text',
-    { 'vimwiki/vimwiki', branch = "dev" },
+    { 'vimwiki/vimwiki',                     branch = "dev" },
     --{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
     'navarasu/onedark.nvim',
     --{ "olimorris/onedarkpro.nvim", priority = 1000 },
@@ -31,10 +32,10 @@ require("lazy").setup({
     'vim-test/vim-test',
     'lewis6991/gitsigns.nvim',
     'preservim/vimux',
-    'christoomey/vim-tmux-navigator',
     'tpope/vim-fugitive',
     'tpope/vim-surround',
     'stevearc/oil.nvim',
+
     -- completion
     'hrsh7th/nvim-cmp',
     'hrsh7th/cmp-nvim-lsp',
@@ -57,5 +58,23 @@ require("lazy").setup({
         'nvim-telescope/telescope.nvim',
         tag = '0.1.4',
         dependencies = { 'nvim-lua/plenary.nvim' }
+    },
+    { -- This plugin
+        "Zeioth/compiler.nvim",
+        cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
+        dependencies = { "stevearc/overseer.nvim" },
+        opts = {},
+    },
+    { -- The task runner we use
+        "stevearc/overseer.nvim",
+        cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
+        opts = {
+            task_list = {
+                direction = "bottom",
+                min_height = 25,
+                max_height = 25,
+                default_detail = 1
+            },
+        },
     },
 })
