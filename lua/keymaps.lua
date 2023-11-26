@@ -81,8 +81,14 @@ vim.keymap.set('', '<C-l>', '<C-w>l')
 vim.keymap.set('n', '<C-\\>', ':Term<CR>', { noremap = true })      -- open
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')                         -- exit
 
+local vimrc_path = vim.fn.expand("$MYVIMRC")
+local parent_path = vim.fn.fnamemodify(vimrc_path, ":h")
+
 -- Edit VimRC
-vim.keymap.set('n', '<leader>ev', '<C-w><C-v><C-l>:e $MYVIMRC<CR>') -- edit vim
+vim.keymap.set('n', '<leader>ev', ':e $MYVIMRC<CR>') -- edit vim
+vim.keymap.set('n', '<leader>ek', ':e ' .. parent_path .. '/lua/keymaps.lua<CR>') -- edit vim
+vim.keymap.set('n', '<leader>eo', ':e ' .. parent_path .. '/lua/options.lua<CR>') -- edit vim
+vim.keymap.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugin_config<CR>') -- edit vim
 
 -- Zen mode
 vim.keymap.set('n', '<leader>z', ':ZenMode<CR>')

@@ -1,5 +1,5 @@
 vim.cmd [[
-  let test#strategy = "neovim"
+  let test#strategy = "basic"
 ]]
 
 vim.keymap.set('n', '<leader>t', ':TestNearest<CR>')
