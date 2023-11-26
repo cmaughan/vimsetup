@@ -44,10 +44,10 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 vim.keymap.set('n', 'Q', "<nop>")
 
 -- Quickfix
-vim.keymap.set('n', '<F8>', "<cmd>cnext<CR>zz")
-vim.keymap.set('n', '<S-F8>', "<cmd>cprev<CR>zz")
-vim.keymap.set('n', '<leader>k', "<cmd>lnext<CR>zz")
-vim.keymap.set('n', '<leader>j', "<cmd>lprev<CR>zz")
+-- vim.keymap.set('n', '<F8>', "<cmd>cnext<CR>zz")
+--vim.keymap.set('n', '<S-F8>', "<cmd>cprev<CR>zz")
+--vim.keymap.set('n', '<leader>k', "<cmd>lnext<CR>zz")
+--vim.keymap.set('n', '<leader>j', "<cmd>lprev<CR>zz")
 
 -- Ignore arrows
 vim.keymap.set('', '<up>', '<nop>')

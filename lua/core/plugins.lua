@@ -1,7 +1,7 @@
 require("lazy").setup({
     'Zeioth/compiler.nvim',
     'neomake/neomake',
-    --'folke/trouble.nvim',
+    'folke/trouble.nvim',
     'smoka7/hop.nvim',
     'rmagatti/auto-session',
     'folke/zen-mode.nvim',

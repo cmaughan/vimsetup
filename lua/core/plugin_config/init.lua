@@ -14,9 +14,9 @@ require("core.plugin_config.rust_config")
 require("core.plugin_config.dap_config")
 require("core.plugin_config.zen_mode")
 require("core.plugin_config.hop")
+require("core.plugin_config.trouble")
 
 -- Not currently using
 require("core.plugin_config.vim-test")
 -- require("core.plugin_config.auto_session")
 -- require("core.plugin_config.copilot")
---require("core.plugin_config.trouble")
