@@ -11,13 +11,14 @@ vim.keymap.set('n', '<F8>', function()
     t.open()
     t.next({skip_gropus=true, jump=true})
 end)
+
 vim.keymap.set('n', '<S-F8>', function()
     require('trouble').previous({skip_groups=true, jump=true})
 end)
 
 require("trouble").setup({
     auto_open = false,
-    auto_close = true,
+    auto_close = false,
     auto_fold = false
 })
 
