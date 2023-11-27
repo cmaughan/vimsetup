@@ -15,8 +15,8 @@ require("plugin_config.dap")
 require("plugin_config.zen_mode")
 require("plugin_config.hop")
 require("plugin_config.trouble")
+require("plugin_config.neogit")
 
 -- Not currently using
 require("plugin_config.vim-test")
--- require("plugin_config.auto_session")
 -- require("plugin_config.copilot")

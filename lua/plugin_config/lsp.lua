@@ -1,9 +1,8 @@
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "solargraph", "tsserver", "rust_analyzer", "clangd" }
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
 })
 
 local lspconfig = require('lspconfig')
-
 local lsp_defaults = lspconfig.util.default_config
 
 lsp_defaults.capabilities = vim.tbl_deep_extend(
@@ -37,10 +36,6 @@ require("lspconfig").lua_ls.setup {
     }
 }
 
-require("lspconfig").solargraph.setup({})
-require("lspconfig").tsserver.setup({})
-require("lspconfig").gopls.setup({})
-require("lspconfig").rust_analyzer.setup({})
 require("lspconfig").clangd.setup({})
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -52,6 +47,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf }
+
+        vim.lsp.inlay_hint.enable(ev.buf, true)
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)

@@ -22,6 +22,3 @@ vim.keymap.set("n", "<F11>do", ':DapStepInto<CR>')
 vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl =''})
 vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})
 
-require('dap').configurations.rust = {
-    type = "rust"
-}
