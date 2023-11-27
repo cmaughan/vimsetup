@@ -1,5 +1,5 @@
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "solargraph", "tsserver", "rust_analyzer", "clangd"  }
+    ensure_installed = { "lua_ls", "solargraph", "tsserver", "rust_analyzer", "clangd" }
 })
 
 local lspconfig = require('lspconfig')
@@ -61,11 +61,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
         vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
         vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set('n', '<leader>lf', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', '<leader>lo', vim.diagnostic.open_float, opts)
         vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         vim.keymap.set('n', '<leader>lh', vim.lsp.buf.signature_help, opts)
-        vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, {silent = true, buffer = true })
+        vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true })
         vim.keymap.set('n', '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
     end,
 })
