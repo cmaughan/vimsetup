@@ -47,8 +47,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf }
-
-        vim.lsp.inlay_hint.enable(ev.buf, true)
+        if vim.lsp.inlay_hint then
+            vim.lsp.inlay_hint.enable(ev.buf, true)
+        end
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
