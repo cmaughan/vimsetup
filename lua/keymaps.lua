@@ -88,7 +88,7 @@ local parent_path = vim.fn.fnamemodify(vimrc_path, ":h")
 vim.keymap.set('n', '<leader>ev', ':e $MYVIMRC<CR>') -- edit vim
 vim.keymap.set('n', '<leader>ek', ':e ' .. parent_path .. '/lua/keymaps.lua<CR>') -- edit vim
 vim.keymap.set('n', '<leader>eo', ':e ' .. parent_path .. '/lua/options.lua<CR>') -- edit vim
-vim.keymap.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugin_config<CR>') -- edit vim
+vim.keymap.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugins.lua<CR>') -- edit vim
 
 -- Zen mode
 vim.keymap.set('n', '<leader>z', ':ZenMode<CR>')

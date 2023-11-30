@@ -1,5 +1,6 @@
 require("lazy").setup({
     -- Basics
+    'equalsraf/neovim-gui-shim',
     'nvim-tree/nvim-tree.lua',
     'stevearc/oil.nvim',
     'smoka7/hop.nvim',
@@ -20,8 +21,7 @@ require("lazy").setup({
     'wesQ3/vim-windowswap',
     'mtth/scratch.vim',
 
-    -- 'equalsraf/neovim-gui-shim',
-
+    'nvim-neorg/neorg',
     { 'vimwiki/vimwiki',              branch = "dev" },
 
     -- Git

@@ -4,7 +4,7 @@ set mouse=a
 " Set Editor Font
 if exists(':GuiFont')
     " Use GuiFont! to ignore font errors
-    GuiFont CaskaydiaCove NF:h11
+    GuiFont CaskaydiaCove NFM:h11
 endif
 
 " Disable GUI Tabline
@@ -31,7 +31,7 @@ snoremap <silent><RightMouse> <C-G>:call GuiShowContextMenu()<CR>gv
 let s:fontsize = 12
 function! AdjustFontSize(amount)
 let s:fontsize = s:fontsize+a:amount
-:execute "GuiFont! CaskaydiaCove NF:h" . s:fontsize
+:execute "GuiFont! CaskaydiaCove NFM:h" . s:fontsize
 endfunction
 
 noremap <C-=> :call AdjustFontSize(1)<CR>
