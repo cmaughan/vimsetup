@@ -24,6 +24,8 @@ vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 
 vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
 
+vim.keymap.set('n', '<leader>oo', ':ClangdSwitchSourceHeader<CR>')
+
 -- Move visual selection up and down
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")

@@ -65,5 +65,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<leader>lh', vim.lsp.buf.signature_help, opts)
         vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true })
         vim.keymap.set('n', '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
+        vim.keymap.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>')
     end,
 })
