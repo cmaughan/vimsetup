@@ -15,9 +15,9 @@ end
 vim.keymap.set("n", "<Leader>dx", ':DapTerminate<CR>')
 
 vim.keymap.set("n", "<c-i>", ':DapToggleBreakpoint<CR>')
-vim.keymap.set('n', '<F5>', ':DapContinue')
-vim.keymap.set("n", "<F10>do", ':DapStepOver<CR>')
-vim.keymap.set("n", "<F11>do", ':DapStepInto<CR>')
+vim.keymap.set('n', '<F5>', ':DapContinue<CR>')
+vim.keymap.set("n", "<F10>", ':DapStepOver<CR>')
+vim.keymap.set("n", "<F11>", ':DapStepInto<CR>')
 
 vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl =''})
 vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})

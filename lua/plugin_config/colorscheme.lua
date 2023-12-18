@@ -2,10 +2,10 @@
 require("onedark").setup({
     --transparent = true,
     style = 'darker',
-    colors = { bg0 = '#111111', bg_d = '#111111' },
+    colors = { bg0 = '#191919', bg_d = '#191919' },
     highlights = {
         ["@comment"] = { fg = '#339933' },
-        ["LspInlayHint"] = { fg = '#444444' },
+        -- ["LspInlayHint"] = { fg = '#222222' },
         -- ["EndOfBuffer"] = { bg = '#101010' },
     }
 })
