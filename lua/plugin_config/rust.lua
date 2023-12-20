@@ -17,6 +17,7 @@ end
 
 vim.cmd [[autocmd FileType rust setlocal makeprg=cargo]]
 
+vim.o.updatetime = 200
 rt.setup({
     dap = {
         adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
@@ -27,6 +28,7 @@ rt.setup({
             vim.keymap.set("n", "<Leader>k", rt.hover_actions.hover_actions, { buffer = bufnr })
             -- Gets stuck
             -- vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+            vim.keymap.set("n", "ge", function() vim.diagnostic.open_float(nil, {focus = false} ) end)
         end,
     },
     tools = {
@@ -39,3 +41,6 @@ rt.setup({
 require('dap').configurations.rust = {
     type = "rust"
 }
+
+
+
