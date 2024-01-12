@@ -8,7 +8,8 @@ require("lazy").setup({
     'tpope/vim-surround',
 
     -- Telescope
-    { 'nvim-telescope/telescope.nvim',
+    {
+        'nvim-telescope/telescope.nvim',
         branch = '0.1.x',
         dependencies = {
             'nvim-lua/plenary.nvim'
@@ -28,7 +29,7 @@ require("lazy").setup({
     'mtth/scratch.vim',
 
     'nvim-neorg/neorg',
-    { 'vimwiki/vimwiki',              branch = "dev" },
+    { 'vimwiki/vimwiki',                     branch = "dev" },
 
     -- Git
     'tpope/vim-fugitive',
@@ -38,7 +39,15 @@ require("lazy").setup({
 
     -- Coding
     'folke/trouble.nvim',
-    'nvim-treesitter/nvim-treesitter',
+    {
+        -- Highlight, edit, and navigate code
+        'nvim-treesitter/nvim-treesitter',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter-textobjects',
+        },
+        build = ':TSUpdate',
+    },
+
     {
         'neovim/nvim-lspconfig',
         dependencies = {
@@ -47,16 +56,16 @@ require("lazy").setup({
             'williamboman/mason-lspconfig.nvim',
 
             -- LSP status info
-            { 'j-hui/fidget.nvim', opts = {} },
+            { 'j-hui/fidget.nvim',       opts = {} },
 
             -- Nvim dev/lua stuff
             'folke/neodev.nvim',
         },
     },
     -- Pending keybinds
-    { 'folke/which-key.nvim', opts = {} },
+    { 'folke/which-key.nvim',  opts = {} },
 
-    -- "gc" to comment visual regions/lines 
+    -- "gc" to comment visual regions/lines
     { 'numToStr/Comment.nvim', opts = {} },
 
     'williamboman/mason-lspconfig.nvim',
