@@ -16,6 +16,21 @@ require("lazy").setup({
         },
     },
 
+    -- Harpoon
+    {
+        'ThePrimeagen/harpoon',
+        branch = 'master',
+        event = 'VeryLazy',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+        },
+        opts = {
+            menu = {
+                width = 120
+            }
+        }
+    },
+
     -- Theme
     'navarasu/onedark.nvim',
     'nvim-tree/nvim-web-devicons',
