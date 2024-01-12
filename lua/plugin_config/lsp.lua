@@ -50,14 +50,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
         if vim.lsp.inlay_hint then
             vim.lsp.inlay_hint.enable(ev.buf, true)
         end
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
-        vim.keymap.set('n', 'ge', function() vim.diagnostic.open_float(nil, {focus = false} ) end)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+        vim.keymap.set('n', 'ge', function() vim.diagnostic.open_float(nil, { focus = false }) end)
+
+        vim.keymap.set('n', 'gs', require('telescope.builtin').lsp_dynamic_workspace_symbols, {})
+        vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_workspace_symbols, {})
+        vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols, {})
+        vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, {})
+        vim.keymap.set('n', 'gD', require('telescope.builtin').lsp_type_definitions, {})
+        vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
+        vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_implementations, {})
+
         vim.keymap.set('n', '<leader>lo', vim.diagnostic.open_float, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
         vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
         vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
         vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
@@ -67,5 +71,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true })
         vim.keymap.set('n', '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
         vim.keymap.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>')
+
     end,
 })

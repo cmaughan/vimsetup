@@ -6,8 +6,14 @@ require("lazy").setup({
     'smoka7/hop.nvim',
     'tpope/vim-commentary',
     'tpope/vim-surround',
-    'williamboman/mason.nvim',
-    { 'nvim-telescope/telescope.nvim',       tag = '0.1.4', dependencies = { 'nvim-lua/plenary.nvim' } },
+
+    -- Telescope
+    { 'nvim-telescope/telescope.nvim',
+        branch = '0.1.x',
+        dependencies = {
+            'nvim-lua/plenary.nvim'
+        },
+    },
 
     -- Theme
     'navarasu/onedark.nvim',
@@ -33,7 +39,26 @@ require("lazy").setup({
     -- Coding
     'folke/trouble.nvim',
     'nvim-treesitter/nvim-treesitter',
-    'neovim/nvim-lspconfig',
+    {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+            -- Automatic LSP install stdpath
+            { 'williamboman/mason.nvim', config = true },
+            'williamboman/mason-lspconfig.nvim',
+
+            -- LSP status info
+            { 'j-hui/fidget.nvim', opts = {} },
+
+            -- Nvim dev/lua stuff
+            'folke/neodev.nvim',
+        },
+    },
+    -- Pending keybinds
+    { 'folke/which-key.nvim', opts = {} },
+
+    -- "gc" to comment visual regions/lines 
+    { 'numToStr/Comment.nvim', opts = {} },
+
     'williamboman/mason-lspconfig.nvim',
     'mfussenegger/nvim-dap',
     'rcarriga/nvim-dap-ui',
@@ -41,11 +66,21 @@ require("lazy").setup({
     'vim-test/vim-test',
 
     -- Completions
-    'hrsh7th/nvim-cmp',
-    'hrsh7th/cmp-nvim-lsp',
-    'saadparwaiz1/cmp_luasnip',
-    'L3MON4D3/LuaSnip',
-    'rafamadriz/friendly-snippets',
+    {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            -- Snippet engine and nvim-cmp source
+            'L3MON4D3/LuaSnip',
+            'saadparwaiz1/cmp_luasnip',
+
+            -- LSP completion
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-path',
+
+            -- User friendly snippets
+            'rafamadriz/friendly-snippets',
+        },
+    },
     --"github/copilot.vim",
 
     -- Rust
