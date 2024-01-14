@@ -1,7 +1,7 @@
 -- Harpoon
 local keymap = vim.keymap
-keymap.set("n", "<leader>ha", require("harpoon.mark").add_file)
-keymap.set("n", "<leader>hh", require("harpoon.ui").toggle_quick_menu)
+keymap.set("n", "<leader>ha", require("harpoon.mark").add_file, { desc = '[H]arpoon [A]dd' })
+keymap.set("n", "<leader>hh", require("harpoon.ui").toggle_quick_menu, { desc = '[H]arpoon [h]' })
 keymap.set("n", "<leader>h1", function() require("harpoon.ui").nav_file(1) end)
 keymap.set("n", "<leader>h2", function() require("harpoon.ui").nav_file(2) end)
 keymap.set("n", "<leader>h3", function() require("harpoon.ui").nav_file(3) end)

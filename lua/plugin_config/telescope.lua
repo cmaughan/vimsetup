@@ -101,3 +101,8 @@ vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagno
 vim.keymap.set('n', '<leader>fa', builtin.resume, { desc = '[F]ind [A]again' })
 vim.keymap.set('n', '<leader>fH', builtin.help_tags, { desc = '[F]ind [H]elp' })
 vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = '[F]ind [S]elect Telescope' })
+vim.keymap.set('n', '<leader>fm', function() require('telescope.builtin').treesitter({default_text=":method:"}) end)
+
+
+
+

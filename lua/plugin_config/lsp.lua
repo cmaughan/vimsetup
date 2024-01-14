@@ -58,7 +58,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, {})
         vim.keymap.set('n', 'gD', require('telescope.builtin').lsp_type_definitions, {})
         vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
-        vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_implementations, {})
+        vim.keymap.set('n', 'gm', require('telescope.builtin').lsp_implementations, {})
+        vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_incoming_calls, {})
 
         vim.keymap.set('n', '<leader>lo', vim.diagnostic.open_float, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
@@ -67,10 +68,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
         vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
         vim.keymap.set({ 'n', 'v' }, '<leader>a', vim.lsp.buf.code_action, opts)
-        vim.keymap.set('n', '<leader>lh', vim.lsp.buf.signature_help, opts)
         vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true })
         vim.keymap.set('n', '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
-        vim.keymap.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>')
 
+        vim.keymap.set('n', '<leader>hs', vim.lsp.buf.signature_help, opts)
+        vim.keymap.set('n', '<leader>K', vim.lsp.buf.hover, opts)
     end,
 })

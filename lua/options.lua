@@ -36,7 +36,9 @@ vim.opt.undofile = true
 -- vim.opt.colorcolumn = "80"
 
 vim.opt.showmatch = true
-vim.opt.foldmethod = 'marker'
+vim.opt.foldlevel = 20
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.linebreak = true

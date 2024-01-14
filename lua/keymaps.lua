@@ -22,7 +22,7 @@ vim.keymap.set('n', 'gj', 'j')
 vim.keymap.set('n', 'gk', 'k')
 vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 
-vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
+vim.keymap.set('n', '<leader>sc', ':nohlsearch<CR>', { desc = '[S]earch [C]lear' })
 
 vim.keymap.set('n', '<leader>oo', ':ClangdSwitchSourceHeader<CR>')
 
@@ -70,8 +70,18 @@ vim.keymap.set('n', '<leader><space>', ':nohl<CR>')
 vim.keymap.set('n', '<F2>', ':set invpaste paste?<CR>')
 
 -- Change split orientation
-vim.keymap.set('n', '<leader>tk', '<C-w>t<C-w>K') -- change vertical to horizontal
-vim.keymap.set('n', '<leader>th', '<C-w>t<C-w>H') -- change horizontal to vertical
+vim.keymap.set('n', '<leader>vh', '<C-w>t<C-w>K') -- change vertical to horizontal
+vim.keymap.set('n', '<leader>hv', '<C-w>t<C-w>H') -- change horizontal to vertical
+
+-- Split window management
+vim.keymap.set('n', '<leader>sv', '<C-w>v') -- split window vertically
+vim.keymap.set('n', '<leader>sh', '<C-w>s') -- split window horizontally
+vim.keymap.set('n', '<leader>se', '<C-w>=') -- make split windows equal width
+vim.keymap.set('n', '<leader>sx', ':close<CR>') -- close split window
+vim.keymap.set('n', '<leader>sj', '<C-w>-') -- make split window height shorter
+vim.keymap.set('n', '<leader>sk', '<C-w>+') -- make split windows height taller
+vim.keymap.set('n', '<leader>sl', '<C-w>>5') -- make split windows width bigger 
+vim.keymap.set('n', '<leader>sh', '<C-w><5') -- make split windows width smaller
 
 -- Move around splits using Ctrl + {h,j,k,l}
 vim.keymap.set('', '<C-h>', '<C-w>h')
@@ -91,11 +101,22 @@ vim.keymap.set('n', '<leader>ev', ':e $MYVIMRC<CR>') -- edit vim
 vim.keymap.set('n', '<leader>ek', ':e ' .. parent_path .. '/lua/keymaps.lua<CR>') -- edit vim
 vim.keymap.set('n', '<leader>eo', ':e ' .. parent_path .. '/lua/options.lua<CR>') -- edit vim
 vim.keymap.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugins.lua<CR>') -- edit vim
+vim.keymap.set('n', '<leader>ec', ':e ' .. parent_path .. '/lua/plugin_config<CR>') -- edit vim 
 
 -- Zen mode
 vim.keymap.set('n', '<leader>z', ':ZenMode<CR>')
 
 -- Window swap
 vim.keymap.set('n', '<leader>ws', ':call WindowSwap#EasyWindowSwap()<CR>')
+
+-- Clang source/header        
+vim.keymap.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>')
+
+-- Dap
+vim.keymap.set("n", "<Leader>dx", ':DapTerminate<CR>')
+vim.keymap.set("n", "<Leader>db", ':DapToggleBreakpoint<CR>')
+vim.keymap.set('n', '<F5>', ':DapContinue<CR>')
+vim.keymap.set("n", "<F10>", ':DapStepOver<CR>')
+vim.keymap.set("n", "<F11>", ':DapStepInto<CR>')
 
 
