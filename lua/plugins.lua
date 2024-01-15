@@ -44,7 +44,6 @@ require("lazy").setup({
     'mtth/scratch.vim',
 
     'nvim-neorg/neorg',
-    { 'vimwiki/vimwiki',                     branch = "dev" },
 
     -- Git
     'tpope/vim-fugitive',
@@ -183,4 +182,7 @@ require("lazy").setup({
     'simrat39/rust-tools.nvim',
 
     { 'iamcco/markdown-preview.nvim', run = "cd app && npm install", },
+
+    -- VimTex
+    { 'lervag/vimtex' }
 })

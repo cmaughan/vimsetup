@@ -37,6 +37,9 @@ key.set('n', '<leader>fa', telescope.resume, { desc = '[F]ind [A]again' })
 key.set('n', '<leader>fs', telescope.builtin, { desc = '[F]ind [S]elect Telescope' })
 key.set('n', '<leader>fm', function() telescope.treesitter({ default_text = ":method:" }) end)
 
+-- Wiki
+key.set('n', '<leader>ww', ':Neorg index<CR>', { desc = '[W]iki [W]iki' })
+
 -- Harpoon
 local harpoon = require("harpoon.ui")
 key.set("n", "<leader>ha", require("harpoon.mark").add_file, { desc = '[H]arpoon [A]dd' })
