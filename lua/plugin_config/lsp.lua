@@ -74,7 +74,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[G]oto Doc [S]ymbols')
 
         nmap('<leader>gf', vim.diagnostic.open_float, '[G]oto [F]loat')
-        
+
         nmap('K', vim.lsp.buf.hover, 'Hover Docs')
         nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Docs')
 
@@ -83,10 +83,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         nmap('<space>wr', vim.lsp.buf.remove_workspace_folder, 'Remove [W]ork Folder')
         nmap('<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, 'List [W]ork Folders')
         nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[N]ame')
-        nmap('<leader>a', vim.lsp.buf.code_action, '[A]ction for code')
         nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
         vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true })
         nmap('<leader>lf', function() vim.lsp.buf.format { async = true } end, '[L]sp Format')
-
     end,
 })
