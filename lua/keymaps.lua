@@ -140,8 +140,8 @@ key.set('', '<C-k>', '<C-w>k', { desc = '' })
 key.set('', '<C-l>', '<C-w>l', { desc = '' })
 
 key.set('n', '<leader>oc', ':nohlsearch<CR>', { desc = 'T[O]ggle search [C]lear' })
-key.set('n', '<leader>go', ':ClangdSwitchSourceHeader<CR>', { desc = '[G]o [O]ther' })
 key.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>', { desc = '[K] Go [O]ther' })
+key.set('n', 'go', ':ClangdSwitchSourceHeader<CR>', { desc = '[G]o [O]ther' })
 
 -- Edit VimRC
 key.set('n', '<leader>ev', ':e $MYVIMRC<CR>', { desc = '[E]dit V[imrc' })
