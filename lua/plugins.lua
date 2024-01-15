@@ -100,23 +100,23 @@ require("lazy").setup({
                     gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
                 end, { desc = 'reset git hunk' })
                 -- normal mode
-                map('n', '<leader>gs', gs.stage_hunk, { desc = 'git stage hunk' })
-                map('n', '<leader>gr', gs.reset_hunk, { desc = 'git reset hunk' })
-                map('n', '<leader>gS', gs.stage_buffer, { desc = 'git Stage buffer' })
-                map('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
+                map('n', '<leader>gs', gs.stage_hunk, { desc = '[G]it [s]tage hunk' })
+                map('n', '<leader>gr', gs.reset_hunk, { desc = '[G]it [R]eset hunk' })
+                map('n', '<leader>gS', gs.stage_buffer, { desc = '[G]it [S]tage buffer' })
+                map('n', '<leader>gu', gs.undo_stage_hunk, { desc = '[G]it [U]ndo stage' })
                 --map('n', '<leader>gR', gs.reset_buffer, { desc = 'git Reset buffer' })
-                map('n', '<leader>gp', gs.preview_hunk, { desc = 'preview git hunk' })
+                map('n', '<leader>gp', gs.preview_hunk, { desc = '[G]it [P]review hunk' })
                 map('n', '<leader>gb', function()
                     gs.blame_line { full = false }
-                end, { desc = 'git blame line' })
-                map('n', '<leader>gd', gs.diffthis, { desc = 'git diff against index' })
+                end, { desc = '[G]it [B]lame line' })
+                map('n', '<leader>gd', gs.diffthis, { desc = '[G]it diff - index' })
                 map('n', '<leader>gD', function()
                     gs.diffthis '~'
-                end, { desc = 'git diff against last commit' })
+                end, { desc = '[G]it diff - commit' })
 
                 -- Toggles
-                map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'toggle git blame line' })
-                map('n', '<leader>td', gs.toggle_deleted, { desc = 'toggle git show deleted' })
+                map('n', '<leader>ob', gs.toggle_current_line_blame, { desc = 'T[O]ggle git [B]lame line' })
+                map('n', '<leader>od', gs.toggle_deleted, { desc = 'T[O]ggle git [D]eleted' })
 
                 -- Text object
                 map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'select git hunk' })

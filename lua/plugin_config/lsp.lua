@@ -50,28 +50,43 @@ vim.api.nvim_create_autocmd('LspAttach', {
         if vim.lsp.inlay_hint then
             vim.lsp.inlay_hint.enable(ev.buf, true)
         end
-        vim.keymap.set('n', 'ge', function() vim.diagnostic.open_float(nil, { focus = false }) end)
 
-        vim.keymap.set('n', 'gs', require('telescope.builtin').lsp_dynamic_workspace_symbols, {})
-        vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_workspace_symbols, {})
-        vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols, {})
-        vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, {})
-        vim.keymap.set('n', 'gD', require('telescope.builtin').lsp_type_definitions, {})
-        vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
-        vim.keymap.set('n', 'gm', require('telescope.builtin').lsp_implementations, {})
-        vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_incoming_calls, {})
+        -- In this case, we create a function that lets us more easily define mappings specific
+        -- for LSP related items. It sets the mode, buffer and description for us each time.
+        local nmap = function(keys, func, desc)
+            if desc then
+                desc = 'LSP: ' .. desc
+            end
 
-        vim.keymap.set('n', '<leader>lo', vim.diagnostic.open_float, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-        vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-        vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
-        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set({ 'n', 'v' }, '<leader>a', vim.lsp.buf.code_action, opts)
+            vim.keymap.set('n', keys, func, { buffer = ev.buf, desc = desc })
+        end
+
+        nmap('ge', function() vim.diagnostic.open_float(nil, { focus = false }) end, '[G]oto [E]rror')
+
+        nmap('gs', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[G]oto [S]ymbols')
+        nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinitions')
+        nmap('gD', require('telescope.builtin').lsp_type_definitions, '[G]oto Type [D]efinitions')
+        nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+        nmap('gm', require('telescope.builtin').lsp_implementations, '[G]oto I[M]plementations')
+        nmap('gi', require('telescope.builtin').lsp_incoming_calls, '[G]oto [I]ncoming')
+
+        nmap('<leader>ws', require('telescope.builtin').lsp_workspace_symbols, '[G]oto [W]ork Symbols')
+        nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[G]oto Doc [S]ymbols')
+
+        nmap('<leader>gf', vim.diagnostic.open_float, '[G]oto [F]loat')
+        
+        nmap('K', vim.lsp.buf.hover, 'Hover Docs')
+        nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Docs')
+
+        nmap('<leader>K', vim.lsp.buf.hover, '[K] hover')
+        nmap('<space>wa', vim.lsp.buf.add_workspace_folder, 'Add [W]ork Folder')
+        nmap('<space>wr', vim.lsp.buf.remove_workspace_folder, 'Remove [W]ork Folder')
+        nmap('<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, 'List [W]ork Folders')
+        nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[N]ame')
+        nmap('<leader>a', vim.lsp.buf.code_action, '[A]ction for code')
+        nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
         vim.keymap.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true })
-        vim.keymap.set('n', '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
+        nmap('<leader>lf', function() vim.lsp.buf.format { async = true } end, '[L]sp Format')
 
-        vim.keymap.set('n', '<leader>hs', vim.lsp.buf.signature_help, opts)
-        vim.keymap.set('n', '<leader>K', vim.lsp.buf.hover, opts)
     end,
 })
