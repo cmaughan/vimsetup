@@ -140,6 +140,7 @@ require("lazy").setup({
             -- Automatic LSP install stdpath
             { 'williamboman/mason.nvim', config = true },
             'williamboman/mason-lspconfig.nvim',
+            'jay-babu/mason-nvim-dap.nvim',
 
             -- LSP status info
             { 'j-hui/fidget.nvim',       opts = {} },
