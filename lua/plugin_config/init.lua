@@ -16,6 +16,7 @@ require("plugin_config.hop")
 require("plugin_config.trouble")
 require("plugin_config.neorg")
 require("plugin_config.harpoon")
+require("plugin_config.which_key")
 
 -- Not currently using
 require("plugin_config.vim-test")

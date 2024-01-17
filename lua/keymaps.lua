@@ -12,8 +12,8 @@ key.set('n', '-', require("oil").open, { desc = "Open parent directory" })
 
 -- Telescope
 local telescope = require('telescope.builtin')
-key.set('n', '<c-p>', telescope.find_files, { desc = 'Telescope Find Files'})
-key.set('n', '<c-,>', telescope.find_files, { desc = 'Telescope Find Files'})
+key.set('n', '<c-p>', telescope.find_files, { desc = 'Telescope Find Files' })
+key.set('n', '<c-,>', telescope.find_files, { desc = 'Telescope Find Files' })
 key.set('n', '<leader>?', telescope.oldfiles, { desc = '[?] Find recently opened files' })
 key.set('n', '<leader><space>', telescope.buffers, { desc = '[ ] Find existing buffers' })
 key.set('n', '<leader>/', function()
@@ -61,9 +61,10 @@ key.set('n', '<leader>ws', ':call WindowSwap#EasyWindowSwap()<CR>', { desc = '[W
 
 -- Terminal key.setpings
 key.set('n', '<C-\\>', ':split term://pwsh<CR>', { noremap = true, desc = '[C-\\] Terminal' }) -- open
-key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]scape Terminal' })                -- exit
+key.set('t', '<Esc>', '<C-\\><C-n>', {desc = '[E]scape Terminal' })                           -- exit
+key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal' })                           -- exit
 
--- Navigate vim panes better
+-- Navigate vim p:anes better
 key.set('n', '<c-k>', ':wincmd k<CR>', { desc = '[<c-k>] Up Pane' })
 key.set('n', '<c-j>', ':wincmd j<CR>', { desc = '[<c-j>] Down Pane' })
 key.set('n', '<c-h>', ':wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
@@ -174,9 +175,9 @@ key.set('n', '<S-F8>', function()
     trouble.previous({ skip_groups = true, jump = true })
 end, { desc = '[<S-F8>]Trouble Previous' })
 
+-- Quick list
+key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true, desc = 'Quick [L]ist Ad[D]' })
+
 -- Test
 key.set('n', '<leader>tn', ':TestNearest<CR>', { desc = '[T]est [N]earest' })
 key.set('n', '<leader>tf', ':TestFile<CR>', { desc = '[T]est [F]ile' })
-
-
-

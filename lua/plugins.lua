@@ -36,7 +36,7 @@ require("lazy").setup({
     'nvim-tree/nvim-web-devicons',
     'nvim-lualine/lualine.nvim',
     'hiphish/rainbow-delimiters.nvim',
-    { 'lukas-reineke/indent-blankline.nvim', main = 'ibl',  opts = {} },
+    { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
 
     -- Window management
     'folke/zen-mode.nvim',
@@ -137,29 +137,29 @@ require("lazy").setup({
     {
         'neovim/nvim-lspconfig',
         dependencies = {
-            -- Automatic LSP install stdpath
+            -- Automatic LSP install & dap install
             { 'williamboman/mason.nvim', config = true },
             'williamboman/mason-lspconfig.nvim',
             'jay-babu/mason-nvim-dap.nvim',
 
-            -- LSP status info
+            -- LSP status info on bottom right
             { 'j-hui/fidget.nvim',       opts = {} },
 
             -- Nvim dev/lua stuff
             'folke/neodev.nvim',
         },
     },
-    -- Pending keybinds
-    { 'folke/which-key.nvim',  opts = {} },
 
-    -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim', opts = {} },
-
-    'williamboman/mason-lspconfig.nvim',
-    'mfussenegger/nvim-dap',
+    -- DAP
     'rcarriga/nvim-dap-ui',
     'theHamsta/nvim-dap-virtual-text',
-    'vim-test/vim-test',
+    'mfussenegger/nvim-dap',
+
+    -- Pending keybinds
+    { 'folke/which-key.nvim',                opts = {} },
+
+    -- "gc" to comment visual regions/lines
+    { 'numToStr/Comment.nvim',               opts = {} },
 
     -- Completions
     {
@@ -185,5 +185,8 @@ require("lazy").setup({
     { 'iamcco/markdown-preview.nvim', run = "cd app && npm install", },
 
     -- VimTex
-    { 'lervag/vimtex' }
+    { 'lervag/vimtex' },
+
+    -- Test
+    'vim-test/vim-test',
 })
