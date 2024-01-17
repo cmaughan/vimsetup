@@ -1,5 +1,3 @@
-local vimrc_path = vim.fn.expand("$MYVIMRC")
-local parent_path = vim.fn.fnamemodify(vimrc_path, ":h")
 local key = vim.keymap
 
 -- Esc --
@@ -7,15 +5,15 @@ key.set('i', 'jk', '<ESC>', { desc = '[j][k] Escape' })
 key.set('t', 'jk', [[<C-\><C-n>]], { desc = '[j][k] Escape' })
 
 -- Tree
-key.set('n', '<c-t>', ':NvimTreeToggle<CR>')
+key.set('n', '<c-t>', ':NvimTreeToggle<CR>', { desc = "Tree Toggle" })
 
 -- Oil
 key.set('n', '-', require("oil").open, { desc = "Open parent directory" })
 
 -- Telescope
 local telescope = require('telescope.builtin')
-key.set('n', '<c-p>', telescope.find_files, {})
-key.set('n', '<c-,>', telescope.find_files, {})
+key.set('n', '<c-p>', telescope.find_files, { desc = 'Telescope Find Files'})
+key.set('n', '<c-,>', telescope.find_files, { desc = 'Telescope Find Files'})
 key.set('n', '<leader>?', telescope.oldfiles, { desc = '[?] Find recently opened files' })
 key.set('n', '<leader><space>', telescope.buffers, { desc = '[ ] Find existing buffers' })
 key.set('n', '<leader>/', function()
@@ -28,14 +26,15 @@ end, { desc = '[/] Fuzzily search in current buffer' }
 )
 key.set('n', '<leader>fg', telescope.live_grep, { desc = '[F]ind [G]rep' })
 key.set('n', '<leader>fb', telescope.buffers, { desc = '[F]ind [B]uffers' })
-key.set('n', '<leader>fh', telescope.help_tags, { desc = '[F]ind [h]elp tags' })
-key.set('n', '<leader>fH', telescope.help_tags, { desc = '[F]ind [H]elp' })
-key.set('n', '<leader>fi', telescope.git_files, { desc = '[F]ind G[i]t files' })
+key.set('n', '<leader>fh', telescope.help_tags, { desc = '[F]ind [h]elp' })
+key.set('n', '<leader>fi', telescope.git_files, { desc = '[F]ind files in G[i]t' })
 key.set('n', '<leader>fw', telescope.grep_string, { desc = '[F]ind current [W]ord' })
 key.set('n', '<leader>fd', telescope.diagnostics, { desc = '[F]ind [D]iagnostics' })
 key.set('n', '<leader>fa', telescope.resume, { desc = '[F]ind [A]again' })
 key.set('n', '<leader>fs', telescope.builtin, { desc = '[F]ind [S]elect Telescope' })
-key.set('n', '<leader>fm', function() telescope.treesitter({ default_text = ":method:" }) end)
+
+-- Hopword Jump
+key.set('n', '<leader>fj', ':HopWord<CR>', { desc = '[F]ind [J]ump' })
 
 -- Wiki
 key.set('n', '<leader>ww', ':Neorg index<CR>', { desc = '[W]iki [W]iki' })
@@ -61,28 +60,34 @@ key.set('n', '<leader>z', ':ZenMode<CR>', { desc = '[Z]en mode' })
 key.set('n', '<leader>ws', ':call WindowSwap#EasyWindowSwap()<CR>', { desc = '[W]indow [S]wap' })
 
 -- Terminal key.setpings
-key.set('n', '<C-\\>', ':Term<CR>', { noremap = true, desc = '' }) -- open
-key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '' })                -- exit
+key.set('n', '<C-\\>', ':split term://pwsh<CR>', { noremap = true, desc = '[C-\\] Terminal' }) -- open
+key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]scape Terminal' })                -- exit
 
 -- Navigate vim panes better
-key.set('n', '<c-k>', ':wincmd k<CR>', { desc = '' })
-key.set('n', '<c-j>', ':wincmd j<CR>', { desc = '' })
-key.set('n', '<c-h>', ':wincmd h<CR>', { desc = '' })
-key.set('n', '<c-l>', ':wincmd l<CR>', { desc = '' })
+key.set('n', '<c-k>', ':wincmd k<CR>', { desc = '[<c-k>] Up Pane' })
+key.set('n', '<c-j>', ':wincmd j<CR>', { desc = '[<c-j>] Down Pane' })
+key.set('n', '<c-h>', ':wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
+key.set('n', '<c-l>', ':wincmd l<CR>', { desc = '[<c-l>] Right Pane' })
 
-key.set('n', '<c-left>', 'gt', { desc = '' })
-key.set('n', '<c-right>', 'gT', { desc = '' })
+key.set('n', '<c-left>', 'gt', { desc = '[<c-left] Tab' })
+key.set('n', '<c-right>', 'gT', { desc = '[c-right] Tab' })
 
-key.set('t', '<c-k>', '<C-\\><C-n> :wincmd k<CR>', { desc = '' })
-key.set('t', '<c-j>', '<C-\\><C-n> :wincmd j<CR>', { desc = '' })
-key.set('t', '<c-h>', '<C-\\><C-n> :wincmd h<CR>', { desc = '' })
-key.set('t', '<c-l>', '<C-\\><C-n> :wincmd l<CR>', { desc = '' })
+-- Move around splits using Ctrl + {h,j,k,l}
+key.set('', '<C-h>', '<C-w>h', { desc = '[C-h] Left Pane' })
+key.set('', '<C-j>', '<C-w>j', { desc = '[C-l] Left Pane' })
+key.set('', '<C-k>', '<C-w>k', { desc = '[C-k] Down Pane' })
+key.set('', '<C-l>', '<C-w>l', { desc = '[C-k] Up Pane' })
+key.set('t', '<c-k>', '<C-\\><C-n> :wincmd k<CR>', { desc = '[<c-k>] Up Pane' })
+key.set('t', '<c-j>', '<C-\\><C-n> :wincmd j<CR>', { desc = '[<c-j>] Down Pane' })
+key.set('t', '<c-h>', '<C-\\><C-n> :wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
+key.set('t', '<c-l>', '<C-\\><C-n> :wincmd l<CR>', { desc = '[<c-l>] Up Pane' })
+
 
 key.set('n', 'j', 'gj', { desc = '[<J>] down' })
 key.set('n', 'k', 'gk', { desc = '[<K>] up' })
 key.set('n', 'gj', 'j', { desc = '[<gj>] <j>' })
 key.set('n', 'gk', 'k', { desc = '[<gk>] <k>' })
-key.set('n', '<c-l>', ':wincmd l<CR>', { desc = '' })
+-- Some kind of special pane move? key.set('n', '<c-l>', ':wincmd l<CR>', { desc = '[c-l] ' })
 
 -- Move visual selection up and down
 key.set('v', 'K', ':m \'<-2<CR>gv=gv', { desc = '[<K>] Visual up' })
@@ -92,34 +97,31 @@ key.set('v', 'J', ':m \'>+1<CR>gv=gv', { desc = '[<J>] Visual down' })
 key.set('n', 'J', 'mzJ`z', { desc = '[<J>] Append to line' })
 
 -- Keep cursor in middle while going up/down
-key.set('n', '<c-d>', "<c-d>zz", { desc = '' })
-key.set('n', '<c-u>', "<c-u>zz", { desc = '' })
-key.set('n', '<c-f>', "<c-f>zz", { desc = '' })
-key.set('n', '<c-b>', "<c-b>zz", { desc = '' })
+key.set('n', '<c-d>', "<c-d>zz", { desc = '[c-d] Down, Center Cur' })
+key.set('n', '<c-u>', "<c-u>zz", { desc = '[c-u] Up, Center Cur' })
+key.set('n', '<c-f>', "<c-f>zz", { desc = '[c-f] Forward, Center Cur' })
+key.set('n', '<c-b>', "<c-b>zz", { desc = '[c-b] Back, Center Cur' })
 
-key.set('n', 'n', 'nzzzv', { desc = '' })
-key.set('n', 'N', 'Nzzzv', { desc = '' })
+key.set('n', 'n', 'nzzzv', { desc = '[n] Forward search center' })
+key.set('n', 'N', 'Nzzzv', { desc = '[N] Backward search center' })
 
 -- Ignore this
-key.set('n', 'Q', "<nop>", { desc = '' })
+key.set('n', 'Q', "<nop>", { desc = '[Q] Ignored' })
 
 -- Ignore arrows
-key.set('', '<up>', '<nop>', { desc = '' })
-key.set('', '<down>', '<nop>', { desc = '' })
-key.set('', '<left>', '<nop>', { desc = '' })
-key.set('', '<right>', '<nop>', { desc = '' })
+key.set('', '<up>', '<nop>', { desc = '[<up>] Ignored' })
+key.set('', '<down>', '<nop>', { desc = '[<down>] Ignored' })
+key.set('', '<left>', '<nop>', { desc = '[<left>] Ignored' })
+key.set('', '<right>', '<nop>', { desc = '[<right>] Ignored' })
 
 -- Paste over and keep selection
-key.set('x', '<leader>p', '\"_dP', { desc = '' })
+key.set('x', '<leader>p', '\"_dP', { desc = '[P]aste over keep' })
 
 -- Clear search highlighting with <leader> and c
 key.set('n', '<leader>cs', ':nohl<CR>', { desc = '[C]lear [S]earch' })
 
 -- Toggle auto-indenting for code paste
-key.set('n', '<F2>', ':set invpaste paste?<CR>', { desc = '' })
-
--- Hopword
-key.set('n', '<leader>fh', ':HopWord<CR>', { desc = '[F]ind [H]op' })
+-- key.set('n', '<F2>', ':set invpaste paste?<CR>', { desc = '' })
 
 -- Split window management
 key.set('n', '<leader>sv', '<C-w>v', { desc = '[S]plit [V]ertical' })
@@ -133,17 +135,13 @@ key.set('n', '<leader>sh', '<C-w><5', { desc = '[S]plit [<h>] smaller' })
 key.set('n', '<leader>vh', '<C-w>t<C-w>K', { desc = '[V]ertical to [H]orizontal' })
 key.set('n', '<leader>hv', '<C-w>t<C-w>H', { desc = '[H]orizontal to [V]ertical' })
 
--- Move around splits using Ctrl + {h,j,k,l}
-key.set('', '<C-h>', '<C-w>h', { desc = '' })
-key.set('', '<C-j>', '<C-w>j', { desc = '' })
-key.set('', '<C-k>', '<C-w>k', { desc = '' })
-key.set('', '<C-l>', '<C-w>l', { desc = '' })
-
 key.set('n', '<leader>oc', ':nohlsearch<CR>', { desc = 'T[O]ggle search [C]lear' })
 key.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>', { desc = '[K] Go [O]ther' })
 key.set('n', 'go', ':ClangdSwitchSourceHeader<CR>', { desc = '[G]o [O]ther' })
 
 -- Edit VimRC
+local vimrc_path = vim.fn.expand("$MYVIMRC")
+local parent_path = vim.fn.fnamemodify(vimrc_path, ":h")
 key.set('n', '<leader>ev', ':e $MYVIMRC<CR>', { desc = '[E]dit V[imrc' })
 key.set('n', '<leader>ek', ':e ' .. parent_path .. '/lua/keymaps.lua<CR>', { desc = '[E]dit [K]eymaps' })
 key.set('n', '<leader>eo', ':e ' .. parent_path .. '/lua/options.lua<CR>', { desc = '[E]dit [O]ptions' })
@@ -151,11 +149,11 @@ key.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugins.lua<CR>', { des
 key.set('n', '<leader>ec', ':e ' .. parent_path .. '/lua/plugin_config<CR>', { desc = '[E]edit [C]onfig folder' })
 
 -- Dap
-key.set("n", "<Leader>dx", ':DapTerminate<CR>', { desc = '[D]ebug E[x]it' })
-key.set("n", "<Leader>db", ':DapToggleBreakpoint<CR>', { desc = '[D]ebug [B]readkpoint' })
-key.set('n', '<F5>', ':DapContinue<CR>', { desc = '' })
-key.set("n", "<F10>", ':DapStepOver<CR>', { desc = '' })
-key.set("n", "<F11>", ':DapStepInto<CR>', { desc = '' })
+key.set("n", "<Leader>dx", ':DapTerminate<CR>', { desc = 'DAP: [D]ebug E[x]it' })
+key.set("n", "<Leader>db", ':DapToggleBreakpoint<CR>', { desc = 'DAP: [D]ebug [B]readkpoint' })
+key.set('n', '<F5>', ':DapContinue<CR>', { desc = 'DAP: [<F5>] Continue' })
+key.set("n", "<F10>", ':DapStepOver<CR>', { desc = 'DAP: [<F10>] Step Over' })
+key.set("n", "<F11>", ':DapStepInto<CR>', { desc = 'DAP: [<F11>] Step Into' })
 
 -- Trouble
 local trouble = require('trouble')

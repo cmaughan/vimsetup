@@ -63,15 +63,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         nmap('ge', function() vim.diagnostic.open_float(nil, { focus = false }) end, '[G]oto [E]rror')
 
-        nmap('gs', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[G]oto [S]ymbols')
-        nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinitions')
-        nmap('gD', require('telescope.builtin').lsp_type_definitions, '[G]oto Type [D]efinitions')
-        nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-        nmap('gm', require('telescope.builtin').lsp_implementations, '[G]oto I[M]plementations')
-        nmap('gi', require('telescope.builtin').lsp_incoming_calls, '[G]oto [I]ncoming')
+        local telescope = require('telescope.builtin')
+        nmap('gs', telescope.lsp_dynamic_workspace_symbols, '[G]oto [S]ymbols')
+        nmap('gd', telescope.lsp_definitions, '[G]oto [D]efinitions')
+        nmap('gD', telescope.lsp_type_definitions, '[G]oto Type [D]efinitions')
+        nmap('gr', telescope.lsp_references, '[G]oto [R]eferences')
+        nmap('gm', telescope.lsp_implementations, '[G]oto I[M]plementations')
+        nmap('gi', telescope.lsp_incoming_calls, '[G]oto [I]ncoming')
+        nmap('gu', telescope.lsp_outgoing_calls, '[G]oto O[u]tgoing')
 
-        nmap('<leader>ws', require('telescope.builtin').lsp_workspace_symbols, '[G]oto [W]ork Symbols')
-        nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[G]oto Doc [S]ymbols')
+        nmap('<leader>ws', telescope.lsp_workspace_symbols, '[G]oto [W]ork Symbols')
+        nmap('<leader>ds', telescope.lsp_document_symbols, '[G]oto Doc [S]ymbols')
 
         nmap('<leader>gf', vim.diagnostic.open_float, '[G]oto [F]loat')
 
