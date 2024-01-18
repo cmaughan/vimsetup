@@ -65,13 +65,11 @@ key.set('t', '<Esc>', '<C-\\><C-n>', {desc = '[E]scape Terminal' })             
 key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal' })                           -- exit
 
 -- Navigate vim p:anes better
-key.set('n', '<c-k>', ':wincmd k<CR>', { desc = '[<c-k>] Up Pane' })
-key.set('n', '<c-j>', ':wincmd j<CR>', { desc = '[<c-j>] Down Pane' })
 key.set('n', '<c-h>', ':wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
 key.set('n', '<c-l>', ':wincmd l<CR>', { desc = '[<c-l>] Right Pane' })
 
-key.set('n', '<c-left>', 'gt', { desc = '[<c-left] Tab' })
-key.set('n', '<c-right>', 'gT', { desc = '[c-right] Tab' })
+key.set('n', '<c-s-H>', 'gT', { desc = '[c-H] Left Tab' })
+key.set('n', '<c-s-L>', 'gt', { desc = '[c-L] Right Tab' })
 
 -- Move around splits using Ctrl + {h,j,k,l}
 key.set('', '<C-h>', '<C-w>h', { desc = '[C-h] Left Pane' })
@@ -181,3 +179,6 @@ key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = t
 -- Test
 key.set('n', '<leader>tn', ':TestNearest<CR>', { desc = '[T]est [N]earest' })
 key.set('n', '<leader>tf', ':TestFile<CR>', { desc = '[T]est [F]ile' })
+
+key.set('n', '<leader>os', ':Scratch<CR>', { desc = 'T[o]ggle [S]cratch' })
+

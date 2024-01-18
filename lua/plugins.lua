@@ -31,6 +31,9 @@ require("lazy").setup({
         }
     },
 
+    -- Leap
+    'ggandor/leap.nvim',
+
     -- Theme
     'navarasu/onedark.nvim',
     'nvim-tree/nvim-web-devicons',
