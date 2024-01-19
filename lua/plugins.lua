@@ -158,6 +158,9 @@ require("lazy").setup({
     'theHamsta/nvim-dap-virtual-text',
     'mfussenegger/nvim-dap',
 
+    -- Auto brackets
+    'jiangmiao/auto-pairs',
+
     -- Pending keybinds
     { 'folke/which-key.nvim',                opts = {} },
 
