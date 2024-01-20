@@ -71,6 +71,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         nmap('gi', telescope.lsp_incoming_calls, '[G]oto [I]ncoming')
         nmap('gu', telescope.lsp_outgoing_calls, '[G]oto O[u]tgoing')
 
+        nmap('gws', telescope.lsp_workspace_symbols, '[G]oto [W]ork Symbols')
         nmap('<leader>ws', telescope.lsp_workspace_symbols, '[G]oto [W]ork Symbols')
         nmap('<leader>ds', telescope.lsp_document_symbols, '[G]oto Doc [S]ymbols')
 
