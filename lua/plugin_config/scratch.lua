@@ -1,1 +1,1 @@
-vim.g.scratch_persistence_file = os.getenv("HOMEPATH") .. "/.vim/scratch"
+vim.g.scratch_persistence_file = os.getenv("MYDROPBOX") .. "/.vim/scratch"
