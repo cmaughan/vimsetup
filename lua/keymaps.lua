@@ -31,7 +31,7 @@ key.set('n', '<leader>fi', telescope.git_files, { desc = '[F]ind files in G[i]t'
 key.set('n', '<leader>fw', telescope.grep_string, { desc = '[F]ind current [W]ord' })
 key.set('n', '<leader>fd', telescope.diagnostics, { desc = '[F]ind [D]iagnostics' })
 key.set('n', '<leader>fa', telescope.resume, { desc = '[F]ind [A]again' })
-key.set('n', '<leader>fs', telescope.builtin, { desc = '[F]ind [S]elect Telescope' })
+key.set('n', '<leader>fs', telescope.builtin, { desc = '[F]ind [S]elect Telescope Type' })
 
 -- Hopword Jump
 key.set('n', '<leader>fj', ':HopWord<CR>', { desc = '[F]ind [J]ump' })
@@ -154,25 +154,6 @@ key.set('n', '<F5>', ':DapContinue<CR>', { desc = 'DAP: [<F5>] Continue' })
 key.set("n", "<F10>", ':DapStepOver<CR>', { desc = 'DAP: [<F10>] Step Over' })
 key.set("n", "<F11>", ':DapStepInto<CR>', { desc = 'DAP: [<F11>] Step Into' })
 
--- Trouble
-local trouble = require('trouble')
-key.set('n', '<leader>tx', function() trouble.toggle() end, { desc = '[T]rouble E[x]it' })
-key.set('n', '<leader>tr', function() trouble.toggle("lsp_references") end, { desc = '[T]rouble [R]eferences' })
-key.set('n', '<leader>tq', function() trouble.toggle("quickfix") end, { desc = '[T]rouble [Q]uickfix' })
-key.set('n', '<leader>tl', function() trouble.toggle("loclist") end, { desc = '[T]rouble [L]ocal list' })
-key.set('n', '<leader>tw', function() trouble.toggle("workspace_diagnostics") end,
-    { desc = '[T]rouble [W]orkspace diag' })
-key.set('n', '<leader>td', function() trouble.toggle("document_diagnostics") end,
-    { desc = '[T]rouble [D]oc Diagnostics' })
-key.set('n', '<F8>', function()
-    trouble.open()
-    trouble.next({ skip_gropus = true, jump = true })
-end, { desc = '[<F8>]Trouble Next' })
-
-key.set('n', '<S-F8>', function()
-    trouble.previous({ skip_groups = true, jump = true })
-end, { desc = '[<S-F8>]Trouble Previous' })
-
 -- Quick list
 key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true, desc = 'Quick [L]ist Ad[D]' })
 
@@ -181,4 +162,46 @@ key.set('n', '<leader>tn', ':TestNearest<CR>', { desc = '[T]est [N]earest' })
 key.set('n', '<leader>tf', ':TestFile<CR>', { desc = '[T]est [F]ile' })
 
 key.set('n', '<leader>os', ':Scratch<CR>', { desc = 'T[o]ggle [S]cratch' })
+
+key.set('n', ']q', ':cn<CR>', { desc = 'Next [Q]uickfix' })
+key.set('n', '[q', ':cp<CR>', { desc = 'Previous [Q]uickfix' })
+
+
+function _G.next_quickfix_wrap()
+    local qflist = vim.fn.getqflist()
+    if #qflist == 0 then
+        print("Quickfix list is empty.")
+        return
+    end
+
+    local status, _ = pcall(function() vim.cmd('cnext') end)
+    if not status then
+        print("Reached the end of the quickfix list. Wrapping to the first entry.")
+        vim.cmd('cfirst')
+    end
+end
+
+function _G.prev_quickfix_wrap()
+    local qflist = vim.fn.getqflist()
+    if #qflist == 0 then
+        print("Quickfix list is empty.")
+        return
+    end
+
+    local status, _ = pcall(function() vim.cmd('cprev') end)
+    if not status then
+        print("Reached the start of the quickfix list. Wrapping to the first entry.")
+        vim.cmd('clast')
+    end
+end
+
+key.set('n', '<F8>', function()
+    vim.api.nvim_command('copen')
+    next_quickfix_wrap()
+end, { desc = '[<F8>]QuickFix Next' })
+
+key.set('n', '<S-F8>', function()
+    prev_quickfix_wrap()
+end, { desc = '[<S-F8>]QuickFix Previous' })
+
 
