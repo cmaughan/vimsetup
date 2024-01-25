@@ -180,7 +180,7 @@ require("lazy").setup({
             'rafamadriz/friendly-snippets',
         },
     },
-    --"github/copilot.vim",
+    "github/copilot.vim",
 
     -- Rust
     'simrat39/rust-tools.nvim',
