@@ -178,9 +178,10 @@ require("lazy").setup({
 
             -- User friendly snippets
             'rafamadriz/friendly-snippets',
+            'zbirenbaum/copilot-cmp'
         },
     },
-    "github/copilot.vim",
+    "zbirenbaum/copilot.lua",
 
     -- Rust
     'simrat39/rust-tools.nvim',

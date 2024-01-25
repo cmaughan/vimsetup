@@ -22,4 +22,4 @@ require("plugin_config.leap")
 
 -- Not currently using
 require("plugin_config.vim-test")
--- require("plugin_config.copilot")
+require("plugin_config.copilot")
