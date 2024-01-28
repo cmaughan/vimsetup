@@ -45,6 +45,7 @@ require("lazy").setup({
     'folke/zen-mode.nvim',
     'wesQ3/vim-windowswap',
     'mtth/scratch.vim',
+    'folke/twilight.nvim',
 
     'nvim-neorg/neorg',
 
@@ -150,6 +151,9 @@ require("lazy").setup({
 
             -- Nvim dev/lua stuff
             'folke/neodev.nvim',
+
+            -- LSP completion icons
+            'onsails/lspkind.nvim'
         },
     },
 
