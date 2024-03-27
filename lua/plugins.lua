@@ -41,6 +41,9 @@ require("lazy").setup({
     'hiphish/rainbow-delimiters.nvim',
     { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
 
+    -- Sharing
+    'kristijanhusak/vim-carbon-now-sh',
+
     -- Window management
     'folke/zen-mode.nvim',
     'wesQ3/vim-windowswap',

@@ -15,7 +15,7 @@ require("lspconfig").rust_analyzer.setup {
     filetypes = { "rust" },
     settings = {
         ['rust-analyzer'] = {
-            cargo = { allFeatures = true, }
+            -- cargo = { allFeatures = true, }
         }
     }
 }
@@ -77,8 +77,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         nmap('<leader>gf', vim.diagnostic.open_float, '[G]oto [F]loat')
 
-        nmap('K', vim.lsp.buf.hover, 'Hover Docs')
-        nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Docs')
+        nmap('K', vim.lsp.buf.signature_help, 'Signature Docs')
 
         nmap('<leader>K', vim.lsp.buf.hover, '[K] hover')
         nmap('<space>wa', vim.lsp.buf.add_workspace_folder, 'Add [W]ork Folder')
