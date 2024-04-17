@@ -15,7 +15,10 @@ require("lspconfig").rust_analyzer.setup {
     filetypes = { "rust" },
     settings = {
         ['rust-analyzer'] = {
-            -- cargo = { allFeatures = true, }
+
+            checkOnSave = {
+               extraArgs = {"--target-dir", "/tmp_analyzer/rust-analyzer"}
+            }
         }
     }
 }
@@ -75,7 +78,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         nmap('<leader>ws', telescope.lsp_workspace_symbols, '[G]oto [W]ork Symbols')
         nmap('<leader>ds', telescope.lsp_document_symbols, '[G]oto Doc [S]ymbols')
 
-        nmap('<leader>gf', vim.diagnostic.open_float, '[G]oto [F]loat')
+        nmap('<leader>fs', vim.diagnostic.open_float, '[G]oto [F]loat')
 
         nmap('K', vim.lsp.buf.signature_help, 'Signature Docs')
 
