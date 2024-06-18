@@ -166,6 +166,7 @@ key.set('n', '<leader>os', ':Scratch<CR>', { desc = 'T[o]ggle [S]cratch' })
 key.set('n', ']q', ':cn<CR>', { desc = 'Next [Q]uickfix' })
 key.set('n', '[q', ':cp<CR>', { desc = 'Previous [Q]uickfix' })
 
+key.set('n', '<leader>m', ':let @*=trim(execute(\'messages\')) | echo \'copied\' <cr>', { desc = 'Copy [M]essages' })
 
 function _G.next_quickfix_wrap()
     local qflist = vim.fn.getqflist()

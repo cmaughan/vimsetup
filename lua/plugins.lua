@@ -40,7 +40,7 @@ require("lazy").setup({
     'nvim-lualine/lualine.nvim',
     'hiphish/rainbow-delimiters.nvim',
     { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {}, commit = "29be0919b91fb59eca9e90690d76014233392bef" },
-
+    
     -- Sharing
     'kristijanhusak/vim-carbon-now-sh',
 
@@ -50,9 +50,19 @@ require("lazy").setup({
     'mtth/scratch.vim',
     'folke/twilight.nvim',
 
+    -- Lua Rocks for neorg
     {
-        'nvim-neorg/neorg',
-        version = 'v7.0.0'
+        "nvim-neorg/neorg",
+        dependencies = { "vhyrro/luarocks.nvim",
+            "MunifTanjim/nui.nvim",
+            "nvim-neotest/nvim-nio",
+            "nvim-neorg/lua-utils.nvim",
+            "nvim-lua/plenary.nvim",
+            "pysan3/pathlib.nvim"
+        },
+        lazy = false,  -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+        version = "*", -- Pin Neorg to the latest stable release
+        config = true,
     },
 
     -- Git
@@ -164,15 +174,15 @@ require("lazy").setup({
     },
 
     -- DAP
-    { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
+    { "rcarriga/nvim-dap-ui",                dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
     'theHamsta/nvim-dap-virtual-text',
     'mfussenegger/nvim-dap',
 
     -- Pending keybinds
-    { 'folke/which-key.nvim',                opts = {} },
+    { 'folke/which-key.nvim',  opts = {} },
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim',               opts = {} },
+    { 'numToStr/Comment.nvim', opts = {} },
 
     -- Completions
     {
