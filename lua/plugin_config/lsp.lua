@@ -50,7 +50,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         if vim.lsp.inlay_hint then
-            vim.lsp.inlay_hint.enable(ev.buf, true)
+            vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf})
         end
 
         -- In this case, we create a function that lets us more easily define mappings specific

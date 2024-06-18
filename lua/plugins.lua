@@ -39,7 +39,7 @@ require("lazy").setup({
     'nvim-tree/nvim-web-devicons',
     'nvim-lualine/lualine.nvim',
     'hiphish/rainbow-delimiters.nvim',
-    { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
+    { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {}, commit = "29be0919b91fb59eca9e90690d76014233392bef" },
 
     -- Sharing
     'kristijanhusak/vim-carbon-now-sh',
@@ -50,7 +50,10 @@ require("lazy").setup({
     'mtth/scratch.vim',
     'folke/twilight.nvim',
 
-    'nvim-neorg/neorg',
+    {
+        'nvim-neorg/neorg',
+        version = 'v7.0.0'
+    },
 
     -- Git
     'tpope/vim-fugitive',
