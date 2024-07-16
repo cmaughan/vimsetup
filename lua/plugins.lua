@@ -50,20 +50,20 @@ require("lazy").setup({
     'mtth/scratch.vim',
     'folke/twilight.nvim',
 
-    -- Lua Rocks for neorg
-    {
-        "nvim-neorg/neorg",
-        dependencies = { "vhyrro/luarocks.nvim",
-            "MunifTanjim/nui.nvim",
-            "nvim-neotest/nvim-nio",
-            "nvim-neorg/lua-utils.nvim",
-            "nvim-lua/plenary.nvim",
-            "pysan3/pathlib.nvim"
-        },
-        lazy = false,  -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-        version = "*", -- Pin Neorg to the latest stable release
-        config = true,
-    },
+    -- Lua Rocks for neorg 
+    -- {
+    --     "vhyrro/luarocks.nvim",
+    --     priority = 1000, -- We'd like this plugin to load first out of the rest
+    --     config = true, -- This automatically runs `require("luarocks-nvim").setup()`
+    -- },
+    -- Neorg
+    -- {
+    --     "nvim-neorg/neorg",
+    --     dependencies = { "vhyrro/luarocks.nvim" },
+    --     priority = 30,
+    --     ft = 'norg',
+    --     cmd = "Neorg",
+    -- },
 
     -- Git
     'tpope/vim-fugitive',
@@ -213,4 +213,7 @@ require("lazy").setup({
 
     -- Test
     'vim-test/vim-test',
+
+    -- VimWiki
+    'vimwiki/vimwiki',
 })

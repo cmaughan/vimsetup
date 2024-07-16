@@ -15,12 +15,12 @@ require("plugin_config.zen_mode")
 require("plugin_config.twilight")
 require("plugin_config.hop")
 require("plugin_config.quickfix")
-require("plugin_config.neorg")
 require("plugin_config.harpoon")
 require("plugin_config.which_key")
 require("plugin_config.scratch")
 require("plugin_config.leap")
-
--- Not currently using
 require("plugin_config.vim-test")
 require("plugin_config.copilot")
+
+-- Not currently using
+--require("plugin_config.neorg")

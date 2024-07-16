@@ -37,7 +37,7 @@ key.set('n', '<leader>fs', telescope.builtin, { desc = '[F]ind [S]elect Telescop
 key.set('n', '<leader>fj', ':HopWord<CR>', { desc = '[F]ind [J]ump' })
 
 -- Wiki
-key.set('n', '<leader>ww', ':Neorg index<CR>', { desc = '[W]iki [W]iki' })
+--key.set('n', '<leader>ww', ':Neorg index<CR>', { desc = '[W]iki [W]iki' })
 
 -- Harpoon
 local harpoon = require("harpoon.ui")
@@ -162,6 +162,8 @@ key.set('n', '<leader>tn', ':TestNearest<CR>', { desc = '[T]est [N]earest' })
 key.set('n', '<leader>tf', ':TestFile<CR>', { desc = '[T]est [F]ile' })
 
 key.set('n', '<leader>os', ':Scratch<CR>', { desc = 'T[o]ggle [S]cratch' })
+
+-- key.set('n', '-', ':VimwikiGoBackLink<CR>', { desc = '[B]ack to previous' })
 
 key.set('n', ']q', ':cn<CR>', { desc = 'Next [Q]uickfix' })
 key.set('n', '[q', ':cp<CR>', { desc = 'Previous [Q]uickfix' })

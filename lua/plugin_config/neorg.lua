@@ -1,13 +1,13 @@
 require('neorg').setup({
     load = {
         ["core.defaults"] = {},
-        ["core.norg.concealer"] = {},
-        ["core.norg.dirman"] = {
+        ["core.concealer"] = {},
+        ["core.dirman"] = {
             config = {
                 workspaces = {
                     home = os.getenv("MYDROPBOX") .. "/neorg"
                 },
-                default_workspace = "home"
+                default_workspace = 'home',
             }
         }
     }
