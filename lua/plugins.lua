@@ -151,7 +151,7 @@ require("lazy").setup({
             -- Automatic LSP install & dap install
             { 'williamboman/mason.nvim', config = true },
             'williamboman/mason-lspconfig.nvim',
-            'jay-babu/mason-nvim-dap.nvim',
+            --'jay-babu/mason-nvim-dap.nvim',
 
             -- LSP status info on bottom right
             { 'j-hui/fidget.nvim',       opts = {} },
@@ -165,15 +165,15 @@ require("lazy").setup({
     },
 
     -- DAP
-    {
-        "rcarriga/nvim-dap-ui",
-        dependencies = {
-            "mfussenegger/nvim-dap",
-            "nvim-neotest/nvim-nio"
-        }
-    },
-    'theHamsta/nvim-dap-virtual-text',
-    'mfussenegger/nvim-dap',
+    -- {
+    --     "rcarriga/nvim-dap-ui",
+    --     dependencies = {
+    --         "mfussenegger/nvim-dap",
+    --         "nvim-neotest/nvim-nio"
+    --     }
+    -- },
+    -- 'theHamsta/nvim-dap-virtual-text',
+    -- 'mfussenegger/nvim-dap',
 
     -- Pending keybinds
     { 'folke/which-key.nvim',                opts = {} },
