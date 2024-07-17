@@ -1,11 +1,19 @@
 require("lazy").setup({
     -- Basics
     'equalsraf/neovim-gui-shim',
+
+    -- Tree view
     'nvim-tree/nvim-tree.lua',
+
+    -- Essential edit file system like a tree
     'stevearc/oil.nvim',
-    'smoka7/hop.nvim',
+
+    -- Comments
     'tpope/vim-commentary',
     'tpope/vim-surround',
+
+    -- Leap
+    'ggandor/leap.nvim',
 
     -- Telescope
     {
@@ -31,16 +39,13 @@ require("lazy").setup({
         }
     },
 
-    -- Leap
-    'ggandor/leap.nvim',
-
     -- Theme
     'navarasu/onedark.nvim',
     'nvim-tree/nvim-web-devicons',
     'nvim-lualine/lualine.nvim',
     'hiphish/rainbow-delimiters.nvim',
     { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {}, commit = "29be0919b91fb59eca9e90690d76014233392bef" },
-    
+
     -- Sharing
     'kristijanhusak/vim-carbon-now-sh',
 
@@ -50,23 +55,9 @@ require("lazy").setup({
     'mtth/scratch.vim',
     'folke/twilight.nvim',
 
-    -- Lua Rocks for neorg 
-    -- {
-    --     "vhyrro/luarocks.nvim",
-    --     priority = 1000, -- We'd like this plugin to load first out of the rest
-    --     config = true, -- This automatically runs `require("luarocks-nvim").setup()`
-    -- },
-    -- Neorg
-    -- {
-    --     "nvim-neorg/neorg",
-    --     dependencies = { "vhyrro/luarocks.nvim" },
-    --     priority = 30,
-    --     ft = 'norg',
-    --     cmd = "Neorg",
-    -- },
-
     -- Git
     'tpope/vim-fugitive',
+
     -- 'NeogitOrg/neogit',
     'sindrets/diffview.nvim',
     {
@@ -174,15 +165,21 @@ require("lazy").setup({
     },
 
     -- DAP
-    { "rcarriga/nvim-dap-ui",                dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+    {
+        "rcarriga/nvim-dap-ui",
+        dependencies = {
+            "mfussenegger/nvim-dap",
+            "nvim-neotest/nvim-nio"
+        }
+    },
     'theHamsta/nvim-dap-virtual-text',
     'mfussenegger/nvim-dap',
 
     -- Pending keybinds
-    { 'folke/which-key.nvim',  opts = {} },
+    { 'folke/which-key.nvim',                opts = {} },
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim', opts = {} },
+    { 'numToStr/Comment.nvim',               opts = {} },
 
     -- Completions
     {
@@ -201,11 +198,14 @@ require("lazy").setup({
             'zbirenbaum/copilot-cmp'
         },
     },
+
+    -- CoPilot
     "zbirenbaum/copilot.lua",
 
     -- Rust
     'simrat39/rust-tools.nvim',
 
+    -- Markdown
     { 'iamcco/markdown-preview.nvim', run = "cd app && npm install", },
 
     -- VimTex
