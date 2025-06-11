@@ -1,1 +1,6 @@
-require('mini.files').setup()
+require('mini.files').setup({
+  windows = {
+    preview = true,
+        width_preview = 80,
+    }
+})
