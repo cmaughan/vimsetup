@@ -60,6 +60,7 @@ require("lazy").setup({
 
     -- 'NeogitOrg/neogit',
     'sindrets/diffview.nvim',
+
     {
         'lewis6991/gitsigns.nvim',
         opts = {
