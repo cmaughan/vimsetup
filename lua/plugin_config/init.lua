@@ -21,6 +21,3 @@ require("plugin_config.leap")
 require("plugin_config.vim-test")
 require("plugin_config.copilot")
 
--- Not currently using
---require("plugin_config.neorg")
---require("plugin_config.hop")
