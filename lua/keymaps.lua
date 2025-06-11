@@ -8,7 +8,7 @@ key.set('t', 'jk', [[<C-\><C-n>]], { desc = '[j][k] Escape' })
 key.set('n', '<c-t>', ':NvimTreeToggle<CR>', { desc = "Tree Toggle" })
 
 -- Oil
-key.set('n', '-', require("oil").open, { desc = "Open parent directory" })
+key.set('n', '-', require("mini.files").open, { desc = "Open parent directory" })
 
 -- Telescope
 local telescope = require('telescope.builtin')

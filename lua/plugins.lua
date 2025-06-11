@@ -5,8 +5,8 @@ require("lazy").setup({
     -- Tree view
     'nvim-tree/nvim-tree.lua',
 
-    -- Essential edit file system like a tree
-    'stevearc/oil.nvim',
+    -- Mini files
+    { 'echasnovski/mini.files', version = '*' },
 
     -- Comments
     'tpope/vim-commentary',
