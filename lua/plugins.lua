@@ -1,4 +1,7 @@
 require("lazy").setup({
+            
+    { 'williamboman/mason.nvim', config = true },
+
     -- Basics
     'equalsraf/neovim-gui-shim',
 
@@ -76,7 +79,6 @@ require("lazy").setup({
         'neovim/nvim-lspconfig',
         dependencies = {
             -- Automatic LSP install & dap install
-            { 'williamboman/mason.nvim', config = true },
             'williamboman/mason-lspconfig.nvim',
             --'jay-babu/mason-nvim-dap.nvim',
 
@@ -127,7 +129,7 @@ require("lazy").setup({
     },
 
     -- CoPilot
-    "zbirenbaum/copilot.lua",
+    -- "zbirenbaum/copilot.lua",
 
     -- Rust
     'simrat39/rust-tools.nvim',

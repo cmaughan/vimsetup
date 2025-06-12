@@ -18,6 +18,6 @@ require("plugin_config.which_key")
 require("plugin_config.scratch")
 require("plugin_config.leap")
 require("plugin_config.vim-test")
-require("plugin_config.copilot")
+-- require("plugin_config.copilot")
 require("plugin_config.mini-files")
 
