@@ -86,6 +86,8 @@ require("lazy").setup({
             require("plugin_config.colorscheme")
         end,
     },
+    { 'EdenEast/nightfox.nvim', lazy = false },
+    { 'ellisonleao/gruvbox.nvim', lazy = false },
     'nvim-tree/nvim-web-devicons',
     {
         'nvim-lualine/lualine.nvim',
