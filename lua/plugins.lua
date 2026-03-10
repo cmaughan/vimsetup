@@ -77,17 +77,17 @@ require("lazy").setup({
         },
     },
 
-    -- Theme
+    -- Theme: Carbonfox via Nightfox is the startup default.
     {
-        'rebelot/kanagawa.nvim',
+        'EdenEast/nightfox.nvim',
         lazy = false,
         priority = 1000,
         config = function()
             require("plugin_config.colorscheme")
         end,
     },
-    { 'EdenEast/nightfox.nvim', lazy = false },
-    { 'ellisonleao/gruvbox.nvim', lazy = false },
+    { 'rebelot/kanagawa.nvim', lazy = true },
+    { 'ellisonleao/gruvbox.nvim', lazy = true },
     'nvim-tree/nvim-web-devicons',
     {
         'nvim-lualine/lualine.nvim',
@@ -131,9 +131,7 @@ require("lazy").setup({
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
             'williamboman/mason.nvim',
-            -- Automatic LSP install & dap install
             'williamboman/mason-lspconfig.nvim',
-            --'jay-babu/mason-nvim-dap.nvim',
 
             -- LSP status info on bottom right
             { 'j-hui/fidget.nvim',       opts = {} },
@@ -154,17 +152,6 @@ require("lazy").setup({
             },
         },
     },
-
-    -- DAP
-    -- {
-    --     "rcarriga/nvim-dap-ui",
-    --     dependencies = {
-    --         "mfussenegger/nvim-dap",
-    --         "nvim-neotest/nvim-nio"
-    --     }
-    -- },
-    -- 'theHamsta/nvim-dap-virtual-text',
-    -- 'mfussenegger/nvim-dap',
 
     -- Pending keybinds
     {

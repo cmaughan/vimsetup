@@ -45,7 +45,6 @@ Templates for shell and terminal multiplexer setup.
 │       ├── mason.lua           # Mason (LSP installer)
 │       ├── colorscheme.lua     # Colorscheme
 │       ├── copilot.lua         # GitHub Copilot
-│       ├── dap.lua             # Debug adapter protocol
 │       ├── gitsigns.lua        # Git signs
 │       ├── harpoon.lua         # Harpoon
 │       ├── leap.lua            # Leap motion

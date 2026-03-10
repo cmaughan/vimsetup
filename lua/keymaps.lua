@@ -137,13 +137,6 @@ key.set('n', '<leader>eo', ':e ' .. parent_path .. '/lua/options.lua<CR>', { des
 key.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugins.lua<CR>', { desc = '[E]dit [P]lugins' })
 key.set('n', '<leader>ec', ':e ' .. parent_path .. '/lua/plugin_config<CR>', { desc = '[E]edit [C]onfig folder' })
 
--- Dap
-key.set("n", "<Leader>dx", ':DapTerminate<CR>', { desc = 'DAP: [D]ebug E[x]it' })
-key.set("n", "<Leader>db", ':DapToggleBreakpoint<CR>', { desc = 'DAP: [D]ebug [B]readkpoint' })
-key.set('n', '<F5>', ':DapContinue<CR>', { desc = 'DAP: [<F5>] Continue' })
-key.set("n", "<F10>", ':DapStepOver<CR>', { desc = 'DAP: [<F10>] Step Over' })
-key.set("n", "<F11>", ':DapStepInto<CR>', { desc = 'DAP: [<F11>] Step Into' })
-
 -- Quick list
 key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true, desc = 'Quick [L]ist Ad[D]' })
 
