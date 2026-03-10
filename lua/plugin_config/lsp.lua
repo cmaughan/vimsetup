@@ -1,5 +1,29 @@
 local key = require("util.keymap")
 
+local function clangd_switch_source_header(bufnr, client)
+    local method = 'textDocument/switchSourceHeader'
+
+    if not client or not client:supports_method(method) then
+        vim.notify(('method %s is not supported by clangd on the current buffer'):format(method), vim.log.levels.WARN)
+        return
+    end
+
+    local params = vim.lsp.util.make_text_document_params(bufnr)
+    client:request(method, params, function(err, result)
+        if err then
+            vim.notify(tostring(err), vim.log.levels.ERROR)
+            return
+        end
+
+        if not result then
+            vim.notify('corresponding file cannot be determined', vim.log.levels.INFO)
+            return
+        end
+
+        vim.cmd.edit(vim.uri_to_fname(result))
+    end, bufnr)
+end
+
 require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
 })
@@ -72,7 +96,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         if client and client.name == 'clangd' then
             key.set('n', '<leader>lo', function()
-                vim.cmd.ClangdSwitchSourceHeader()
+                clangd_switch_source_header(ev.buf, client)
             end, { buffer = ev.buf, desc = 'LSP: [L]anguage [O]ther file' })
         end
     end,
