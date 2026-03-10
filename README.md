@@ -1,18 +1,32 @@
-# Neovim Config
+# My Machine Config for Mac & PC
 
-Personal Neovim config using [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management.
-Also includes templates for shell and terminal multiplexer setup for both Mac and Windows.
+Contains everything I like to have for smooth development work on a Mac or a PC.  Claude or Codex read this file and build a machine setup with no input from me.  It just works.  I can have them write new features, and make sure that Windows/Mac equivalents are automatically added to the mix when necessary, to keep my machines synchronised.
+
+Neovim config using [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management.
+Templates for shell and terminal multiplexer setup.
+
+<p align="center">
+  <a href="./Screenshot-mac.png"><img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="49%" /></a>
+  <a href="./Screenshot-pc.png"><img src="./Screenshot-pc.png" alt="Windows setup screenshot" width="49%" /></a>
+</p>
 
 ## Structure
 
 ```
 ~/.config/nvim/
 ├── init.lua                    # Entry point
+├── ginit.vim                   # GUI-specific Neovim settings
+├── vsinit.vim                  # Minimal Vim-style fallback config
+├── karabiner.json              # Mac keyboard remap snippet
+├── install-pyenv-win.ps1       # Helper script for pyenv-win setup
 ├── lua/
 │   ├── options.lua             # Vim options
 │   ├── keymaps.lua             # Key mappings
 │   ├── plugins.lua             # Plugin declarations (lazy.nvim)
+│   ├── util/
+│   │   └── paths.lua           # Shared path helpers / Python provider resolution
 │   └── plugin_config/          # Per-plugin configuration
+│       ├── init.lua            # Shared plugin config helpers
 │       ├── lsp.lua             # LSP + mason-lspconfig
 │       ├── treesitter.lua      # Treesitter
 │       ├── telescope.lua       # Fuzzy finder
@@ -29,16 +43,17 @@ Also includes templates for shell and terminal multiplexer setup for both Mac an
 │       ├── mini-files.lua      # Mini file explorer
 │       ├── neogit.lua          # Neogit
 │       ├── neorg.lua           # Neorg
-│       ├── nvimtree.lua        # File tree
+│       ├── neotest.lua         # Test runner integration
 │       ├── pre-init.lua        # Pre-init hooks
 │       ├── quickfix.lua        # Quickfix
-│       ├── rust.lua            # Rust tools
+│       ├── rustaceanvim.lua    # Rust tools
 │       ├── scratch.lua         # Scratch buffer
 │       ├── twilight.lua        # Twilight (focus mode)
-│       ├── vim-test.lua        # Test runner
 │       ├── vimwiki.lua         # VimWiki
 │       ├── which_key.lua       # Which-key
 │       └── zen_mode.lua        # Zen mode
+├── Screenshot-mac.png          # Mac reference screenshot
+├── Screenshot-pc.png           # Windows reference screenshot
 ├── zshrc.template              # Mac shell config template (zsh)
 ├── profile.ps1.template        # Windows shell config template (PowerShell)
 ├── starship.toml.template      # Starship prompt config (all platforms)
@@ -179,6 +194,8 @@ Automatically installed via `mason-lspconfig`:
 - `lua_ls` — Lua
 - `rust_analyzer` — Rust
 - `clangd` — C/C++
+
+Configured, but not auto-installed:
 - `openscad_lsp` — OpenSCAD (install manually via Mason if needed)
 
 ### Rust
@@ -234,6 +251,8 @@ If execution policy blocks the profile, enable it once:
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
+The template also imports the Chocolatey profile module and `PSFzf`, so both need to be installed before the profile will load cleanly.
+
 ### Starship prompt (all platforms)
 
 Copy `starship.toml.template` to `~/.config/starship.toml`:
@@ -280,6 +299,15 @@ zi foo       # interactive fuzzy search (requires fzf)
 ```
 
 Just use `cd` normally at first — zoxide builds its database from your navigation history.
+
+---
+
+## Optional Platform Files
+
+- `ginit.vim` is used by Neovim GUIs such as Neovide and sets the GUI font, mouse behavior, and font-size keybindings.
+- `vsinit.vim` is a small Vim-style fallback config with basic movement and search mappings.
+- `karabiner.json` is a Karabiner-Elements profile snippet for Mac keyboard remaps.
+- `install-pyenv-win.ps1` is an optional helper script for installing or updating `pyenv-win`.
 
 ---
 
