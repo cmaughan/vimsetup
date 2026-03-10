@@ -79,8 +79,7 @@ require("lazy").setup({
 
     -- Theme
     {
-        'catppuccin/nvim',
-        name = 'catppuccin',
+        'rebelot/kanagawa.nvim',
         lazy = false,
         priority = 1000,
         config = function()
