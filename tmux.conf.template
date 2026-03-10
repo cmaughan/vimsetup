@@ -1,0 +1,112 @@
+# =============================================================================
+# General
+# =============================================================================
+
+# Set prefix to Ctrl-s
+unbind C-b
+set -g prefix C-s
+bind C-s send-prefix
+
+# Reload config
+bind r source-file ~/.tmux.conf \; display "Config reloaded"
+
+# Start windows and panes at 1, not 0
+set -g base-index 1
+setw -g pane-base-index 1
+set -g renumber-windows on
+
+# Increase scrollback buffer
+set -g history-limit 10000
+
+# No delay for escape key
+set -sg escape-time 0
+
+# Enable mouse support
+set -g mouse on
+
+# Focus events (for vim autoread etc.)
+set -g focus-events on
+
+# Terminal colors
+set -g default-terminal "tmux-256color"
+set -ag terminal-overrides ",xterm-256color:RGB"
+
+# =============================================================================
+# Vim-style pane navigation
+# =============================================================================
+
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Vim-style pane resizing
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# Vim-style copy mode
+setw -g mode-keys vi
+bind Enter copy-mode
+bind -T copy-mode-vi v send -X begin-selection
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel "pbcopy"
+bind -T copy-mode-vi Escape send -X cancel
+bind -T copy-mode-vi H send -X start-of-line
+bind -T copy-mode-vi L send -X end-of-line
+
+# =============================================================================
+# Window / Pane management
+# =============================================================================
+
+# Split panes using | and - (and keep current path)
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+unbind '"'
+unbind %
+
+# New window keeping current path
+bind c new-window -c "#{pane_current_path}"
+
+# Quick window switching
+bind -r n next-window
+bind -r p previous-window
+
+# Move windows
+bind -r < swap-window -d -t -1
+bind -r > swap-window -d -t +1
+
+# =============================================================================
+# Status bar (Catppuccin theme via TPM)
+# =============================================================================
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'catppuccin/tmux'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
+set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'xamut/tmux-weather'
+
+set -g @catppuccin_flavor 'mocha'
+set -g @catppuccin_window_status_style 'rounded'
+set -g @catppuccin_cpu_text " #{l:#{cpu_percentage}}  #{l:#{ram_percentage}}"
+set -g status-position top
+
+set -g @tmux-weather-location "York"
+set -g @tmux-weather-units "m"
+
+set -g @continuum-restore 'on'
+
+# Catppuccin must be loaded before setting status-right (v2.x API)
+run '~/.tmux/plugins/tmux/catppuccin.tmux'
+
+set -g status-right-length 100
+set -g status-left-length 100
+set -gF status-left "#{E:@catppuccin_status_session}"
+set -gF status-right "#{E:@catppuccin_status_cpu}"
+set -agF status-right "#{E:@catppuccin_status_weather}"
+
+# Plugin manager (must be last line)
+run '~/.tmux/plugins/tpm/tpm'

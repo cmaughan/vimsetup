@@ -1,0 +1,26 @@
+# PATH
+export PATH=$HOME/Dropbox/Dev/bin/:$PATH
+export PATH="$HOME/.local/bin:$HOME/dev/bin:$PATH"
+export MYDROPBOX=~/Dropbox
+
+# Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# Shell prompt
+eval "$(starship init zsh)"
+
+# Aliases
+alias ls="eza"
+alias ll="eza -lah"
+alias cat="bat"
+alias py=python3
+
+export EDITOR=nvim
+
+# fzf shell integration (run: $(brew --prefix)/opt/fzf/install)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# zoxide (smart cd / directory jumping)
+eval "$(zoxide init zsh)"

@@ -1,0 +1,6 @@
+rplugin.vim
+plugin/packer_compiled.lua
+lazy-lock.json
+.DS*
+.claude/**
+*local*json

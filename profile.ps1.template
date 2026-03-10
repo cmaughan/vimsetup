@@ -1,0 +1,30 @@
+# PATH
+$env:PATH = "$HOME\Dropbox\Dev\bin;$env:PATH"
+$env:PATH = "$HOME\.local\bin;$HOME\dev\bin;$env:PATH"
+$env:MYDROPBOX = "$HOME\Dropbox"
+
+# pyenv-win
+$env:PYENV     = "$HOME\.pyenv\pyenv-win"
+$env:PYENV_ROOT = "$HOME\.pyenv\pyenv-win"
+$env:PYENV_HOME = "$HOME\.pyenv\pyenv-win"
+$env:PATH      = "$env:PYENV\bin;$env:PYENV\shims;$env:PATH"
+
+# Shell prompt
+Invoke-Expression (&starship init powershell)
+
+# Aliases
+Set-Alias -Name ls  -Value eza  -Option AllScope -Force
+function ll { eza -lah @args }
+Set-Alias -Name cat -Value bat  -Option AllScope -Force
+
+$env:EDITOR = "nvim"
+
+# Chocolatey
+Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+
+# fzf integration via PSFzf (Install-Module PSFzf)
+Import-Module PSFzf
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+
+# zoxide (smart directory jumping)
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
