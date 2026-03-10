@@ -13,13 +13,13 @@ Templates for shell and terminal multiplexer setup.
 
 ## Screenshots
 
-### Mac
-
-[<img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="100%" />](./Screenshot-mac.png)
-
 ### PC
 
 [<img src="./Screenshot-pc.png" alt="PC setup screenshot" width="100%" />](./Screenshot-pc.png)
+
+### Mac
+
+[<img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="100%" />](./Screenshot-mac.png)
 
 ## Structure
 
