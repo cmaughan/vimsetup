@@ -6,8 +6,8 @@ Neovim config using [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin m
 Templates for shell and terminal multiplexer setup.
 
 <p align="center">
-  <a href="./Screenshot-mac.png"><img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="49%" /></a>
-  <a href="./Screenshot-pc.png"><img src="./Screenshot-pc.png" alt="Windows setup screenshot" width="49%" /></a>
+  <a href="./Screenshot-mac.png"><img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="49%" style="vertical-align: top;" /></a>
+  <a href="./Screenshot-pc.png"><img src="./Screenshot-pc.png" alt="Windows setup screenshot" width="49%" style="vertical-align: top;" /></a>
 </p>
 
 ## Structure
