@@ -4,21 +4,6 @@ local key = vim.keymap
 key.set('i', 'jk', '<ESC>', { desc = '[j][k] Escape' })
 key.set('t', 'jk', [[<C-\><C-n>]], { desc = '[j][k] Escape' })
 
--- Tree
-key.set('n', '<c-t>', ':NvimTreeToggle<CR>', { desc = "Tree Toggle" })
-
--- Oil
--- key.set('n', '-', require("mini.files").open, { desc = "Open parent directory" })
-
-key.set("n", "-", function()
-      local MiniFiles = require("mini.files")
-      local buf_name = vim.api.nvim_buf_get_name(0)
-      local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
-      MiniFiles.open(path)
-      MiniFiles.reveal_cwd()
-    end, { desc = "Open Mini Files" })
-
-
 -- Telescope
 key.set('n', '<c-p>', function() require('telescope.builtin').find_files() end, { desc = 'Telescope Find Files' })
 key.set('n', '<c-,>', function() require('telescope.builtin').find_files() end, { desc = 'Telescope Find Files' })
@@ -106,8 +91,6 @@ key.set('n', 'J', 'mzJ`z', { desc = '[<J>] Append to line' })
 key.set('n', '<c-d>', "<c-d>zz", { desc = '[c-d] Down, Center Cur' })
 key.set('n', '<c-u>', "<c-u>zz", { desc = '[c-u] Up, Center Cur' })
 key.set('n', '<c-f>', "<c-f>zz", { desc = '[c-f] Forward, Center Cur' })
-key.set('n', '<c-b>', "<c-b>zz", { desc = '[c-b] Back, Center Cur' })
-
 key.set('n', 'n', 'nzzzv', { desc = '[n] Forward search center' })
 key.set('n', 'N', 'Nzzzv', { desc = '[N] Backward search center' })
 
@@ -165,8 +148,8 @@ key.set("n", "<F11>", ':DapStepInto<CR>', { desc = 'DAP: [<F11>] Step Into' })
 key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true, desc = 'Quick [L]ist Ad[D]' })
 
 -- Test
-key.set('n', '<leader>tn', ':TestNearest<CR>', { desc = '[T]est [N]earest' })
-key.set('n', '<leader>tf', ':TestFile<CR>', { desc = '[T]est [F]ile' })
+key.set('n', '<leader>tn', function() require("neotest").run.run() end, { desc = '[T]est [N]earest' })
+key.set('n', '<leader>tf', function() require("neotest").run.run(vim.fn.expand('%')) end, { desc = '[T]est [F]ile' })
 
 key.set('n', '<leader>os', ':Scratch<CR>', { desc = 'T[o]ggle [S]cratch' })
 
@@ -213,5 +196,3 @@ end, { desc = '[<F8>]QuickFix Next' })
 key.set('n', '<S-F8>', function()
     prev_quickfix_wrap()
 end, { desc = '[<S-F8>]QuickFix Previous' })
-
-

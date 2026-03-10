@@ -8,7 +8,7 @@ wk.add({
     {'<leader>h',  group = '[H]arpoon'},
     {'<leader>r',  group = '[R]ename'},
     {'<leader>s',  group = '[S]plits'},
-    {'<leader>t',  group = '[T]rouble'},
+    {'<leader>t',  group = '[T]est'},
     {'<leader>o',  group = 'T[O]ggle'},
     {'<leader>w',  group = '[W]iki'},
     {'<leader>k',  group = '[K]swap other'},

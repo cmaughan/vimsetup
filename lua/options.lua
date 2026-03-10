@@ -28,6 +28,8 @@ vim.opt.expandtab = true
 
 vim.opt.smartindent = true
 vim.opt.wrap = true
+vim.opt.fileformats = { "unix", "dos" }
+vim.opt.fileformat = "unix"
 
 vim.opt.swapfile = false
 vim.opt.backup = false

@@ -1,5 +1,3 @@
-require('neodev').setup()
-
 require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
 })
@@ -12,18 +10,6 @@ lsp_defaults.capabilities = vim.tbl_deep_extend(
     lsp_defaults.capabilities,
     require('cmp_nvim_lsp').default_capabilities()
 )
-
-vim.lsp.config('rust_analyzer', {
-    filetypes = { "rust" },
-    settings = {
-        ['rust-analyzer'] = {
-
-            checkOnSave = {
-               extraArgs = {"--target-dir", "/tmp_analyzer/rust-analyzer"}
-            }
-        }
-    }
-})
 
 vim.lsp.config('lua_ls', {
     settings = {

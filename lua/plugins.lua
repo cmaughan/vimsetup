@@ -10,28 +10,41 @@ require("lazy").setup({
     -- Basics
     'equalsraf/neovim-gui-shim',
 
-    -- Tree view
-    {
-        'nvim-tree/nvim-tree.lua',
-        cmd = { 'NvimTreeToggle', 'NvimTreeOpen', 'NvimTreeFocus', 'NvimTreeFindFile' },
-        config = function()
-            require("plugin_config.nvimtree")
-        end,
-    },
-
     -- Mini files
     {
         'echasnovski/mini.files',
         version = '*',
-        keys = { '-' },
+        keys = {
+            {
+                '-',
+                function()
+                    local MiniFiles = require("mini.files")
+                    local buf_name = vim.api.nvim_buf_get_name(0)
+                    local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
+                    MiniFiles.open(path, false)
+                end,
+                desc = "Open Mini Files",
+            },
+            {
+                '<C-t>',
+                function()
+                    local MiniFiles = require("mini.files")
+                    local buf_name = vim.api.nvim_buf_get_name(0)
+                    local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
+                    if not MiniFiles.close() then
+                        MiniFiles.open(path, false)
+                    end
+                end,
+                desc = "Files Toggle",
+            },
+        },
         config = function()
             require("plugin_config.mini-files")
         end,
     },
 
     -- Comments
-    'tpope/vim-commentary',
-    'tpope/vim-surround',
+    { 'kylechui/nvim-surround', event = 'VeryLazy', opts = {} },
 
     -- Open SCAD
     "sirtaj/vim-openscad",
@@ -123,17 +136,21 @@ require("lazy").setup({
             -- LSP status info on bottom right
             { 'j-hui/fidget.nvim',       opts = {} },
 
-            -- Nvim dev/lua stuff
-            'folke/neodev.nvim',
-
             'hrsh7th/cmp-nvim-lsp',
-
-            -- LSP completion icons
-            'onsails/lspkind.nvim'
         },
         config = function()
             require("plugin_config.lsp")
         end,
+    },
+
+    {
+        'folke/lazydev.nvim',
+        ft = 'lua',
+        opts = {
+            library = {
+                { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+            },
+        },
     },
 
     -- DAP
@@ -164,17 +181,13 @@ require("lazy").setup({
         'hrsh7th/nvim-cmp',
         event = 'InsertEnter',
         dependencies = {
-            -- Snippet engine and nvim-cmp source
-            { 'L3MON4D3/LuaSnip', version = 'v2.4.1' }, -- v2.4.2+ has circular dep bug with nvim 0.11
+            { 'L3MON4D3/LuaSnip', version = 'v2.4.1' },
             'saadparwaiz1/cmp_luasnip',
-
-            -- LSP completion
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-path',
-
-            -- User friendly snippets
+            'onsails/lspkind.nvim',
             'rafamadriz/friendly-snippets',
-            'zbirenbaum/copilot-cmp'
+            'zbirenbaum/copilot-cmp',
         },
         config = function()
             require("plugin_config.completions")
@@ -185,7 +198,14 @@ require("lazy").setup({
     -- "zbirenbaum/copilot.lua",
 
     -- Rust
-    { 'simrat39/rust-tools.nvim', ft = 'rust' },
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^6',
+        ft = 'rust',
+        init = function()
+            require("plugin_config.rustaceanvim")
+        end,
+    },
 
     -- Markdown
     {
@@ -202,10 +222,15 @@ require("lazy").setup({
 
     -- Test
     {
-        'vim-test/vim-test',
-        cmd = { 'TestNearest', 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
+        'nvim-neotest/neotest',
+        cmd = { 'Neotest' },
+        dependencies = {
+            'nvim-neotest/nvim-nio',
+            'nvim-neotest/neotest-vim-test',
+            'vim-test/vim-test',
+        },
         config = function()
-            require("plugin_config.vim-test")
+            require("plugin_config.neotest")
         end,
     },
 
