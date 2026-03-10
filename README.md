@@ -1,6 +1,12 @@
-# My Machine Config for Mac & PC
+# My Config, Mac & PC
 
-Contains everything I like to have for smooth development work on a Mac or a PC.  Claude or Codex read this file and build a machine setup with no input from me.  It just works.  I can have them write new features, and make sure that Windows/Mac equivalents are automatically added to the mix when necessary, to keep my machines synchronised.
+Claude/Codex/AI:
+
+"Sync this repo, read it, and make this machine look the same; installing all packages and fixing all configuration"
+
+...Done.
+
+Contains everything I like to have for smooth development work on a Mac or a PC.  It just works.  I can have AI write new features, and make sure that Windows/Mac equivalents are automatically added to the mix when necessary, to keep my machines synchronised.
 
 Neovim config using [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management.
 Templates for shell and terminal multiplexer setup.
