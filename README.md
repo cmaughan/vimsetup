@@ -5,10 +5,15 @@ Contains everything I like to have for smooth development work on a Mac or a PC.
 Neovim config using [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management.
 Templates for shell and terminal multiplexer setup.
 
-<p align="center">
-  <a href="./Screenshot-mac.png"><img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="49%" style="vertical-align: top;" /></a>
-  <a href="./Screenshot-pc.png"><img src="./Screenshot-pc.png" alt="Windows setup screenshot" width="49%" style="vertical-align: top;" /></a>
-</p>
+## Screenshots
+
+### Mac
+
+[<img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="100%" />](./Screenshot-mac.png)
+
+### PC
+
+[<img src="./Screenshot-pc.png" alt="PC setup screenshot" width="100%" />](./Screenshot-pc.png)
 
 ## Structure
 
