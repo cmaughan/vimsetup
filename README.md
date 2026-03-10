@@ -34,6 +34,7 @@ Templates for shell and terminal multiplexer setup.
 │   ├── options.lua             # Vim options
 │   ├── keymaps.lua             # Key mappings
 │   ├── plugins.lua             # Plugin declarations (lazy.nvim)
+│   ├── session.lua             # Project session persistence
 │   ├── util/
 │   │   └── paths.lua           # Shared path helpers / Python provider resolution
 │   └── plugin_config/          # Per-plugin configuration
@@ -248,6 +249,17 @@ Configured linters:
 - Markdown: `markdownlint`
 - Python: `ruff`
 - Shell: `shellcheck`
+
+### Project sessions
+
+Project sessions are stored under `stdpath('state')/sessions` and keyed by git root when available, otherwise by the current working directory.
+
+- Auto-restore runs only when Neovim starts with no file arguments
+- Auto-save runs on exit
+- `:SessionSave` or `<leader>ps` saves the current project session
+- `:SessionRestore` or `<leader>pr` restores the current project session
+- `:SessionRestore!` forces a restore even if you have modified buffers
+- `:SessionDelete` or `<leader>px` deletes the current project session file
 
 ---
 

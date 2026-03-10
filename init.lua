@@ -38,6 +38,7 @@ require("plugin_config/pre-init")
 require("plugins")
 require("keymaps")
 require("plugin_config.quickfix")
+require("session").setup()
 
 if lazy_bootstrap then
   require("lazy").sync()

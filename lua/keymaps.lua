@@ -141,6 +141,9 @@ key.set('n', '<leader>ec', ':e ' .. parent_path .. '/lua/plugin_config<CR>', { d
 key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true, desc = 'Quick [L]ist Ad[D]' })
 key.set('n', '<leader>lf', '<cmd>Format<CR>', { desc = '[L]anguage [F]ormat buffer' })
 key.set('n', '<leader>ll', '<cmd>Lint<CR>', { desc = '[L]int current buffer' })
+key.set('n', '<leader>ps', '<cmd>SessionSave<CR>', { desc = '[P]roject [S]ession save' })
+key.set('n', '<leader>pr', '<cmd>SessionRestore<CR>', { desc = '[P]roject session [R]estore' })
+key.set('n', '<leader>px', '<cmd>SessionDelete<CR>', { desc = '[P]roject session delete' })
 
 -- Test
 key.set('n', '<leader>tn', function() require("neotest").run.run() end, { desc = '[T]est [N]earest' })
