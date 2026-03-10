@@ -348,7 +348,6 @@ Then open tmux and press `prefix + I` (Ctrl-s + I) to install plugins:
 Prefix is bound to `Ctrl-s`. Key highlights:
 - `prefix + |` / `prefix + -` — split pane horizontally / vertically
 - `prefix + h/j/k/l` — navigate panes (vim-style)
-- `prefix + H/J/K/L` — resize panes
 - `prefix + Enter` — enter copy mode; `v` to select, `y` to copy to clipboard
 - `prefix + Ctrl-s` / `prefix + Ctrl-r` — save / restore session (tmux-resurrect)
 
@@ -394,6 +393,5 @@ Plugins:
 Prefix is bound to `Ctrl-s`. Key highlights:
 - `prefix + |` / `prefix + -` — split pane horizontally / vertically
 - `prefix + h/j/k/l` — navigate panes (vim-style)
-- `prefix + H/J/K/L` — resize panes
 - `prefix + Enter` — enter copy mode; `v` to select, `y` to copy to clipboard
 - `prefix + Ctrl-s` / `prefix + Ctrl-r` — save / restore session (psmux-resurrect)
