@@ -1,13 +1,14 @@
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+local paths = require("util.paths")
+
 -- I'd really like this, but doesn't play nice with make
 -- vim.o.shell = "pwsh.exe"
 
-if vim.fn.has('win32') == 1 then
-  vim.g.python3_host_prog = 'C:/Users/cmaughan/.pyenv/pyenv-win/versions/3.10.4/python.exe'
-else
-  vim.g.python3_host_prog = vim.fn.exepath('python3')
+local python_host_prog = paths.resolve_python_host_prog()
+if python_host_prog then
+  vim.g.python3_host_prog = python_host_prog
 end
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

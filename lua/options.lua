@@ -1,3 +1,5 @@
+local paths = require("util.paths")
+
 vim.opt.mouse = 'a'                       -- Enable mouse support
 vim.opt.clipboard = 'unnamedplus'         -- Copy/paste to system clipboard
 
@@ -29,7 +31,8 @@ vim.opt.wrap = true
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("MYDROPBOX" .. "/.vim/undodir")
+local undo_dir = paths.dropbox_path(".vim", "undodir") or (vim.fn.stdpath("state") .. "/undo")
+vim.opt.undodir = paths.ensure_dir(undo_dir)
 vim.opt.undofile = true
 
 -- vim.opt.updatetime = 50
