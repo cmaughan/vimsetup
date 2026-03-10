@@ -1,3 +1,5 @@
+local key = require("util.keymap")
+
 local rust_analyzer_target_dir = vim.fs.joinpath(vim.fn.stdpath("cache"), "rust-analyzer")
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -17,9 +19,9 @@ vim.g.rustaceanvim = {
       },
     },
     on_attach = function(_, bufnr)
-      vim.keymap.set("n", "<leader>k", function()
+      key.set("n", "<leader>lh", function()
         vim.cmd("RustLsp hover actions")
-      end, { buffer = bufnr, desc = "Rust hover actions" })
+      end, { buffer = bufnr, desc = "Rust: [L]anguage [H]over actions" })
     end,
   },
 }

@@ -36,6 +36,7 @@ Templates for shell and terminal multiplexer setup.
 │   ├── plugins.lua             # Plugin declarations (lazy.nvim)
 │   ├── session.lua             # Project session persistence
 │   ├── util/
+│   │   ├── keymap.lua          # Shared keymap helper / duplicate guard
 │   │   └── paths.lua           # Shared path helpers / Python provider resolution
 │   └── plugin_config/          # Per-plugin configuration
 │       ├── init.lua            # Shared plugin config helpers

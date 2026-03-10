@@ -1,3 +1,5 @@
+local key = require("util.keymap")
+
 require('telescope').setup {
     defaults = {
 
@@ -78,8 +80,8 @@ local function telescope_live_grep_open_files()
     }
 end
 
-vim.keymap.set('n', '<leader>fr', ':LiveGrepGitRoot<cr>', { desc = '[F]ind by Grep on Git [R]oot' })
-vim.keymap.set('n', '<leader>fo', telescope_live_grep_open_files, { desc = '[F]ind [/] in [O]pen Files' })
+key.set('n', '<leader>fr', ':LiveGrepGitRoot<cr>', { desc = '[F]ind by Grep on Git [R]oot' })
+key.set('n', '<leader>fo', telescope_live_grep_open_files, { desc = '[F]ind [/] in [O]pen Files' })
 
 
 

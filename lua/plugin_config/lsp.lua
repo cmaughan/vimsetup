@@ -1,3 +1,5 @@
+local key = require("util.keymap")
+
 require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
 })
@@ -40,6 +42,8 @@ vim.lsp.config('openscad_lsp', {
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = function(ev)
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
         -- Enable completion triggered by <c-x><c-o>
         vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
@@ -49,40 +53,27 @@ vim.api.nvim_create_autocmd('LspAttach', {
             vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf})
         end
 
-        -- In this case, we create a function that lets us more easily define mappings specific
-        -- for LSP related items. It sets the mode, buffer and description for us each time.
-        local nmap = function(keys, func, desc)
-            if desc then
-                desc = 'LSP: ' .. desc
-            end
-
-            vim.keymap.set('n', keys, func, { buffer = ev.buf, desc = desc })
-        end
-
-        nmap('ge', function() vim.diagnostic.open_float(nil, { focus = false }) end, '[G]oto [E]rror')
-
         local telescope = require('telescope.builtin')
-        nmap('gs', telescope.lsp_dynamic_workspace_symbols, '[G]oto [S]ymbols')
-        nmap('gd', telescope.lsp_definitions, '[G]oto [D]efinitions')
-        nmap('gD', telescope.lsp_type_definitions, '[G]oto Type [D]efinitions')
-        nmap('gr', telescope.lsp_references, '[G]oto [R]eferences')
-        nmap('gm', telescope.lsp_implementations, '[G]oto I[M]plementations')
-        nmap('gi', telescope.lsp_incoming_calls, '[G]oto [I]ncoming')
-        nmap('gu', telescope.lsp_outgoing_calls, '[G]oto O[u]tgoing')
 
-        nmap('gws', telescope.lsp_workspace_symbols, '[G]oto [W]ork Symbols')
-        nmap('<leader>ws', telescope.lsp_workspace_symbols, '[G]oto [W]ork Symbols')
-        nmap('<leader>ds', telescope.lsp_document_symbols, '[G]oto Doc [S]ymbols')
+        key.set('n', 'ge', function() vim.diagnostic.open_float(nil, { focus = false }) end, { buffer = ev.buf, desc = 'LSP: [G]oto [E]rror' })
+        key.set('n', 'gd', telescope.lsp_definitions, { buffer = ev.buf, desc = 'LSP: [G]oto [D]efinitions' })
+        key.set('n', 'gD', telescope.lsp_type_definitions, { buffer = ev.buf, desc = 'LSP: [G]oto Type [D]efinitions' })
+        key.set('n', 'gr', telescope.lsp_references, { buffer = ev.buf, desc = 'LSP: [G]oto [R]eferences' })
+        key.set('n', 'gm', telescope.lsp_implementations, { buffer = ev.buf, desc = 'LSP: [G]oto I[M]plementations' })
+        key.set('n', 'gs', telescope.lsp_document_symbols, { buffer = ev.buf, desc = 'LSP: [G]oto [S]ymbols' })
+        key.set('n', 'gS', telescope.lsp_workspace_symbols, { buffer = ev.buf, desc = 'LSP: [G]oto Workspace [S]ymbols' })
+        key.set('n', 'K', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'LSP: Hover docs' })
+        key.set('n', 'gK', vim.lsp.buf.signature_help, { buffer = ev.buf, desc = 'LSP: [G]oto Signature Docs' })
 
-        nmap('<leader>fs', vim.diagnostic.open_float, '[G]oto [F]loat')
+        key.set('n', '<leader>la', vim.lsp.buf.code_action, { buffer = ev.buf, desc = 'LSP: [L]anguage [A]ction' })
+        key.set('n', '<leader>lr', vim.lsp.buf.rename, { buffer = ev.buf, desc = 'LSP: [L]anguage [R]ename' })
+        key.set('n', '<leader>li', telescope.lsp_incoming_calls, { buffer = ev.buf, desc = 'LSP: [L]anguage [I]ncoming calls' })
+        key.set('n', '<leader>lu', telescope.lsp_outgoing_calls, { buffer = ev.buf, desc = 'LSP: [L]anguage O[u]tgoing calls' })
 
-        nmap('K', vim.lsp.buf.signature_help, 'Signature Docs')
-
-        nmap('<leader>K', vim.lsp.buf.hover, '[K] hover')
-        nmap('<space>wa', vim.lsp.buf.add_workspace_folder, 'Add [W]ork Folder')
-        nmap('<space>wr', vim.lsp.buf.remove_workspace_folder, 'Remove [W]ork Folder')
-        nmap('<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, 'List [W]ork Folders')
-        nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[N]ame')
-        nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+        if client and client.name == 'clangd' then
+            key.set('n', '<leader>lo', function()
+                vim.cmd.ClangdSwitchSourceHeader()
+            end, { buffer = ev.buf, desc = 'LSP: [L]anguage [O]ther file' })
+        end
     end,
 })

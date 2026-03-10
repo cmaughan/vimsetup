@@ -1,4 +1,4 @@
-local key = vim.keymap
+local key = require("util.keymap")
 
 -- Esc --
 key.set('i', 'jk', '<ESC>', { desc = '[j][k] Escape' })
@@ -51,27 +51,23 @@ key.set('n', '<leader>z', ':ZenMode<CR>', { desc = '[Z]en mode' })
 -- Window swap
 key.set('n', '<leader>ws', ':call WindowSwap#EasyWindowSwap()<CR>', { desc = '[W]indow [S]wap' })
 
--- Terminal key.setpings
+-- Terminal mappings
 key.set('n', '<C-\\>', ':split term://pwsh<CR>', { noremap = true, desc = '[C-\\] Terminal' }) -- open
 key.set('t', '<Esc>', '<C-\\><C-n>', {desc = '[E]scape Terminal' })                           -- exit
 key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal' })                           -- exit
 
--- Navigate vim p:anes better
-key.set('n', '<c-h>', ':wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
-key.set('n', '<c-l>', ':wincmd l<CR>', { desc = '[<c-l>] Right Pane' })
-
-key.set('n', '<c-s-H>', 'gT', { desc = '[c-H] Left Tab' })
-key.set('n', '<c-s-L>', 'gt', { desc = '[c-L] Right Tab' })
-
 -- Move around splits using Ctrl + {h,j,k,l}
-key.set('', '<C-h>', '<C-w>h', { desc = '[C-h] Left Pane' })
-key.set('', '<C-j>', '<C-w>j', { desc = '[C-l] Left Pane' })
-key.set('', '<C-k>', '<C-w>k', { desc = '[C-k] Down Pane' })
-key.set('', '<C-l>', '<C-w>l', { desc = '[C-k] Up Pane' })
+key.set('n', '<C-h>', '<C-w>h', { desc = '[C-h] Left Pane' })
+key.set('n', '<C-j>', '<C-w>j', { desc = '[C-j] Down Pane' })
+key.set('n', '<C-k>', '<C-w>k', { desc = '[C-k] Up Pane' })
+key.set('n', '<C-l>', '<C-w>l', { desc = '[C-l] Right Pane' })
 key.set('t', '<c-k>', '<C-\\><C-n> :wincmd k<CR>', { desc = '[<c-k>] Up Pane' })
 key.set('t', '<c-j>', '<C-\\><C-n> :wincmd j<CR>', { desc = '[<c-j>] Down Pane' })
 key.set('t', '<c-h>', '<C-\\><C-n> :wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
-key.set('t', '<c-l>', '<C-\\><C-n> :wincmd l<CR>', { desc = '[<c-l>] Up Pane' })
+key.set('t', '<c-l>', '<C-\\><C-n> :wincmd l<CR>', { desc = '[<c-l>] Right Pane' })
+
+key.set('n', '<c-s-H>', 'gT', { desc = '[C-S-H] Left Tab' })
+key.set('n', '<c-s-L>', 'gt', { desc = '[C-S-L] Right Tab' })
 
 
 key.set('n', 'j', 'gj', { desc = '[<J>] down' })
@@ -98,10 +94,10 @@ key.set('n', 'N', 'Nzzzv', { desc = '[N] Backward search center' })
 key.set('n', 'Q', "<nop>", { desc = '[Q] Ignored' })
 
 -- Ignore arrows
-key.set('', '<up>', '<nop>', { desc = '[<up>] Ignored' })
-key.set('', '<down>', '<nop>', { desc = '[<down>] Ignored' })
-key.set('', '<left>', '<nop>', { desc = '[<left>] Ignored' })
-key.set('', '<right>', '<nop>', { desc = '[<right>] Ignored' })
+key.set({ 'n', 'v', 'o' }, '<up>', '<nop>', { desc = '[<up>] Ignored' })
+key.set({ 'n', 'v', 'o' }, '<down>', '<nop>', { desc = '[<down>] Ignored' })
+key.set({ 'n', 'v', 'o' }, '<left>', '<nop>', { desc = '[<left>] Ignored' })
+key.set({ 'n', 'v', 'o' }, '<right>', '<nop>', { desc = '[<right>] Ignored' })
 
 -- Paste over and keep selection
 key.set('x', '<leader>p', '\"_dP', { desc = '[P]aste over keep' })
@@ -117,25 +113,21 @@ key.set('n', '<leader>sv', '<C-w>v', { desc = '[S]plit [V]ertical' })
 key.set('n', '<leader>sh', '<C-w>s', { desc = '[S]plit [H]orizontal' })
 key.set('n', '<leader>se', '<C-w>=', { desc = '[S]plit [E]qual' })
 key.set('n', '<leader>sx', ':close<CR>', { desc = '[S]plit E[X]it' })
-key.set('n', '<leader>sj', '<C-w>-', { desc = '[S]plit [<j>] shorter' })
-key.set('n', '<leader>sk', '<C-w>+', { desc = '[S]plit [<k>] taller' })
-key.set('n', '<leader>sl', '<C-w>>5', { desc = '[S]plit [<l>] larger' })
-key.set('n', '<leader>sh', '<C-w><5', { desc = '[S]plit [<h>] smaller' })
+key.set('n', '<leader>sJ', '<C-w>-', { desc = '[S]plit shrink [J]height' })
+key.set('n', '<leader>sK', '<C-w>+', { desc = '[S]plit grow [K]height' })
+key.set('n', '<leader>sL', '<C-w>>5', { desc = '[S]plit grow [L]width' })
+key.set('n', '<leader>sH', '<C-w><5', { desc = '[S]plit shrink [H]width' })
 key.set('n', '<leader>vh', '<C-w>t<C-w>K', { desc = '[V]ertical to [H]orizontal' })
 key.set('n', '<leader>hv', '<C-w>t<C-w>H', { desc = '[H]orizontal to [V]ertical' })
-
-key.set('n', '<leader>oc', ':nohlsearch<CR>', { desc = 'T[O]ggle search [C]lear' })
-key.set('n', '<leader>ko', ':ClangdSwitchSourceHeader<CR>', { desc = '[K] Go [O]ther' })
-key.set('n', 'go', ':ClangdSwitchSourceHeader<CR>', { desc = '[G]o [O]ther' })
 
 -- Edit VimRC
 local vimrc_path = vim.fn.expand("$MYVIMRC")
 local parent_path = vim.fn.fnamemodify(vimrc_path, ":h")
-key.set('n', '<leader>ev', ':e $MYVIMRC<CR>', { desc = '[E]dit V[imrc' })
+key.set('n', '<leader>ev', ':e $MYVIMRC<CR>', { desc = '[E]dit [V]imrc' })
 key.set('n', '<leader>ek', ':e ' .. parent_path .. '/lua/keymaps.lua<CR>', { desc = '[E]dit [K]eymaps' })
 key.set('n', '<leader>eo', ':e ' .. parent_path .. '/lua/options.lua<CR>', { desc = '[E]dit [O]ptions' })
 key.set('n', '<leader>ep', ':e ' .. parent_path .. '/lua/plugins.lua<CR>', { desc = '[E]dit [P]lugins' })
-key.set('n', '<leader>ec', ':e ' .. parent_path .. '/lua/plugin_config<CR>', { desc = '[E]edit [C]onfig folder' })
+key.set('n', '<leader>ec', ':e ' .. parent_path .. '/lua/plugin_config<CR>', { desc = '[E]dit [C]onfig folder' })
 
 -- Quick list
 key.set('n', '<leader>ld', vim.diagnostic.setqflist, { silent = true, buffer = true, desc = 'Quick [L]ist Ad[D]' })
