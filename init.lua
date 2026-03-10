@@ -5,7 +5,13 @@ vim.g.loaded_netrwPlugin = 1
 -- vim.o.shell = "pwsh.exe"
 
 if vim.fn.has('win32') == 1 then
-  vim.g.python3_host_prog = 'C:/Users/cmaughan/.pyenv/pyenv-win/versions/3.10.4/python.exe'
+  local pyenv_python = vim.fn.expand('~/.pyenv/pyenv-win/versions/3.12.9/python.exe')
+  local fallback_python = vim.fn.exepath('python')
+  if vim.loop.fs_stat(pyenv_python) then
+    vim.g.python3_host_prog = pyenv_python
+  else
+    vim.g.python3_host_prog = fallback_python
+  end
 else
   vim.g.python3_host_prog = vim.fn.exepath('python3')
 end
