@@ -84,6 +84,5 @@ vim.api.nvim_create_autocmd('LspAttach', {
         nmap('<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, 'List [W]ork Folders')
         nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[N]ame')
         nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-        nmap('<leader>lf', function() vim.lsp.buf.format { async = true } end, '[L]sp Format')
     end,
 })

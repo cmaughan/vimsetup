@@ -1,7 +1,11 @@
 require("lazy").setup({
     {
         'williamboman/mason.nvim',
-        cmd = { 'Mason', 'MasonInstall', 'MasonUpdate' },
+        lazy = false,
+        cmd = { 'Mason', 'MasonInstall', 'MasonUpdate', 'MasonToolsInstall', 'MasonToolsInstallSync', 'MasonToolsUpdate', 'MasonToolsUpdateSync', 'MasonToolsClean' },
+        dependencies = {
+            'WhoIsSethDaniel/mason-tool-installer.nvim',
+        },
         config = function()
             require("plugin_config.mason")
         end,
@@ -45,6 +49,22 @@ require("lazy").setup({
 
     -- Comments
     { 'kylechui/nvim-surround', event = 'VeryLazy', opts = {} },
+
+    {
+        'stevearc/conform.nvim',
+        event = { 'BufReadPre', 'BufNewFile' },
+        cmd = { 'ConformInfo' },
+        config = function()
+            require("plugin_config.formatting")
+        end,
+    },
+    {
+        'mfussenegger/nvim-lint',
+        event = { 'BufReadPre', 'BufNewFile' },
+        config = function()
+            require("plugin_config.linting")
+        end,
+    },
 
     -- Open SCAD
     "sirtaj/vim-openscad",

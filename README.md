@@ -39,10 +39,12 @@ Templates for shell and terminal multiplexer setup.
 │   └── plugin_config/          # Per-plugin configuration
 │       ├── init.lua            # Shared plugin config helpers
 │       ├── lsp.lua             # LSP + mason-lspconfig
+│       ├── formatting.lua      # Formatting via conform.nvim
+│       ├── linting.lua         # Linting via nvim-lint
 │       ├── treesitter.lua      # Treesitter
 │       ├── telescope.lua       # Fuzzy finder
 │       ├── completions.lua     # nvim-cmp
-│       ├── mason.lua           # Mason (LSP installer)
+│       ├── mason.lua           # Mason + tool installer
 │       ├── colorscheme.lua     # Colorscheme
 │       ├── copilot.lua         # GitHub Copilot
 │       ├── gitsigns.lua        # Git signs
@@ -185,7 +187,7 @@ npm install -g neovim      # Neovim Node.js provider
 
 1. Clone this repo to `~/.config/nvim`
 2. Open Neovim — lazy.nvim will bootstrap itself and install all plugins automatically
-3. Mason will install LSP servers on first use, or run `:MasonInstall lua-language-server rust-analyzer clangd` manually
+3. Mason will install LSP servers and formatter/linter tools on first start, or run `:MasonToolsInstall` manually
 
 ### Windows
 
@@ -196,7 +198,7 @@ git clone <repo-url> "$env:LOCALAPPDATA\nvim"
 ```
 
 2. Open Neovim — lazy.nvim will bootstrap and install all plugins automatically
-3. Mason will install LSP servers on first use, or run `:MasonInstall lua-language-server rust-analyzer clangd` manually
+3. Mason will install LSP servers and formatter/linter tools on first start, or run `:MasonToolsInstall` manually
 
 ### LSP servers (via Mason)
 
@@ -223,6 +225,29 @@ winget install Rustlang.Rustup
 ```
 
 `rust_analyzer` will be handled by Mason, but the Rust toolchain itself must be present.
+
+### Formatting and linting
+
+Formatting is handled by `conform.nvim`; linting is handled by `nvim-lint`.
+
+- `:Format` or `<leader>lf` — format the current buffer
+- `:Lint` or `<leader>ll` — lint the current buffer
+
+Configured formatters:
+- Lua: `stylua`
+- Python: `ruff format`
+- Rust: `rustfmt`
+- C/C++: `clang-format`
+- JSON / YAML / Markdown: `prettierd` (with `prettier` fallback)
+- TOML: `taplo`
+- Shell: `shfmt`
+
+Configured linters:
+- JSON: `jsonlint`
+- YAML: `yamllint`
+- Markdown: `markdownlint`
+- Python: `ruff`
+- Shell: `shellcheck`
 
 ---
 
