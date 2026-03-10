@@ -86,10 +86,3 @@ cmp.setup({
 })
 
 vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
-
--- Setup neovim lua configuration
-require('neodev').setup()
-
--- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)

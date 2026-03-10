@@ -6,9 +6,16 @@ local paths = require("util.paths")
 -- I'd really like this, but doesn't play nice with make
 -- vim.o.shell = "pwsh.exe"
 
-local python_host_prog = paths.resolve_python_host_prog()
-if python_host_prog then
-  vim.g.python3_host_prog = python_host_prog
+if vim.fn.has('win32') == 1 then
+  local pyenv_python = vim.fn.expand('~/.pyenv/pyenv-win/versions/3.12.9/python.exe')
+  local fallback_python = vim.fn.exepath('python')
+  if vim.loop.fs_stat(pyenv_python) then
+    vim.g.python3_host_prog = pyenv_python
+  else
+    vim.g.python3_host_prog = fallback_python
+  end
+else
+  vim.g.python3_host_prog = vim.fn.exepath('python3')
 end
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -29,8 +36,8 @@ vim.opt.rtp:prepend(lazypath)
 require("options")
 require("plugin_config/pre-init")
 require("plugins")
-require("plugin_config")
 require("keymaps")
+require("plugin_config.quickfix")
 
 if lazy_bootstrap then
   require("lazy").sync()

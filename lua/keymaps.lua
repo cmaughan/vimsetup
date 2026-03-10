@@ -20,27 +20,26 @@ key.set("n", "-", function()
 
 
 -- Telescope
-local telescope = require('telescope.builtin')
-key.set('n', '<c-p>', telescope.find_files, { desc = 'Telescope Find Files' })
-key.set('n', '<c-,>', telescope.find_files, { desc = 'Telescope Find Files' })
-key.set('n', '<leader>?', telescope.oldfiles, { desc = '[?] Find recently opened files' })
-key.set('n', '<leader><space>', telescope.buffers, { desc = '[ ] Find existing buffers' })
+key.set('n', '<c-p>', function() require('telescope.builtin').find_files() end, { desc = 'Telescope Find Files' })
+key.set('n', '<c-,>', function() require('telescope.builtin').find_files() end, { desc = 'Telescope Find Files' })
+key.set('n', '<leader>?', function() require('telescope.builtin').oldfiles() end, { desc = '[?] Find recently opened files' })
+key.set('n', '<leader><space>', function() require('telescope.builtin').buffers() end, { desc = '[ ] Find existing buffers' })
 key.set('n', '<leader>/', function()
     -- You can pass additional configuration to telescope to change theme, layout, etc.
-    telescope.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
         winblend = 10,
         previewer = false,
     })
 end, { desc = '[/] Fuzzily search in current buffer' }
 )
-key.set('n', '<leader>fg', telescope.live_grep, { desc = '[F]ind [G]rep' })
-key.set('n', '<leader>fb', telescope.buffers, { desc = '[F]ind [B]uffers' })
-key.set('n', '<leader>fh', telescope.help_tags, { desc = '[F]ind [h]elp' })
-key.set('n', '<leader>fi', telescope.git_files, { desc = '[F]ind files in G[i]t' })
-key.set('n', '<leader>fw', telescope.grep_string, { desc = '[F]ind current [W]ord' })
-key.set('n', '<leader>fd', telescope.diagnostics, { desc = '[F]ind [D]iagnostics' })
-key.set('n', '<leader>fa', telescope.resume, { desc = '[F]ind [A]again' })
-key.set('n', '<leader>fs', telescope.builtin, { desc = '[F]ind [S]elect Telescope Type' })
+key.set('n', '<leader>fg', function() require('telescope.builtin').live_grep() end, { desc = '[F]ind [G]rep' })
+key.set('n', '<leader>fb', function() require('telescope.builtin').buffers() end, { desc = '[F]ind [B]uffers' })
+key.set('n', '<leader>fh', function() require('telescope.builtin').help_tags() end, { desc = '[F]ind [h]elp' })
+key.set('n', '<leader>fi', function() require('telescope.builtin').git_files() end, { desc = '[F]ind files in G[i]t' })
+key.set('n', '<leader>fw', function() require('telescope.builtin').grep_string() end, { desc = '[F]ind current [W]ord' })
+key.set('n', '<leader>fd', function() require('telescope.builtin').diagnostics() end, { desc = '[F]ind [D]iagnostics' })
+key.set('n', '<leader>fa', function() require('telescope.builtin').resume() end, { desc = '[F]ind [A]again' })
+key.set('n', '<leader>fs', function() require('telescope.builtin').builtin() end, { desc = '[F]ind [S]elect Telescope Type' })
 
 -- Hopword Jump
 key.set('n', '<leader>fj', ':HopWord<CR>', { desc = '[F]ind [J]ump' })
@@ -49,18 +48,17 @@ key.set('n', '<leader>fj', ':HopWord<CR>', { desc = '[F]ind [J]ump' })
 --key.set('n', '<leader>ww', ':Neorg index<CR>', { desc = '[W]iki [W]iki' })
 
 -- Harpoon
-local harpoon = require("harpoon.ui")
-key.set("n", "<leader>ha", require("harpoon.mark").add_file, { desc = '[H]arpoon [A]dd' })
-key.set("n", "<leader>hh", harpoon.toggle_quick_menu, { desc = '[H]arpoon [H]arpoon' })
-key.set("n", "<leader>h1", function() harpoon.nav_file(1) end, { desc = '[H]arpoon [1]' })
-key.set("n", "<leader>h2", function() harpoon.nav_file(2) end, { desc = '[H]arpoon [2]' })
-key.set("n", "<leader>h3", function() harpoon.nav_file(3) end, { desc = '[H]arpoon [3]' })
-key.set("n", "<leader>h4", function() harpoon.nav_file(4) end, { desc = '[H]arpoon [4]' })
-key.set("n", "<leader>h5", function() harpoon.nav_file(5) end, { desc = '[H]arpoon [5]' })
-key.set("n", "<leader>h6", function() harpoon.nav_file(6) end, { desc = '[H]arpoon [6]' })
-key.set("n", "<leader>h7", function() harpoon.nav_file(7) end, { desc = '[H]arpoon [7]' })
-key.set("n", "<leader>h8", function() harpoon.nav_file(8) end, { desc = '[H]arpoon [8]' })
-key.set("n", "<leader>h9", function() harpoon.nav_file(9) end, { desc = '[H]arpoon [9]' })
+key.set("n", "<leader>ha", function() require("harpoon.mark").add_file() end, { desc = '[H]arpoon [A]dd' })
+key.set("n", "<leader>hh", function() require("harpoon.ui").toggle_quick_menu() end, { desc = '[H]arpoon [H]arpoon' })
+key.set("n", "<leader>h1", function() require("harpoon.ui").nav_file(1) end, { desc = '[H]arpoon [1]' })
+key.set("n", "<leader>h2", function() require("harpoon.ui").nav_file(2) end, { desc = '[H]arpoon [2]' })
+key.set("n", "<leader>h3", function() require("harpoon.ui").nav_file(3) end, { desc = '[H]arpoon [3]' })
+key.set("n", "<leader>h4", function() require("harpoon.ui").nav_file(4) end, { desc = '[H]arpoon [4]' })
+key.set("n", "<leader>h5", function() require("harpoon.ui").nav_file(5) end, { desc = '[H]arpoon [5]' })
+key.set("n", "<leader>h6", function() require("harpoon.ui").nav_file(6) end, { desc = '[H]arpoon [6]' })
+key.set("n", "<leader>h7", function() require("harpoon.ui").nav_file(7) end, { desc = '[H]arpoon [7]' })
+key.set("n", "<leader>h8", function() require("harpoon.ui").nav_file(8) end, { desc = '[H]arpoon [8]' })
+key.set("n", "<leader>h9", function() require("harpoon.ui").nav_file(9) end, { desc = '[H]arpoon [9]' })
 
 -- Zen mode
 key.set('n', '<leader>z', ':ZenMode<CR>', { desc = '[Z]en mode' })
