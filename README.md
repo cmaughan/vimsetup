@@ -94,7 +94,7 @@ brew install starship      # shell prompt
 brew install eza           # ls replacement (aliased in .zshrc)
 brew install bat           # cat replacement (aliased in .zshrc)
 brew install tmux          # terminal multiplexer
-brew install pyenv         # Python version manager
+brew install uv            # Python version manager + package installer
 brew install zoxide        # smart directory jumping (z command)
 brew install btop          # system monitor (CPU, RAM, disk, network)
 ```
@@ -130,7 +130,7 @@ winget install OpenJS.NodeJS             # markdown-preview, LSP servers
 winget install Starship.Starship         # shell prompt
 winget install eza-community.eza         # ls replacement
 winget install sharkdp.bat              # cat replacement
-winget install pyenv-win.pyenv-win       # Python version manager
+winget install astral-sh.uv              # Python version manager + package installer
 winget install ajeetdsouza.zoxide        # smart directory jumping (z command)
 winget install aristocratos.btop4win     # system monitor (CPU, RAM, disk, network)
 ```
@@ -156,17 +156,34 @@ winget install OpenSCAD.OpenSCAD # for vim-openscad support
 
 ---
 
-### pip packages (all platforms)
+### Python (all platforms)
 
-Preferred Python version is **3.12.9** (3.13+ causes wheel issues with some packages):
+Python is managed by [uv](https://github.com/astral-sh/uv) — a fast Rust-based tool that replaces pyenv, pip, and virtualenv.
+
+Install Python 3.12.9 and set it as the global default:
 
 ```sh
-pyenv install 3.12.9
-pyenv global 3.12.9
+uv python install 3.12.9
+uv python pin 3.12.9
 ```
 
+Create a global virtualenv, install pynvim into it, and add its `Scripts` dir to your PATH:
+
+**Windows:**
+```powershell
+uv venv --python 3.12.9 "$env:LOCALAPPDATA\python-global"
+uv pip install --python "$env:LOCALAPPDATA\python-global\Scripts\python.exe" pip pynvim
+# Add to PATH (run once):
+$p = [System.Environment]::GetEnvironmentVariable("PATH","User") -split ";"
+[System.Environment]::SetEnvironmentVariable("PATH", ("$env:LOCALAPPDATA\python-global\Scripts;" + ($p -join ";")), "User")
+```
+
+**Mac / Linux:**
 ```sh
-pip3 install pynvim        # Neovim Python provider (required for some plugins)
+uv venv --python 3.12.9 ~/.local/share/nvim-venv
+uv pip install --python ~/.local/share/nvim-venv/bin/python pip pynvim
+# Add to PATH in ~/.zshrc:
+export PATH="$HOME/.local/share/nvim-venv/bin:$PATH"
 ```
 
 On macOS/Linux, add a `py` alias to your shell config so `py` works like on Windows:
@@ -268,7 +285,7 @@ Project sessions are stored under `stdpath('state')/sessions` and keyed by git r
 
 ### Mac (zsh)
 
-Copy `zshrc.template` to `~/.zshrc` and adjust `$MYDROPBOX` / `PATH` entries to match your environment.
+Copy `zshrc.template` to `~/.zshrc`. Dropbox path is auto-detected from `~/.dropbox/info.json`.
 
 After installing `fzf` via brew, run the shell integration installer:
 
@@ -280,18 +297,11 @@ This creates `~/.fzf.zsh` which is sourced by the `.zshrc` template.
 
 ### Windows (PowerShell)
 
-Copy `profile.ps1.template` to your PowerShell profile (adjust `$MYDROPBOX` / `PATH` as needed):
+Copy `profile.ps1.template` to your PS7 (`pwsh`) profile:
 
 ```powershell
-# Find your profile path:
-echo $PROFILE
-
-# Copy the template there, e.g.:
-Copy-Item profile.ps1.template $PROFILE
+Copy-Item profile.ps1.template "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
 ```
-
-The profile is typically at:
-`~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
 
 If execution policy blocks the profile, enable it once:
 

@@ -1,12 +1,13 @@
 # PATH
-export PATH=$HOME/Dropbox/Dev/bin/:$PATH
+_db_info="$HOME/.dropbox/info.json"
+if [[ -f "$_db_info" ]]; then
+    _dropbox=$(grep -o '"path":"[^"]*"' "$_db_info" | head -1 | cut -d'"' -f4)
+    export PATH="$_dropbox/Dev/bin:$PATH"
+fi
 export PATH="$HOME/.local/bin:$HOME/dev/bin:$PATH"
-export MYDROPBOX=~/Dropbox
 
-# Pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+# uv (Python version manager + package installer)
+export PATH="$HOME/.local/bin:$PATH"
 
 # Shell prompt
 eval "$(starship init zsh)"

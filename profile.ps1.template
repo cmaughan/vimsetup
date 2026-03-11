@@ -1,13 +1,16 @@
 # PATH
-$env:PATH = "$HOME\Dropbox\Dev\bin;$env:PATH"
+$_dbInfo = "$env:LOCALAPPDATA\Dropbox\info.json"
+if (Test-Path $_dbInfo) {
+    $_dropbox = (Get-Content $_dbInfo | ConvertFrom-Json).personal.path
+    $env:PATH = "$_dropbox\Dev\bin;$env:PATH"
+}
 $env:PATH = "$HOME\.local\bin;$HOME\dev\bin;$env:PATH"
-$env:MYDROPBOX = "$HOME\Dropbox"
 
-# pyenv-win
-$env:PYENV     = "$HOME\.pyenv\pyenv-win"
-$env:PYENV_ROOT = "$HOME\.pyenv\pyenv-win"
-$env:PYENV_HOME = "$HOME\.pyenv\pyenv-win"
-$env:PATH      = "$env:PYENV\bin;$env:PYENV\shims;$env:PATH"
+# uv — Python version manager; WinGet portable installs don't auto-add to PATH
+$_uv_pkg = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Filter "astral-sh.uv*" -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($_uv_pkg) { $env:PATH = "$($_uv_pkg.FullName);$env:PATH" }
+# uv tool-installed executables (e.g. pynvim-python)
+$env:PATH = "$env:APPDATA\uv\bin;$env:PATH"
 
 # Shell prompt
 Invoke-Expression (&starship init powershell)
@@ -18,6 +21,9 @@ function ll { eza -lah @args }
 Set-Alias -Name cat -Value bat  -Option AllScope -Force
 
 $env:EDITOR = "nvim"
+$env:UV_PYTHON = "3.12"
+$_py = "$env:LOCALAPPDATA\python-global\Scripts\python.exe"
+function py { & $_py @args }
 
 # Chocolatey
 Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1

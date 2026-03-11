@@ -50,6 +50,7 @@ vim.opt.foldcolumn = '1'
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.linebreak = true
+vim.opt.conceallevel = 1          -- Allow plugins (obsidian, etc.) to conceal markup
 
 vim.wo.number = true
 vim.opt.relativenumber = true

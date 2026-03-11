@@ -22,43 +22,49 @@ function M.ensure_dir(path)
   return path
 end
 
-function M.dropbox_path(...)
-  local root = vim.env.MYDROPBOX
+local _dropbox_root_cache
 
+local function get_dropbox_root()
+  if _dropbox_root_cache ~= nil then return _dropbox_root_cache end
+  local info_path
+  if vim.fn.has("win32") == 1 then
+    info_path = join_paths(vim.env.LOCALAPPDATA or "", "Dropbox/info.json")
+  else
+    info_path = vim.fn.expand("~/.dropbox/info.json")
+  end
+
+  if vim.fn.filereadable(info_path) == 1 then
+    local ok, data = pcall(vim.fn.json_decode, table.concat(vim.fn.readfile(info_path), ""))
+    if ok and data and data.personal and data.personal.path then
+      _dropbox_root_cache = data.personal.path
+      return _dropbox_root_cache
+    end
+  end
+
+  _dropbox_root_cache = nil
+  return nil
+end
+
+function M.dropbox_path(...)
+  local root = get_dropbox_root()
   if not root or root == "" then
     return nil
   end
-
   return join_paths(root, ...)
 end
 
 function M.resolve_python_host_prog()
-  if vim.fn.has("win32") == 1 then
-    local pyenv_root = vim.env.PYENV_ROOT or vim.fn.expand("~/.pyenv/pyenv-win")
-    local version_file = join_paths(pyenv_root, "version")
+  -- Prefer the dedicated Neovim venv (has pynvim installed)
+  local venv_python = vim.fn.has("win32") == 1
+    and vim.fn.expand("~/AppData/Local/python-global/Scripts/python.exe")
+    or  vim.fn.expand("~/.local/share/nvim-venv/bin/python")
 
-    if vim.fn.filereadable(version_file) == 1 then
-      local versions = vim.fn.readfile(version_file)
-      local active_version = versions[1]
-
-      if active_version and active_version ~= "" then
-        local candidate = join_paths(pyenv_root, "versions", active_version, "python.exe")
-        if vim.fn.filereadable(candidate) == 1 then
-          return candidate
-        end
-      end
-    end
-
-    local python = vim.fn.exepath("python")
-    if python ~= "" then
-      return python
-    end
+  if vim.fn.filereadable(venv_python) == 1 then
+    return venv_python
   end
 
-  local python3 = vim.fn.exepath("python3")
-  if python3 ~= "" then
-    return python3
-  end
+  local python = vim.fn.exepath(vim.fn.has("win32") == 1 and "python" or "python3")
+  if python ~= "" then return python end
 
   return nil
 end

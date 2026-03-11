@@ -8,7 +8,7 @@ require("obsidian").setup({
     },
 
     -- Use Telescope for search/picker
-    picker = { name = "telescope" },
+    picker = { name = "telescope.nvim" },
 
     -- Follow markdown links with gf
     follow_url_func = function(url)
