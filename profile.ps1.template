@@ -27,6 +27,8 @@ $env:EDITOR = "nvim"
 $env:UV_PYTHON = "3.12"
 $_py = "$env:LOCALAPPDATA\python-global\Scripts\python.exe"
 function py { & $_py @args }
+function python { & $_py @args }
+function python3 { & $_py @args }
 
 # Chocolatey
 Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
