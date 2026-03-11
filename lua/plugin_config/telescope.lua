@@ -82,6 +82,9 @@ end
 
 key.set('n', '<leader>fr', ':LiveGrepGitRoot<cr>', { desc = '[F]ind by Grep on Git [R]oot' })
 key.set('n', '<leader>fo', telescope_live_grep_open_files, { desc = '[F]ind [/] in [O]pen Files' })
+key.set('n', '<leader>fu', '<cmd>Telescope undo<cr>', { desc = '[F]ind [U]ndo history' })
+
+require('telescope').load_extension('undo')
 
 
 

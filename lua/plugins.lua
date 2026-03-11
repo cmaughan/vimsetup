@@ -76,7 +76,8 @@ require("lazy").setup({
         branch = '0.1.x',
         cmd = 'Telescope',
         dependencies = {
-            'nvim-lua/plenary.nvim'
+            'nvim-lua/plenary.nvim',
+            'debugloop/telescope-undo.nvim',
         },
         config = function()
             require("plugin_config.telescope")
@@ -172,6 +173,27 @@ require("lazy").setup({
         opts = {
             window = { layout = 'vertical', width = 0.35 },
         },
+    },
+
+    -- Project-wide search & replace
+    {
+        'MagicDuck/grug-far.nvim',
+        cmd = 'GrugFar',
+        keys = {
+            { '<leader>sr', '<cmd>GrugFar<cr>',                                                     desc = '[S]earch [R]eplace (grug-far)' },
+            { '<leader>sw', function() require('grug-far').open({ prefills = { search = vim.fn.expand('<cword>') } }) end, desc = '[S]earch [W]ord (grug-far)' },
+        },
+        opts = { headerMaxWidth = 80 },
+    },
+
+    -- Symbol tree (outline)
+    {
+        'stevearc/aerial.nvim',
+        event = 'VeryLazy',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+        config = function()
+            require('plugin_config.aerial')
+        end,
     },
 
     -- Git signs in gutter + hunk actions
