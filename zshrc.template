@@ -8,6 +8,7 @@ export PATH="$HOME/.local/bin:$HOME/dev/bin:$PATH"
 
 # uv (Python version manager + package installer)
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/share/nvim-venv/bin:$PATH"
 
 # Shell prompt
 eval "$(starship init zsh)"

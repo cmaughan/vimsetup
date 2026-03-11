@@ -182,9 +182,9 @@ $p = [System.Environment]::GetEnvironmentVariable("PATH","User") -split ";"
 ```sh
 uv venv --python 3.12.9 ~/.local/share/nvim-venv
 uv pip install --python ~/.local/share/nvim-venv/bin/python pip pynvim
-# Add to PATH in ~/.zshrc:
-export PATH="$HOME/.local/share/nvim-venv/bin:$PATH"
 ```
+
+The venv bin is already on PATH via the `zshrc.template` (`~/.local/share/nvim-venv/bin`).
 
 On macOS/Linux, add a `py` alias to your shell config so `py` works like on Windows:
 
