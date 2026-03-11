@@ -339,14 +339,26 @@ require("lazy").setup({
         end,
     },
 
-    -- VimWiki
+    -- Obsidian vault navigation
     {
-        'vimwiki/vimwiki',
-        ft = { 'vimwiki', 'markdown' },
-        init = function()
-            require("plugin_config.vimwiki")
+        'epwalsh/obsidian.nvim',
+        version = '*',
+        ft = 'markdown',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        keys = {
+            { '<leader>of', '<cmd>ObsidianQuickSwitch<cr>',  desc = '[O]bsidian [F]ind note' },
+            { '<leader>og', '<cmd>ObsidianSearch<cr>',       desc = '[O]bsidian [G]rep' },
+            { '<leader>on', '<cmd>ObsidianNew<cr>',          desc = '[O]bsidian [N]ew note' },
+            { '<leader>od', '<cmd>ObsidianDailies<cr>',      desc = '[O]bsidian [D]aily notes' },
+            { '<leader>ob', '<cmd>ObsidianBacklinks<cr>',    desc = '[O]bsidian [B]acklinks' },
+            { '<leader>ot', '<cmd>ObsidianTags<cr>',         desc = '[O]bsidian [T]ags' },
+            { '<leader>ol', '<cmd>ObsidianFollowLink<cr>',   desc = '[O]bsidian fo[L]low link' },
+        },
+        config = function()
+            require("plugin_config.obsidian")
         end,
     },
+
 
     {
         'folke/zen-mode.nvim',
