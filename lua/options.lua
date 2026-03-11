@@ -42,9 +42,11 @@ vim.opt.undofile = true
 -- vim.opt.colorcolumn = "80"
 
 vim.opt.showmatch = true
-vim.opt.foldlevel = 20
-vim.opt.foldmethod = 'expr'
-vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+-- nvim-ufo handles folding; needs high foldlevel so files open unfolded
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+vim.opt.foldcolumn = '1'
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.linebreak = true

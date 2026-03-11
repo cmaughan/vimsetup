@@ -72,3 +72,11 @@ vim.defer_fn(function()
     },
   }
 end, 0)
+
+local ok, context = pcall(require, 'treesitter-context')
+if ok then
+  context.setup {
+    max_lines = 4,
+    multiline_threshold = 1,
+  }
+end

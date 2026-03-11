@@ -2,7 +2,7 @@
 local wk = require('which-key')
 
 wk.add({
-    {'<leader>c',  group = '[C]ode'},
+    {'<leader>c',  group = '[C]ode/Copilot'},
     {'<leader>d',  group = '[D]ebug'},
     {'<leader>g',  group = '[G]it'},
     {'<leader>h',  group = '[H]arpoon'},
@@ -16,6 +16,7 @@ wk.add({
     {'<leader>l',  group = '[L]SP'},
     {'<leader>e',  group = '[E]dit'},
     {'<leader>f',  group = '[F]ind'},
+    {'<leader>x',  group = 'Trouble/[X]'},
     {'<leader>',   group = 'VISUAL <leader>' },
     {'<leader>h',  group = 'Git [H]unk' },
 })

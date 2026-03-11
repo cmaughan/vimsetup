@@ -13,6 +13,7 @@ require("lazy").setup({
 
     -- Basics
     'equalsraf/neovim-gui-shim',
+    'tpope/vim-repeat',
 
     -- Mini files
     {
@@ -131,14 +132,86 @@ require("lazy").setup({
     -- 'NeogitOrg/neogit',
     'sindrets/diffview.nvim',
 
+    -- Highlight TODO/FIXME/HACK/NOTE comments
+    {
+        'folke/todo-comments.nvim',
+        event = { 'BufReadPost', 'BufNewFile' },
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        opts = {},
+        keys = {
+            { '<leader>ft', '<cmd>TodoTelescope<cr>', desc = '[F]ind [T]odo comments' },
+            { ']t', function() require('todo-comments').jump_next() end, desc = 'Next [T]odo' },
+            { '[t', function() require('todo-comments').jump_prev() end, desc = 'Prev [T]odo' },
+        },
+    },
+
+    -- Better folding with counts
+    {
+        'kevinhwang91/nvim-ufo',
+        event = { 'BufReadPost', 'BufNewFile' },
+        dependencies = { 'kevinhwang91/promise-async' },
+        config = function()
+            require('plugin_config.ufo')
+        end,
+    },
+
+    -- CopilotChat
+    {
+        'CopilotC-Nvim/CopilotChat.nvim',
+        cmd = { 'CopilotChat', 'CopilotChatOpen' },
+        dependencies = {
+            { 'zbirenbaum/copilot.lua' },
+            { 'nvim-lua/plenary.nvim' },
+        },
+        keys = {
+            { '<leader>cc', '<cmd>CopilotChatToggle<cr>',  desc = '[C]opilot [C]hat toggle' },
+            { '<leader>ce', '<cmd>CopilotChatExplain<cr>', desc = '[C]opilot [E]xplain' },
+            { '<leader>cr', '<cmd>CopilotChatReview<cr>',  desc = '[C]opilot [R]eview' },
+            { '<leader>cf', '<cmd>CopilotChatFix<cr>',     desc = '[C]opilot [F]ix' },
+        },
+        opts = {
+            window = { layout = 'vertical', width = 0.35 },
+        },
+    },
+
+    -- Git signs in gutter + hunk actions
+    {
+        'lewis6991/gitsigns.nvim',
+        event = { 'BufReadPost', 'BufNewFile' },
+        config = function()
+            require('plugin_config.gitsigns')
+        end,
+    },
+
+    -- Better diagnostics/quickfix list
+    {
+        'folke/trouble.nvim',
+        cmd = { 'Trouble' },
+        keys = {
+            { '<leader>xx', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = '[X]X diagnostics (buffer)' },
+            { '<leader>xX', '<cmd>Trouble diagnostics toggle<cr>',              desc = '[X]X diagnostics (workspace)' },
+            { '<leader>xq', '<cmd>Trouble qflist toggle<cr>',                   desc = '[X] [Q]uickfix list' },
+        },
+        opts = {},
+    },
+
+    -- Extended text objects (ia/aa, if/af, ic/ac + more)
+    {
+        'echasnovski/mini.ai',
+        version = '*',
+        event = 'VeryLazy',
+        opts = {},
+    },
+
     -- Coding
-    --'folke/trouble.nvim',
+
     {
         -- Highlight, edit, and navigate code
         'nvim-treesitter/nvim-treesitter',
         event = { 'BufReadPost', 'BufNewFile' },
         dependencies = {
             'nvim-treesitter/nvim-treesitter-textobjects',
+            'nvim-treesitter/nvim-treesitter-context',
         },
         build = ':TSUpdate',
         config = function()
