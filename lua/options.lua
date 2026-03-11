@@ -61,3 +61,12 @@ vim.g.windowswap_map_keys = 0;
 
 vim.cmd[[autocmd BufWinEnter,WinEnter term://* startinsert]]
 
+vim.filetype.add({
+  pattern = {
+    [".*zshrc%.template"]          = "zsh",
+    [".*profile%.ps1%.template"]   = "ps1",
+    [".*starship%.toml%.template"]  = "toml",
+    [".*tmux.*%.conf%.template"]   = "tmux",
+  },
+})
+
