@@ -19,6 +19,9 @@ Invoke-Expression (&starship init powershell)
 Set-Alias -Name ls  -Value eza  -Option AllScope -Force
 function ll { eza -lah @args }
 Set-Alias -Name cat -Value bat  -Option AllScope -Force
+if (Get-Command btop4win -ErrorAction SilentlyContinue) {
+    Set-Alias -Name btop -Value btop4win -Option AllScope -Force
+}
 
 $env:EDITOR = "nvim"
 $env:UV_PYTHON = "3.12"

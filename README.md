@@ -29,7 +29,7 @@ Templates for shell and terminal multiplexer setup.
 ├── ginit.vim                   # GUI-specific Neovim settings
 ├── vsinit.vim                  # Minimal Vim-style fallback config
 ├── karabiner.json              # Mac keyboard remap snippet
-├── install-pyenv-win.ps1       # Helper script for pyenv-win setup
+├── install-pyenv-win.ps1       # Legacy helper for older pyenv-win setups
 ├── lua/
 │   ├── options.lua             # Vim options
 │   ├── keymaps.lua             # Key mappings
@@ -49,6 +49,7 @@ Templates for shell and terminal multiplexer setup.
 │       ├── mason.lua           # Mason + tool installer
 │       ├── colorscheme.lua     # Colorscheme
 │       ├── copilot.lua         # GitHub Copilot
+│       ├── aerial.lua          # Code outline
 │       ├── gitsigns.lua        # Git signs
 │       ├── harpoon.lua         # Harpoon
 │       ├── leap.lua            # Leap motion
@@ -58,11 +59,13 @@ Templates for shell and terminal multiplexer setup.
 │       ├── neogit.lua          # Neogit
 │       ├── neorg.lua           # Neorg
 │       ├── neotest.lua         # Test runner integration
+│       ├── obsidian.lua        # Obsidian integration
 │       ├── pre-init.lua        # Pre-init hooks
 │       ├── quickfix.lua        # Quickfix
 │       ├── rustaceanvim.lua    # Rust tools
 │       ├── scratch.lua         # Scratch buffer
 │       ├── twilight.lua        # Twilight (focus mode)
+│       ├── ufo.lua             # Folding
 │       ├── vimwiki.lua         # VimWiki
 │       ├── which_key.lua       # Which-key
 │       └── zen_mode.lua        # Zen mode
@@ -340,7 +343,7 @@ Set the font in your terminal emulator:
 - **Mac (Warp):** Settings → Appearance → Terminal Font
 - **Windows Terminal:** Settings → your profile → Appearance → Font face
 
-> **Windows / pyenv-win note:** pyenv shims are slow `.bat` files. The template already includes `command_timeout = 5000` near the top to prevent starship from printing timeout warnings when detecting the Python version.
+> **Windows note:** the PowerShell template adds the WinGet-installed `uv` path dynamically, and `command_timeout = 5000` keeps Starship tolerant of slower version probes.
 
 ### Windows Terminal color scheme
 
@@ -365,7 +368,7 @@ Just use `cd` normally at first — zoxide builds its database from your navigat
 - `ginit.vim` is used by Neovim GUIs such as Neovide and sets the GUI font, mouse behavior, and font-size keybindings.
 - `vsinit.vim` is a small Vim-style fallback config with basic movement and search mappings.
 - `karabiner.json` is a Karabiner-Elements profile snippet for Mac keyboard remaps.
-- `install-pyenv-win.ps1` is an optional helper script for installing or updating `pyenv-win`.
+- `install-pyenv-win.ps1` is a legacy helper script kept for older `pyenv-win` setups; the current Python flow uses `uv`.
 
 ---
 
