@@ -1,7 +1,6 @@
 require("lazy").setup({
     {
         'williamboman/mason.nvim',
-        lazy = false,
         cmd = { 'Mason', 'MasonInstall', 'MasonUpdate', 'MasonToolsInstall', 'MasonToolsInstallSync', 'MasonToolsUpdate', 'MasonToolsUpdateSync', 'MasonToolsClean' },
         dependencies = {
             'WhoIsSethDaniel/mason-tool-installer.nvim',
@@ -120,7 +119,7 @@ require("lazy").setup({
         end,
     },
     'hiphish/rainbow-delimiters.nvim',
-    'lukas-reineke/indent-blankline.nvim',
+    { 'lukas-reineke/indent-blankline.nvim', event = { 'BufReadPost', 'BufNewFile' } },
 
     -- Sharing
     'kristijanhusak/vim-carbon-now-sh',
@@ -132,7 +131,7 @@ require("lazy").setup({
     'tpope/vim-fugitive',
 
     -- 'NeogitOrg/neogit',
-    'sindrets/diffview.nvim',
+    { 'sindrets/diffview.nvim', cmd = { 'DiffviewOpen', 'DiffviewFileHistory', 'DiffviewClose' } },
 
     -- Highlight TODO/FIXME/HACK/NOTE comments
     {
@@ -279,7 +278,7 @@ require("lazy").setup({
     },
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim',               opts = {} },
+    { 'numToStr/Comment.nvim', event = 'VeryLazy', opts = {} },
 
     -- Completions
     {
