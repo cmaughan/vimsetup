@@ -1,4 +1,4 @@
-[#](#) My Config, Mac & PC
+# My Config, Mac & PC
 
 Claude/Codex/AI:
 
