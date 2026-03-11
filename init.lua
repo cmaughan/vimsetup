@@ -6,17 +6,7 @@ local paths = require("util.paths")
 -- I'd really like this, but doesn't play nice with make
 -- vim.o.shell = "pwsh.exe"
 
-if vim.fn.has('win32') == 1 then
-  local pyenv_python = vim.fn.expand('~/.pyenv/pyenv-win/versions/3.12.9/python.exe')
-  local fallback_python = vim.fn.exepath('python')
-  if vim.loop.fs_stat(pyenv_python) then
-    vim.g.python3_host_prog = pyenv_python
-  else
-    vim.g.python3_host_prog = fallback_python
-  end
-else
-  vim.g.python3_host_prog = vim.fn.exepath('python3')
-end
+vim.g.python3_host_prog = paths.resolve_python_host_prog()
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 local lazy_bootstrap = not vim.loop.fs_stat(lazypath)

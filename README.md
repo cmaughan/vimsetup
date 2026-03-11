@@ -29,7 +29,6 @@ Templates for shell and terminal multiplexer setup.
 ├── ginit.vim                   # GUI-specific Neovim settings
 ├── vsinit.vim                  # Minimal Vim-style fallback config
 ├── karabiner.json              # Mac keyboard remap snippet
-├── install-pyenv-win.ps1       # Helper script for pyenv-win setup
 ├── lua/
 │   ├── options.lua             # Vim options
 │   ├── keymaps.lua             # Key mappings
@@ -340,8 +339,6 @@ Set the font in your terminal emulator:
 - **Mac (Warp):** Settings → Appearance → Terminal Font
 - **Windows Terminal:** Settings → your profile → Appearance → Font face
 
-> **Windows / pyenv-win note:** pyenv shims are slow `.bat` files. The template already includes `command_timeout = 5000` near the top to prevent starship from printing timeout warnings when detecting the Python version.
-
 ### Windows Terminal color scheme
 
 Set the color scheme to **Dimidium** (Settings → your profile → Appearance → Color scheme) for well-balanced ANSI colors that work well with eza, starship, and Neovim.
@@ -365,7 +362,6 @@ Just use `cd` normally at first — zoxide builds its database from your navigat
 - `ginit.vim` is used by Neovim GUIs such as Neovide and sets the GUI font, mouse behavior, and font-size keybindings.
 - `vsinit.vim` is a small Vim-style fallback config with basic movement and search mappings.
 - `karabiner.json` is a Karabiner-Elements profile snippet for Mac keyboard remaps.
-- `install-pyenv-win.ps1` is an optional helper script for installing or updating `pyenv-win`.
 
 ---
 
