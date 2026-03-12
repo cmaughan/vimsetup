@@ -409,7 +409,12 @@ require("lazy").setup({
         end,
     },
     {
+        'ibhagwan/fzf-lua',
+        lazy = true,
+    },
+    {
         'LintaoAmons/scratch.nvim',
+        dependencies = { 'ibhagwan/fzf-lua' },
         cmd = { 'Scratch', 'ScratchOpen', 'ScratchOpenFtype' },
         config = function()
             require("plugin_config.scratch")
