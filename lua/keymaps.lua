@@ -26,45 +26,48 @@ key.set('n', '<leader>fd', function() require('telescope.builtin').diagnostics()
 key.set('n', '<leader>fa', function() require('telescope.builtin').resume() end, { desc = '[F]ind [A]again' })
 key.set('n', '<leader>fs', function() require('telescope.builtin').builtin() end, { desc = '[F]ind [S]elect Telescope Type' })
 
--- Hopword Jump
-key.set('n', '<leader>fj', ':HopWord<CR>', { desc = '[F]ind [J]ump' })
-
 -- Wiki
 --key.set('n', '<leader>ww', ':Neorg index<CR>', { desc = '[W]iki [W]iki' })
 
--- Harpoon
-key.set("n", "<leader>ha", function() require("harpoon.mark").add_file() end, { desc = '[H]arpoon [A]dd' })
-key.set("n", "<leader>hh", function() require("harpoon.ui").toggle_quick_menu() end, { desc = '[H]arpoon [H]arpoon' })
-key.set("n", "<leader>h1", function() require("harpoon.ui").nav_file(1) end, { desc = '[H]arpoon [1]' })
-key.set("n", "<leader>h2", function() require("harpoon.ui").nav_file(2) end, { desc = '[H]arpoon [2]' })
-key.set("n", "<leader>h3", function() require("harpoon.ui").nav_file(3) end, { desc = '[H]arpoon [3]' })
-key.set("n", "<leader>h4", function() require("harpoon.ui").nav_file(4) end, { desc = '[H]arpoon [4]' })
-key.set("n", "<leader>h5", function() require("harpoon.ui").nav_file(5) end, { desc = '[H]arpoon [5]' })
-key.set("n", "<leader>h6", function() require("harpoon.ui").nav_file(6) end, { desc = '[H]arpoon [6]' })
-key.set("n", "<leader>h7", function() require("harpoon.ui").nav_file(7) end, { desc = '[H]arpoon [7]' })
-key.set("n", "<leader>h8", function() require("harpoon.ui").nav_file(8) end, { desc = '[H]arpoon [8]' })
-key.set("n", "<leader>h9", function() require("harpoon.ui").nav_file(9) end, { desc = '[H]arpoon [9]' })
+-- Harpoon (v2)
+key.set("n", "<leader>ha", function() require("harpoon"):list():add() end, { desc = '[H]arpoon [A]dd' })
+key.set("n", "<leader>hh", function()
+    local h = require("harpoon")
+    h.ui:toggle_quick_menu(h:list())
+end, { desc = '[H]arpoon [H]arpoon' })
+key.set("n", "<leader>h1", function() require("harpoon"):list():select(1) end, { desc = '[H]arpoon [1]' })
+key.set("n", "<leader>h2", function() require("harpoon"):list():select(2) end, { desc = '[H]arpoon [2]' })
+key.set("n", "<leader>h3", function() require("harpoon"):list():select(3) end, { desc = '[H]arpoon [3]' })
+key.set("n", "<leader>h4", function() require("harpoon"):list():select(4) end, { desc = '[H]arpoon [4]' })
+key.set("n", "<leader>h5", function() require("harpoon"):list():select(5) end, { desc = '[H]arpoon [5]' })
+key.set("n", "<leader>h6", function() require("harpoon"):list():select(6) end, { desc = '[H]arpoon [6]' })
+key.set("n", "<leader>h7", function() require("harpoon"):list():select(7) end, { desc = '[H]arpoon [7]' })
+key.set("n", "<leader>h8", function() require("harpoon"):list():select(8) end, { desc = '[H]arpoon [8]' })
+key.set("n", "<leader>h9", function() require("harpoon"):list():select(9) end, { desc = '[H]arpoon [9]' })
 
 -- Zen mode
 key.set('n', '<leader>z', ':ZenMode<CR>', { desc = '[Z]en mode' })
 
--- Window swap
-key.set('n', '<leader>ws', ':call WindowSwap#EasyWindowSwap()<CR>', { desc = '[W]indow [S]wap' })
+-- Window swap (directional, via smart-splits)
+key.set('n', '<leader>wh', function() require('smart-splits').swap_buf_left() end,  { desc = '[W]indow swap left' })
+key.set('n', '<leader>wj', function() require('smart-splits').swap_buf_down() end,  { desc = '[W]indow swap down' })
+key.set('n', '<leader>wk', function() require('smart-splits').swap_buf_up() end,    { desc = '[W]indow swap up' })
+key.set('n', '<leader>wl', function() require('smart-splits').swap_buf_right() end, { desc = '[W]indow swap right' })
 
 -- Terminal mappings
-key.set('n', '<C-\\>', ':split term://pwsh<CR>', { noremap = true, desc = '[C-\\] Terminal' }) -- open
-key.set('t', '<Esc>', '<C-\\><C-n>', {desc = '[E]scape Terminal' })                           -- exit
-key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal' })                           -- exit
+key.set('n', '<C-\\>', function() vim.cmd('split term://' .. vim.o.shell) end, { noremap = true, desc = '[C-\\] Terminal' })
+key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]scape Terminal' })
+key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal' })
 
--- Move around splits using Ctrl + {h,j,k,l}
-key.set('n', '<C-h>', '<C-w>h', { desc = '[C-h] Left Pane' })
-key.set('n', '<C-j>', '<C-w>j', { desc = '[C-j] Down Pane' })
-key.set('n', '<C-k>', '<C-w>k', { desc = '[C-k] Up Pane' })
-key.set('n', '<C-l>', '<C-w>l', { desc = '[C-l] Right Pane' })
-key.set('t', '<c-k>', '<C-\\><C-n> :wincmd k<CR>', { desc = '[<c-k>] Up Pane' })
-key.set('t', '<c-j>', '<C-\\><C-n> :wincmd j<CR>', { desc = '[<c-j>] Down Pane' })
-key.set('t', '<c-h>', '<C-\\><C-n> :wincmd h<CR>', { desc = '[<c-h>] Left Pane' })
-key.set('t', '<c-l>', '<C-\\><C-n> :wincmd l<CR>', { desc = '[<c-l>] Right Pane' })
+-- Move around splits using Ctrl + {h,j,k,l} (smart-splits: tmux-aware)
+key.set('n', '<C-h>', function() require('smart-splits').move_cursor_left() end,  { desc = '[C-h] Left Pane' })
+key.set('n', '<C-j>', function() require('smart-splits').move_cursor_down() end,  { desc = '[C-j] Down Pane' })
+key.set('n', '<C-k>', function() require('smart-splits').move_cursor_up() end,    { desc = '[C-k] Up Pane' })
+key.set('n', '<C-l>', function() require('smart-splits').move_cursor_right() end, { desc = '[C-l] Right Pane' })
+key.set('t', '<C-h>', function() require('smart-splits').move_cursor_left() end,  { desc = '[C-h] Left Pane' })
+key.set('t', '<C-j>', function() require('smart-splits').move_cursor_down() end,  { desc = '[C-j] Down Pane' })
+key.set('t', '<C-k>', function() require('smart-splits').move_cursor_up() end,    { desc = '[C-k] Up Pane' })
+key.set('t', '<C-l>', function() require('smart-splits').move_cursor_right() end, { desc = '[C-l] Right Pane' })
 
 key.set('n', '<c-s-H>', 'gT', { desc = '[C-S-H] Left Tab' })
 key.set('n', '<c-s-L>', 'gt', { desc = '[C-S-L] Right Tab' })
@@ -113,10 +116,10 @@ key.set('n', '<leader>sv', '<C-w>v', { desc = '[S]plit [V]ertical' })
 key.set('n', '<leader>sh', '<C-w>s', { desc = '[S]plit [H]orizontal' })
 key.set('n', '<leader>se', '<C-w>=', { desc = '[S]plit [E]qual' })
 key.set('n', '<leader>sx', ':close<CR>', { desc = '[S]plit E[X]it' })
-key.set('n', '<leader>sJ', '<C-w>-', { desc = '[S]plit shrink [J]height' })
-key.set('n', '<leader>sK', '<C-w>+', { desc = '[S]plit grow [K]height' })
-key.set('n', '<leader>sL', '<C-w>>5', { desc = '[S]plit grow [L]width' })
-key.set('n', '<leader>sH', '<C-w><5', { desc = '[S]plit shrink [H]width' })
+key.set('n', '<leader>sJ', function() require('smart-splits').resize_down(5) end,  { desc = '[S]plit shrink [J]height' })
+key.set('n', '<leader>sK', function() require('smart-splits').resize_up(5) end,    { desc = '[S]plit grow [K]height' })
+key.set('n', '<leader>sL', function() require('smart-splits').resize_right(5) end, { desc = '[S]plit grow [L]width' })
+key.set('n', '<leader>sH', function() require('smart-splits').resize_left(5) end,  { desc = '[S]plit shrink [H]width' })
 key.set('n', '<leader>vh', '<C-w>t<C-w>K', { desc = '[V]ertical to [H]orizontal' })
 key.set('n', '<leader>hv', '<C-w>t<C-w>H', { desc = '[H]orizontal to [V]ertical' })
 

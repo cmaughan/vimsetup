@@ -9,7 +9,7 @@ local paths = require("util.paths")
 vim.g.python3_host_prog = paths.resolve_python_host_prog()
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-local lazy_bootstrap = not vim.loop.fs_stat(lazypath)
+local lazy_bootstrap = not vim.uv.fs_stat(lazypath)
 if lazy_bootstrap then
   vim.fn.system({
     "git",

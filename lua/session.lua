@@ -41,7 +41,7 @@ local function normalize(path)
 end
 
 local function current_dir()
-    return normalize(vim.loop.cwd() or vim.fn.getcwd())
+    return normalize(vim.uv.cwd() or vim.fn.getcwd())
 end
 
 local function git_root(path)

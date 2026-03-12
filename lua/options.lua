@@ -4,7 +4,7 @@ vim.opt.mouse = 'a'                       -- Enable mouse support
 vim.opt.clipboard = 'unnamedplus'         -- Copy/paste to system clipboard
 
 vim.g.mapleader = ','
-vim.g.maplocalleader = ','
+vim.g.maplocalleader = '\\'
 
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
@@ -15,7 +15,6 @@ vim.opt.laststatus = 2
 vim.opt.autowrite = true
 vim.opt.autoread = true
 vim.opt.cursorline = true
-vim.opt.autoread = true
 
 vim.opt.scrolloff = 8
 
@@ -58,7 +57,6 @@ vim.opt.relativenumber = true
 vim.cmd [[ set noswapfile ]]
 vim.cmd [[ set termguicolors ]]
 
-vim.g.windowswap_map_keys = 0;
 
 vim.cmd[[autocmd BufWinEnter,WinEnter term://* startinsert]]
 

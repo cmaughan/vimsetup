@@ -11,7 +11,6 @@ require("lazy").setup({
     },
 
     -- Basics
-    'equalsraf/neovim-gui-shim',
     'tpope/vim-repeat',
 
     -- Mini files
@@ -86,16 +85,14 @@ require("lazy").setup({
     -- Harpoon
     {
         'ThePrimeagen/harpoon',
-        branch = 'master',
+        branch = 'harpoon2',
         event = 'VeryLazy',
         dependencies = {
             'nvim-lua/plenary.nvim',
         },
-        opts = {
-            menu = {
-                width = 120
-            }
-        },
+        config = function()
+            require("harpoon"):setup()
+        end,
     },
 
     -- Theme: Carbonfox via Nightfox is the startup default.
@@ -119,13 +116,17 @@ require("lazy").setup({
         end,
     },
     'hiphish/rainbow-delimiters.nvim',
-    { 'lukas-reineke/indent-blankline.nvim', event = { 'BufReadPost', 'BufNewFile' } },
+    { 'lukas-reineke/indent-blankline.nvim', event = { 'BufReadPost', 'BufNewFile' }, main = 'ibl', opts = {} },
 
     -- Sharing
     'kristijanhusak/vim-carbon-now-sh',
 
     -- Window management
-    'wesQ3/vim-windowswap',
+    {
+        'mrjones2014/smart-splits.nvim',
+        lazy = false,
+        opts = {},
+    },
 
     -- Git
     'tpope/vim-fugitive',
@@ -277,8 +278,16 @@ require("lazy").setup({
         end,
     },
 
-    -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim', event = 'VeryLazy', opts = {} },
+    -- Autopairs
+    {
+        'windwp/nvim-autopairs',
+        event = 'InsertEnter',
+        config = function()
+            require('nvim-autopairs').setup({ check_ts = true })
+            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+            require('cmp').event:on('confirm_done', cmp_autopairs.on_confirm_done())
+        end,
+    },
 
     -- Completions
     {
@@ -374,8 +383,8 @@ require("lazy").setup({
         end,
     },
     {
-        'mtth/scratch.vim',
-        cmd = 'Scratch',
+        'LintaoAmons/scratch.nvim',
+        cmd = { 'Scratch', 'ScratchOpen', 'ScratchOpenFtype' },
         config = function()
             require("plugin_config.scratch")
         end,
