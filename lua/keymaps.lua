@@ -54,10 +54,9 @@ key.set('n', '<leader>wj', function() require('smart-splits').swap_buf_down() en
 key.set('n', '<leader>wk', function() require('smart-splits').swap_buf_up() end,    { desc = '[W]indow swap up' })
 key.set('n', '<leader>wl', function() require('smart-splits').swap_buf_right() end, { desc = '[W]indow swap right' })
 
--- Terminal mappings
-key.set('n', '<C-\\>', function() vim.cmd('split term://' .. vim.o.shell) end, { noremap = true, desc = '[C-\\] Terminal' })
+-- Terminal mappings (toggleterm handles <C-\> open/close)
 key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]scape Terminal' })
-key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal' })
+key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal to normal' })
 
 -- Move around splits using Ctrl + {h,j,k,l} (smart-splits: tmux-aware)
 key.set('n', '<C-h>', function() require('smart-splits').move_cursor_left() end,  { desc = '[C-h] Left Pane' })
@@ -107,6 +106,14 @@ key.set('x', '<leader>p', '\"_dP', { desc = '[P]aste over keep' })
 
 -- Clear search highlighting with <leader> and c
 key.set('n', '<leader>cs', ':nohl<CR>', { desc = '[C]lear [S]earch' })
+
+-- Grug-far: search & replace on visual selection
+key.set('v', '<leader>sr', function()
+    require('grug-far').open({ prefills = { search = vim.fn.expand('<cword>') } })
+end, { desc = '[S]earch [R]eplace selection (grug-far)' })
+
+-- Replace word under cursor across file
+key.set('n', '<leader>rw', ':%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>', { desc = '[R]eplace [W]ord under cursor' })
 
 -- Toggle auto-indenting for code paste
 -- key.set('n', '<F2>', ':set invpaste paste?<CR>', { desc = '' })

@@ -92,6 +92,7 @@ require("lazy").setup({
         },
         config = function()
             require("harpoon"):setup()
+            require("plugin_config.harpoon")
         end,
     },
 
@@ -131,7 +132,6 @@ require("lazy").setup({
     -- Git
     'tpope/vim-fugitive',
 
-    -- 'NeogitOrg/neogit',
     { 'sindrets/diffview.nvim', cmd = { 'DiffviewOpen', 'DiffviewFileHistory', 'DiffviewClose' } },
 
     -- Highlight TODO/FIXME/HACK/NOTE comments
@@ -157,13 +157,26 @@ require("lazy").setup({
         end,
     },
 
+    -- Copilot (inline suggestions disabled; used as cmp source)
+    {
+        'zbirenbaum/copilot.lua',
+        event = 'InsertEnter',
+        config = function()
+            require("copilot").setup({
+                suggestion = { enabled = false },
+                panel      = { enabled = false },
+            })
+            require("plugin_config.copilot")
+        end,
+    },
+
     -- CopilotChat
     {
         'CopilotC-Nvim/CopilotChat.nvim',
         cmd = { 'CopilotChat', 'CopilotChatOpen' },
         dependencies = {
-            { 'zbirenbaum/copilot.lua' },
-            { 'nvim-lua/plenary.nvim' },
+            'zbirenbaum/copilot.lua',
+            'nvim-lua/plenary.nvim',
         },
         keys = {
             { '<leader>cc', '<cmd>CopilotChatToggle<cr>',  desc = '[C]opilot [C]hat toggle' },
@@ -218,12 +231,23 @@ require("lazy").setup({
         opts = {},
     },
 
-    -- Extended text objects (ia/aa, if/af, ic/ac + more)
+    -- Extended text objects (ia/aa, if/af, ic/ac + more) with treesitter integration
     {
         'echasnovski/mini.ai',
         version = '*',
         event = 'VeryLazy',
-        opts = {},
+        config = function()
+            require('mini.ai').setup({
+                n_lines = 500,
+                custom_textobjects = {
+                    -- Override f to use treesitter function definitions
+                    F = require('mini.ai').gen_spec.treesitter({
+                        a = '@function.outer',
+                        i = '@function.inner',
+                    }),
+                },
+            })
+        end,
     },
 
     -- Coding
@@ -300,15 +324,17 @@ require("lazy").setup({
             'hrsh7th/cmp-path',
             'onsails/lspkind.nvim',
             'rafamadriz/friendly-snippets',
-            'zbirenbaum/copilot-cmp',
+            {
+                'zbirenbaum/copilot-cmp',
+                config = function()
+                    require("copilot_cmp").setup()
+                end,
+            },
         },
         config = function()
             require("plugin_config.completions")
         end,
     },
-
-    -- CoPilot
-    -- "zbirenbaum/copilot.lua",
 
     -- Rust
     {
@@ -394,6 +420,59 @@ require("lazy").setup({
         keys = { 's', 'S' },
         config = function()
             require("plugin_config.leap")
+        end,
+    },
+
+    -- Persistent terminal (replaces the manual split term:// approach)
+    {
+        'akinsho/toggleterm.nvim',
+        version = '*',
+        keys = { '<C-\\>' },
+        opts = {
+            open_mapping    = [[<C-\>]],
+            direction       = 'horizontal',
+            size            = 15,
+            shade_terminals = false,
+            persist_mode    = true,
+        },
+    },
+
+    -- DAP: Debug Adapter Protocol for C / C++ / Rust (codelldb via Mason)
+    {
+        'mfussenegger/nvim-dap',
+        lazy = true,
+        dependencies = {
+            {
+                'rcarriga/nvim-dap-ui',
+                dependencies = { 'nvim-neotest/nvim-nio' },
+            },
+            { 'theHamsta/nvim-dap-virtual-text', opts = {} },
+            {
+                'jay-babu/mason-nvim-dap.nvim',
+                dependencies = { 'williamboman/mason.nvim' },
+                opts = {
+                    ensure_installed = { 'codelldb' },
+                    -- handlers = {} lets mason-nvim-dap auto-register adapters
+                    handlers = {},
+                },
+            },
+        },
+        keys = {
+            { '<leader>db', function() require('dap').toggle_breakpoint() end,                                    desc = '[D]ebug [B]reakpoint' },
+            { '<leader>dB', function() require('dap').set_breakpoint(vim.fn.input('Condition: ')) end,            desc = '[D]ebug [B]reakpoint conditional' },
+            { '<leader>dc', function() require('dap').continue() end,                                             desc = '[D]ebug [C]ontinue' },
+            { '<leader>di', function() require('dap').step_into() end,                                            desc = '[D]ebug step [I]nto' },
+            { '<leader>do', function() require('dap').step_over() end,                                            desc = '[D]ebug step [O]ver' },
+            { '<leader>dO', function() require('dap').step_out() end,                                             desc = '[D]ebug step [O]ut' },
+            { '<leader>dq', function() require('dap').terminate() end,                                            desc = '[D]ebug [Q]uit' },
+            { '<leader>dr', function() require('dap').restart() end,                                              desc = '[D]ebug [R]estart' },
+            { '<leader>dl', function() require('dap').run_last() end,                                             desc = '[D]ebug run [L]ast' },
+            { '<leader>du', function() require('dapui').toggle() end,                                             desc = '[D]ebug [U]I toggle' },
+            { '<leader>de', function() require('dapui').eval() end,                                               desc = '[D]ebug [E]val', mode = { 'n', 'v' } },
+            { '<leader>dh', function() require('dap.ui.widgets').hover() end,                                     desc = '[D]ebug [H]over value' },
+        },
+        config = function()
+            require('plugin_config.dap')
         end,
     },
 })

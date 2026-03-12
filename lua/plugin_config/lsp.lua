@@ -93,6 +93,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
         key.set('n', '<leader>lr', vim.lsp.buf.rename, { buffer = ev.buf, desc = 'LSP: [L]anguage [R]ename' })
         key.set('n', '<leader>li', telescope.lsp_incoming_calls, { buffer = ev.buf, desc = 'LSP: [L]anguage [I]ncoming calls' })
         key.set('n', '<leader>lu', telescope.lsp_outgoing_calls, { buffer = ev.buf, desc = 'LSP: [L]anguage O[u]tgoing calls' })
+        key.set('n', '<leader>lI', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }), { bufnr = ev.buf })
+        end, { buffer = ev.buf, desc = 'LSP: [L]anguage [I]nlay hints toggle' })
 
         if client and client.name == 'clangd' then
             key.set('n', '<leader>lo', function()

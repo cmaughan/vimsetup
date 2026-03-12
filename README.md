@@ -38,7 +38,8 @@ Templates for shell and terminal multiplexer setup.
 │   │   ├── keymap.lua          # Shared keymap helper / duplicate guard
 │   │   └── paths.lua           # Shared path helpers / Python provider resolution
 │   └── plugin_config/          # Per-plugin configuration
-│       ├── init.lua            # Shared plugin config helpers
+│       ├── init.lua            # (intentionally empty — configs loaded via lazy.nvim)
+│       ├── dap.lua             # DAP debugger (nvim-dap, codelldb for C/C++/Rust)
 │       ├── lsp.lua             # LSP + mason-lspconfig
 │       ├── formatting.lua      # Formatting via conform.nvim
 │       ├── linting.lua         # Linting via nvim-lint
@@ -55,8 +56,6 @@ Templates for shell and terminal multiplexer setup.
 │       ├── lualine.lua         # Status line
 │       ├── markdown_preview.lua# Markdown preview
 │       ├── mini-files.lua      # Mini file explorer
-│       ├── neogit.lua          # Neogit
-│       ├── neorg.lua           # Neorg
 │       ├── neotest.lua         # Test runner integration
 │       ├── obsidian.lua        # Obsidian integration
 │       ├── pre-init.lua        # Pre-init hooks
@@ -65,7 +64,6 @@ Templates for shell and terminal multiplexer setup.
 │       ├── scratch.lua         # Scratch buffer
 │       ├── twilight.lua        # Twilight (focus mode)
 │       ├── ufo.lua             # Folding
-│       ├── vimwiki.lua         # VimWiki
 │       ├── which_key.lua       # Which-key
 │       └── zen_mode.lua        # Zen mode
 ├── Screenshot-mac.png          # Mac reference screenshot
@@ -231,6 +229,30 @@ Automatically installed via `mason-lspconfig`:
 Configured, but not auto-installed:
 - `openscad_lsp` — OpenSCAD (install manually via Mason if needed)
 
+### Debug adapters (via Mason)
+
+Automatically installed via `mason-nvim-dap`:
+- `codelldb` — C, C++, and Rust (via `nvim-dap` + `nvim-dap-ui`)
+
+Debugger keybindings (all under `<leader>d`):
+
+| Key          | Action                        |
+|--------------|-------------------------------|
+| `<leader>db` | Toggle breakpoint             |
+| `<leader>dB` | Conditional breakpoint        |
+| `<leader>dc` | Continue                      |
+| `<leader>di` | Step into                     |
+| `<leader>do` | Step over                     |
+| `<leader>dO` | Step out                      |
+| `<leader>dq` | Terminate session             |
+| `<leader>dr` | Restart session               |
+| `<leader>dl` | Run last config               |
+| `<leader>du` | Toggle DAP UI                 |
+| `<leader>de` | Eval expression (normal/visual)|
+| `<leader>dh` | Hover value under cursor      |
+
+The UI opens automatically when a debug session starts and closes when it ends.
+
 ### Rust
 
 **Mac / Linux:**
@@ -259,7 +281,8 @@ Configured formatters:
 - Python: `ruff format`
 - Rust: `rustfmt`
 - C/C++: `clang-format`
-- JSON / YAML / Markdown: `prettierd` (with `prettier` fallback)
+- JSON / YAML: `prettierd` (with `prettier` fallback)
+- Markdown: `prettierd` — format on save for all markdown **except** files inside the Obsidian vault path
 - TOML: `taplo`
 - Shell: `shfmt`
 
@@ -357,6 +380,14 @@ zi foo       # interactive fuzzy search (requires fzf)
 Just use `cd` normally at first — zoxide builds its database from your navigation history.
 
 ---
+
+## Neovim Terminal
+
+A persistent terminal is provided by `toggleterm.nvim`:
+
+- `<C-\>` — toggle a horizontal terminal split (state is preserved between toggles)
+- `<Esc>` in terminal mode — return to normal mode
+- `<C-h/j/k/l>` in terminal mode — navigate to adjacent splits (via smart-splits)
 
 ## Optional Platform Files
 

@@ -6,7 +6,7 @@ vim.opt.clipboard = 'unnamedplus'         -- Copy/paste to system clipboard
 vim.g.mapleader = ','
 vim.g.maplocalleader = '\\'
 
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 vim.opt.incsearch = true
 
 vim.opt.backspace = '2'
