@@ -327,18 +327,15 @@ cp starship.toml.template ~/.config/starship.toml
 cp starship.toml.template "$HOME\.config\starship.toml"
 ```
 
-The config uses the **catppuccin-powerline** preset. It requires a [Nerd Font](https://www.nerdfonts.com) — recommended options:
-- **CaskaydiaCove NF** (Nerd Font patched build of Microsoft's Cascadia Code)
-- **JetBrainsMono NF**
+The config uses the **catppuccin-powerline** preset. It requires **JetBrainsMono Nerd Font Mono**.
 
 Install on Mac via Homebrew:
 ```sh
 brew install --cask font-jetbrains-mono-nerd-font
-brew install --cask font-caskaydia-cove-nerd-font
 ```
 
 Set the font in your terminal emulator:
-- **Mac (iTerm2):** Preferences → Profiles → Text → Font → select e.g. `JetBrainsMono Nerd Font`
+- **Mac (iTerm2):** Preferences → Profiles → Text → Font → select `JetBrainsMono Nerd Font Mono`
 - **Mac (Warp):** Settings → Appearance → Terminal Font
 - **Windows Terminal:** Settings → your profile → Appearance → Font face
 > **Windows note:** the PowerShell template adds the WinGet-installed `uv` path dynamically, and `command_timeout = 5000` keeps Starship tolerant of slower version probes.
