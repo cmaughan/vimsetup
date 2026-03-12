@@ -37,7 +37,7 @@ echo.
 :: --- Check admin ---
 echo %BOLD%[1/9] Checking prerequisites...%RESET%
 net session >nul 2>&1
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo %YELLOW%  WARNING: Not running as Administrator.%RESET%
     echo %YELLOW%  Some installations may fail. Consider re-running as admin.%RESET%
     echo.
@@ -47,7 +47,7 @@ if %errorlevel% neq 0 (
 
 :: --- Check winget ---
 where winget >nul 2>&1
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo %RED%  ERROR: winget not found. Please install App Installer from the Microsoft Store.%RESET%
     echo %RED%  https://aka.ms/getwinget%RESET%
     exit /b 1
@@ -83,16 +83,16 @@ echo.
 echo %BOLD%[3/9] Installing PowerShell module PSFzf...%RESET%
 
 where pwsh >nul 2>&1
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo %YELLOW%  pwsh not found, trying powershell.exe...%RESET%
     powershell -NoProfile -Command "if (Get-Module -ListAvailable -Name PSFzf) { Write-Host 'PSFzf already installed' } else { Install-Module PSFzf -Scope CurrentUser -Force -AllowClobber; Write-Host 'PSFzf installed' }"
 ) else (
     pwsh -NoProfile -Command "if (Get-Module -ListAvailable -Name PSFzf) { Write-Host 'PSFzf already installed' } else { Install-Module PSFzf -Scope CurrentUser -Force -AllowClobber; Write-Host 'PSFzf installed' }"
 )
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo %RED%  Failed to install PSFzf.%RESET%
     set "FAILED=!FAILED! PSFzf"
-    set /a ERRORS+=1
+    set /a ERRORS+=1 >nul
 ) else (
     echo %GREEN%  PSFzf OK.%RESET%
 )
@@ -104,48 +104,46 @@ echo.
 echo %BOLD%[4/9] Setting up Python environment...%RESET%
 
 where uv >nul 2>&1
-if %errorlevel% neq 0 (
-    echo %YELLOW%  uv not found in PATH. You may need to restart your terminal after winget install.%RESET%
-    echo %YELLOW%  Skipping Python setup.%RESET%
+if !errorlevel! neq 0 (
+    echo %YELLOW%  uv not found in PATH. Skipping Python setup.%RESET%
     set "FAILED=!FAILED! Python-setup"
-    set /a ERRORS+=1
+    set /a ERRORS+=1 >nul
+    goto :after_python
+)
+echo   Installing Python 3.12 via uv...
+call uv python install 3.12
+if !errorlevel! neq 0 (
+    echo %RED%  Failed to install Python 3.12.%RESET%
+    set "FAILED=!FAILED! Python-3.12"
+    set /a ERRORS+=1 >nul
 ) else (
-    echo   Installing Python 3.12 via uv...
-    uv python install 3.12
-    if %errorlevel% neq 0 (
-        echo %RED%  Failed to install Python 3.12.%RESET%
-        set "FAILED=!FAILED! Python-3.12"
-        set /a ERRORS+=1
+    echo %GREEN%  Python 3.12 OK.%RESET%
+)
+if not exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
+    echo   Creating global venv at %LOCALAPPDATA%\python-global...
+    call uv venv "%LOCALAPPDATA%\python-global" --python 3.12
+    if !errorlevel! neq 0 (
+        echo %RED%  Failed to create global venv.%RESET%
+        set "FAILED=!FAILED! python-global-venv"
+        set /a ERRORS+=1 >nul
     ) else (
-        echo %GREEN%  Python 3.12 OK.%RESET%
+        echo %GREEN%  Global venv created.%RESET%
     )
-
-    if not exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
-        echo   Creating global venv at %LOCALAPPDATA%\python-global...
-        uv venv "%LOCALAPPDATA%\python-global" --python 3.12
-        if %errorlevel% neq 0 (
-            echo %RED%  Failed to create global venv.%RESET%
-            set "FAILED=!FAILED! python-global-venv"
-            set /a ERRORS+=1
-        ) else (
-            echo %GREEN%  Global venv created.%RESET%
-        )
+) else (
+    echo %GREEN%  Global venv already exists.%RESET%
+)
+if exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
+    echo   Installing pynvim...
+    call uv pip install --python "%LOCALAPPDATA%\python-global\Scripts\python.exe" pynvim
+    if !errorlevel! neq 0 (
+        echo %RED%  Failed to install pynvim.%RESET%
+        set "FAILED=!FAILED! pynvim"
+        set /a ERRORS+=1 >nul
     ) else (
-        echo %GREEN%  Global venv already exists.%RESET%
-    )
-
-    if exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
-        echo   Installing pynvim...
-        uv pip install --python "%LOCALAPPDATA%\python-global\Scripts\python.exe" pynvim
-        if %errorlevel% neq 0 (
-            echo %RED%  Failed to install pynvim.%RESET%
-            set "FAILED=!FAILED! pynvim"
-            set /a ERRORS+=1
-        ) else (
-            echo %GREEN%  pynvim OK.%RESET%
-        )
+        echo %GREEN%  pynvim OK.%RESET%
     )
 )
+:after_python
 echo.
 
 :: ============================================================================
@@ -154,27 +152,27 @@ echo.
 echo %BOLD%[5/9] Installing Node neovim provider...%RESET%
 
 where npm >nul 2>&1
-if %errorlevel% neq 0 (
-    echo %YELLOW%  npm not found in PATH. You may need to restart your terminal after winget install.%RESET%
-    echo %YELLOW%  Skipping neovim node provider.%RESET%
+if !errorlevel! neq 0 (
+    echo %YELLOW%  npm not found in PATH. Skipping neovim node provider.%RESET%
     set "FAILED=!FAILED! node-neovim"
-    set /a ERRORS+=1
-) else (
-    npm list -g neovim >nul 2>&1
-    if %errorlevel% neq 0 (
-        echo   Installing neovim npm package globally...
-        npm install -g neovim
-        if %errorlevel% neq 0 (
-            echo %RED%  Failed to install neovim npm package.%RESET%
-            set "FAILED=!FAILED! node-neovim"
-            set /a ERRORS+=1
-        ) else (
-            echo %GREEN%  neovim npm package installed.%RESET%
-        )
-    ) else (
-        echo %GREEN%  neovim npm package already installed.%RESET%
-    )
+    set /a ERRORS+=1 >nul >nul
+    goto :after_npm
 )
+call npm list -g neovim >nul 2>&1
+if !errorlevel! equ 0 (
+    echo %GREEN%  neovim npm package already installed.%RESET%
+    goto :after_npm
+)
+echo   Installing neovim npm package globally...
+call npm install -g neovim >nul 2>&1
+if !errorlevel! neq 0 (
+    echo %RED%  Failed to install neovim npm package.%RESET%
+    set "FAILED=!FAILED! node-neovim"
+    set /a ERRORS+=1 >nul >nul
+) else (
+    echo %GREEN%  neovim npm package installed.%RESET%
+)
+:after_npm
 echo.
 
 :: ============================================================================
@@ -184,24 +182,25 @@ echo %BOLD%[6/9] Installing JetBrainsMono Nerd Font...%RESET%
 
 :: Check if the font is already installed by looking in the fonts directory
 dir "%LOCALAPPDATA%\Microsoft\Windows\Fonts\JetBrainsMonoNerdFont*" >nul 2>&1
-if %errorlevel% equ 0 (
-    echo %GREEN%  JetBrainsMono Nerd Font already installed (user fonts).%RESET%
-) else (
-    dir "%WINDIR%\Fonts\JetBrainsMonoNerdFont*" >nul 2>&1
-    if %errorlevel% equ 0 (
-        echo %GREEN%  JetBrainsMono Nerd Font already installed (system fonts).%RESET%
-    ) else (
-        echo   Installing via winget...
-        winget install --id "DEVCOM.JetBrainsMonoNerdFont" --accept-package-agreements --accept-source-agreements
-        if %errorlevel% neq 0 (
-            echo %YELLOW%  Font install may have failed or requires manual install.%RESET%
-            set "FAILED=!FAILED! NerdFont"
-            set /a ERRORS+=1
-        ) else (
-            echo %GREEN%  JetBrainsMono Nerd Font installed.%RESET%
-        )
-    )
+if !errorlevel! equ 0 (
+    echo %GREEN%  JetBrainsMono Nerd Font already installed.%RESET%
+    goto :after_font
 )
+dir "%WINDIR%\Fonts\JetBrainsMonoNerdFont*" >nul 2>&1
+if !errorlevel! equ 0 (
+    echo %GREEN%  JetBrainsMono Nerd Font already installed.%RESET%
+    goto :after_font
+)
+echo   Installing via winget...
+winget install --id "DEVCOM.JetBrainsMonoNerdFont" --accept-package-agreements --accept-source-agreements
+if !errorlevel! neq 0 (
+    echo %YELLOW%  Font install may have failed or requires manual install.%RESET%
+    set "FAILED=!FAILED! NerdFont"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  JetBrainsMono Nerd Font installed.%RESET%
+)
+:after_font
 echo.
 
 :: ============================================================================
@@ -210,16 +209,23 @@ echo.
 echo %BOLD%[7/9] Setting up config files...%RESET%
 
 :: --- PowerShell profile ---
-set "PS_PROFILE_DIR=%USERPROFILE%\Documents\PowerShell"
-set "PS_PROFILE=%PS_PROFILE_DIR%\Microsoft.PowerShell_profile.ps1"
+:: Resolve actual $PROFILE path from PowerShell (handles OneDrive-redirected Documents)
+set "PS_PROFILE="
+where pwsh >nul 2>&1
+if !errorlevel! equ 0 (
+    for /f "tokens=*" %%p in ('pwsh -NoProfile -Command "Write-Output $PROFILE"') do set "PS_PROFILE=%%p"
+)
+if not defined PS_PROFILE set "PS_PROFILE=%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+:: Extract directory from profile path
+for %%d in ("!PS_PROFILE!") do set "PS_PROFILE_DIR=%%~dpd"
 set "PS_TEMPLATE=%SCRIPTDIR%\profile.ps1.template"
 
 if exist "%PS_TEMPLATE%" (
-    if not exist "%PS_PROFILE_DIR%" (
-        echo   Creating directory: %PS_PROFILE_DIR%
-        mkdir "%PS_PROFILE_DIR%" >nul 2>&1
+    if not exist "!PS_PROFILE_DIR!" (
+        echo   Creating directory: !PS_PROFILE_DIR!
+        mkdir "!PS_PROFILE_DIR!" >nul 2>&1
     )
-    call :copy_config "%PS_TEMPLATE%" "%PS_PROFILE%" "PowerShell profile"
+    call :copy_config "%PS_TEMPLATE%" "!PS_PROFILE!" "PowerShell profile"
 ) else (
     echo %YELLOW%  Template not found: %PS_TEMPLATE%%RESET%
 )
@@ -256,7 +262,7 @@ echo.
 echo %BOLD%[8/9] Checking psmux setup...%RESET%
 
 where psmux >nul 2>&1
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo %YELLOW%  psmux not found in PATH. Skipping psmux plugin setup.%RESET%
 ) else (
     set "PSMUX_PLUGIN_DIR=%USERPROFILE%\.psmux\plugins"
@@ -283,8 +289,8 @@ if defined INSTALLED (
 if defined SKIPPED (
     echo %YELLOW%  Already present:%RESET%!SKIPPED!
 )
-if %ERRORS% gtr 0 (
-    echo %RED%  Failed (%ERRORS%):%RESET%!FAILED!
+if !ERRORS! gtr 0 (
+    echo %RED%  Failed ^(!ERRORS!^):%RESET%!FAILED!
     echo.
 )
 
@@ -311,20 +317,42 @@ exit /b 0
 set "DISPLAY_NAME=%~1"
 set "PKG_ID=%~2"
 
-:: Use winget list to check if already installed
+:: Check via winget list first, then fall back to PATH check
 winget list --id "%PKG_ID%" --exact >nul 2>&1
-if %errorlevel% equ 0 (
+if !errorlevel! equ 0 (
     echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
     set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
     goto :eof
 )
+:: Also skip if the tool is already on PATH (may have been installed outside winget)
+set "_CMD="
+if /i "%PKG_ID%"=="Neovim.Neovim" set "_CMD=nvim"
+if /i "%PKG_ID%"=="Git.Git" set "_CMD=git"
+if /i "%PKG_ID%"=="OpenJS.NodeJS.LTS" set "_CMD=node"
+if /i "%PKG_ID%"=="BurntSushi.ripgrep.MSVC" set "_CMD=rg"
+if /i "%PKG_ID%"=="sharkdp.fd" set "_CMD=fd"
+if /i "%PKG_ID%"=="junegunn.fzf" set "_CMD=fzf"
+if /i "%PKG_ID%"=="Starship.Starship" set "_CMD=starship"
+if /i "%PKG_ID%"=="eza-community.eza" set "_CMD=eza"
+if /i "%PKG_ID%"=="sharkdp.bat" set "_CMD=bat"
+if /i "%PKG_ID%"=="ajeetdsouza.zoxide" set "_CMD=zoxide"
+if /i "%PKG_ID%"=="Rustlang.Rustup" set "_CMD=rustup"
+if /i "%PKG_ID%"=="astral-sh.uv" set "_CMD=uv"
+if defined _CMD (
+    where !_CMD! >nul 2>&1
+    if !errorlevel! equ 0 (
+        echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
+        set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
+        goto :eof
+    )
+)
 
 echo   Installing %DISPLAY_NAME% (%PKG_ID%)...
 winget install --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo %RED%  [FAIL] %DISPLAY_NAME% installation failed.%RESET%
     set "FAILED=!FAILED! %DISPLAY_NAME%"
-    set /a ERRORS+=1
+    set /a ERRORS+=1 >nul
 ) else (
     echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
     set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
@@ -341,45 +369,39 @@ set "SRC=%~1"
 set "DST=%~2"
 set "LABEL=%~3"
 
-if not exist "%DST%" (
+if not exist "!DST!" (
     echo   Copying %LABEL%...
-    copy /Y "%SRC%" "%DST%" >nul
-    if %errorlevel% equ 0 (
-        echo %GREEN%  [OK] %LABEL% installed to %DST%%RESET%
+    copy /Y "!SRC!" "!DST!"
+    if exist "!DST!" (
+        echo %GREEN%  [OK] %LABEL% installed to !DST!%RESET%
         set "INSTALLED=!INSTALLED! %LABEL%"
     ) else (
         echo %RED%  [FAIL] Could not copy %LABEL%.%RESET%
         set "FAILED=!FAILED! %LABEL%"
-        set /a ERRORS+=1
+        set /a ERRORS+=1 >nul
     )
     goto :eof
 )
 
 :: Destination exists - compare files
-fc /b "%SRC%" "%DST%" >nul 2>&1
-if %errorlevel% equ 0 (
+fc "!SRC!" "!DST!" >nul 2>&1
+if !errorlevel! equ 0 (
     echo %GREEN%  [SKIP] %LABEL% already up to date.%RESET%
     set "SKIPPED=!SKIPPED! %LABEL%"
     goto :eof
 )
 
-:: Files differ - ask user
-echo %YELLOW%  %LABEL% already exists and differs from template.%RESET%
-echo   Source:  %SRC%
-echo   Target:  %DST%
-set /p "OVERWRITE=  Overwrite? [y/N]: "
-if /i "%OVERWRITE%"=="y" (
-    copy /Y "%SRC%" "%DST%" >nul
-    if %errorlevel% equ 0 (
-        echo %GREEN%  [OK] %LABEL% updated.%RESET%
-        set "INSTALLED=!INSTALLED! %LABEL%"
-    ) else (
-        echo %RED%  [FAIL] Could not copy %LABEL%.%RESET%
-        set "FAILED=!FAILED! %LABEL%"
-        set /a ERRORS+=1
-    )
+:: Files differ - back up and overwrite
+echo %YELLOW%  %LABEL% differs from template. Updating...%RESET%
+copy /Y "!DST!" "!DST!.bak" >nul 2>&1
+if exist "!DST!.bak" echo   Backed up to !DST!.bak
+copy /Y "!SRC!" "!DST!"
+if !errorlevel! equ 0 (
+    echo %GREEN%  [OK] %LABEL% updated.%RESET%
+    set "INSTALLED=!INSTALLED! %LABEL%"
 ) else (
-    echo   Skipped %LABEL%.
-    set "SKIPPED=!SKIPPED! %LABEL%"
+    echo %RED%  [FAIL] Could not copy %LABEL%.%RESET%
+    set "FAILED=!FAILED! %LABEL%"
+    set /a ERRORS+=1 >nul
 )
 goto :eof

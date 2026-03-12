@@ -1,10 +1,10 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-:: ─────────────────────────────────────────────────────────────────────
-::  doctor.bat — Development Environment Health Check
+:: ---------------------------------------------------------------------
+::  doctor.bat -- Development Environment Health Check
 ::  Read-only diagnostic tool. Installs nothing, only reports.
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 
 :: ANSI color codes (requires Windows 10+)
 :: Generate ESC character via prompt trick
@@ -26,16 +26,16 @@ set /a FAIL=0
 set "CFGDIR=%~dp0"
 
 echo.
-echo %BOLD%%CYAN%══════════════════════════════════════════════════════════════%RESET%
+echo %BOLD%%CYAN%==============================================================%RESET%
 echo %BOLD%%CYAN%  Development Environment Health Check%RESET%
-echo %BOLD%%CYAN%══════════════════════════════════════════════════════════════%RESET%
+echo %BOLD%%CYAN%==============================================================%RESET%
 echo   %DIM%Config dir: %CFGDIR%%RESET%
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Section: Core Tools
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%── Core Tools ──────────────────────────────────────────────────%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%-- Core Tools ------------------------------------------------------%RESET%
 echo.
 
 call :check_tool nvim       "nvim --version"       1  "winget install Neovim.Neovim"
@@ -56,10 +56,10 @@ call :check_tool psmux      "psmux --version"      1  "cargo install psmux"
 
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Section: Python Environment
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%── Python Environment ──────────────────────────────────────────%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%-- Python Environment ----------------------------------------------%RESET%
 echo.
 
 :: Check uv
@@ -68,7 +68,7 @@ if !errorlevel! equ 0 (
     echo   %GREEN%[OK]%RESET%      uv is installed
     set /a PASS+=1 >nul
 ) else (
-    echo   %RED%[MISSING]%RESET%  uv — install with: winget install astral-sh.uv
+    echo   %RED%[MISSING]%RESET%  uv --install with: winget install astral-sh.uv
     set /a FAIL+=1 >nul
 )
 
@@ -89,11 +89,11 @@ if exist "!PYGLOBAL!" (
             echo              %DIM%Expected: !PYGLOBAL!%RESET%
             set /a WARN+=1 >nul
         ) else (
-            echo   %RED%[MISSING]%RESET%  Python 3.12 — run: uv python install 3.12
+            echo   %RED%[MISSING]%RESET%  Python 3.12 --run: uv python install 3.12
             set /a FAIL+=1 >nul
         )
     ) else (
-        echo   %RED%[MISSING]%RESET%  Python 3.12 — install uv first, then: uv python install 3.12
+        echo   %RED%[MISSING]%RESET%  Python 3.12 --install uv first, then: uv python install 3.12
         set /a FAIL+=1 >nul
     )
 )
@@ -106,12 +106,12 @@ if exist "!PYGLOBAL!" (
         echo   %GREEN%[OK]%RESET%      pynvim !PYNVIMVER!
         set /a PASS+=1 >nul
     ) else (
-        echo   %RED%[MISSING]%RESET%  pynvim — install with: uv pip install --python "!PYGLOBAL!" pynvim
+        echo   %RED%[MISSING]%RESET%  pynvim --install with: uv pip install --python "!PYGLOBAL!" pynvim
         set /a FAIL+=1 >nul
     )
     del "%TEMP%\_doctor_pynvim.txt" 2>nul
 ) else (
-    echo   %YELLOW%[WARN]%RESET%    pynvim — cannot check ^(python-global not found^)
+    echo   %YELLOW%[WARN]%RESET%    pynvim --cannot check ^(python-global not found^)
     set /a WARN+=1 >nul
 )
 
@@ -124,32 +124,40 @@ if !errorlevel! equ 0 (
         echo   %GREEN%[OK]%RESET%      neovim node provider: !NODEVIMVER!
         set /a PASS+=1 >nul
     ) else (
-        echo   %RED%[MISSING]%RESET%  neovim node provider — install with: npm install -g neovim
+        echo   %RED%[MISSING]%RESET%  neovim node provider --install with: npm install -g neovim
         set /a FAIL+=1 >nul
     )
 ) else (
-    echo   %YELLOW%[WARN]%RESET%    neovim node provider — cannot check ^(npm not found^)
+    echo   %YELLOW%[WARN]%RESET%    neovim node provider --cannot check ^(npm not found^)
     set /a WARN+=1 >nul
 )
 
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Section: Config Files
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%── Config Files ────────────────────────────────────────────────%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%-- Config Files ----------------------------------------------------%RESET%
 echo.
 
-call :check_config "PowerShell profile"  "%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"  "%CFGDIR%profile.ps1.template"
+:: Resolve actual $PROFILE path from PowerShell (handles OneDrive-redirected Documents)
+set "PS_PROFILE="
+where pwsh >nul 2>&1
+if !errorlevel! equ 0 (
+    for /f "tokens=*" %%p in ('pwsh -NoProfile -Command "Write-Output $PROFILE"') do set "PS_PROFILE=%%p"
+)
+if not defined PS_PROFILE set "PS_PROFILE=%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+
+call :check_config "PowerShell profile"  "!PS_PROFILE!"  "%CFGDIR%profile.ps1.template"
 call :check_config "Starship config"     "%USERPROFILE%\.config\starship.toml"                                  "%CFGDIR%starship.toml.template"
 call :check_config "Tmux config"         "%USERPROFILE%\.tmux.conf"                                             "%CFGDIR%tmux.windows.conf.template"
 
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Section: Neovim Health
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%── Neovim Health ───────────────────────────────────────────────%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%-- Neovim Health ---------------------------------------------------%RESET%
 echo.
 
 :: Check lazy.nvim
@@ -157,7 +165,7 @@ if exist "%LOCALAPPDATA%\nvim-data\lazy\lazy.nvim" (
     echo   %GREEN%[OK]%RESET%      lazy.nvim installed
     set /a PASS+=1 >nul
 ) else (
-    echo   %RED%[MISSING]%RESET%  lazy.nvim — open nvim to bootstrap, or check config
+    echo   %RED%[MISSING]%RESET%  lazy.nvim --open nvim to bootstrap, or check config
     set /a FAIL+=1 >nul
 )
 
@@ -175,20 +183,20 @@ if exist "%LOCALAPPDATA%\nvim-data\mason\bin" (
             echo              %DIM%  - %%~nxf%RESET%
         )
     ) else (
-        echo   %YELLOW%[WARN]%RESET%    Mason bin directory is empty — run :Mason in nvim
+        echo   %YELLOW%[WARN]%RESET%    Mason bin directory is empty --run :Mason in nvim
         set /a WARN+=1 >nul
     )
 ) else (
-    echo   %RED%[MISSING]%RESET%  Mason tools directory — open nvim and run :Mason
+    echo   %RED%[MISSING]%RESET%  Mason tools directory --open nvim and run :Mason
     set /a FAIL+=1 >nul
 )
 
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Section: Font
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%── Font ────────────────────────────────────────────────────────%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%-- Font ------------------------------------------------------------%RESET%
 echo.
 
 set "FONT_FOUND="
@@ -214,10 +222,10 @@ if defined FONT_FOUND (
 
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Section: PowerShell Modules
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%── PowerShell Modules ──────────────────────────────────────────%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%-- PowerShell Modules ----------------------------------------------%RESET%
 echo.
 
 where pwsh >nul 2>&1
@@ -228,23 +236,23 @@ if !errorlevel! equ 0 (
         echo   %GREEN%[OK]%RESET%      PSFzf module v!PSFZFVER!
         set /a PASS+=1 >nul
     ) else (
-        echo   %RED%[MISSING]%RESET%  PSFzf module — install with: Install-Module PSFzf -Scope CurrentUser
+        echo   %RED%[MISSING]%RESET%  PSFzf module --install with: Install-Module PSFzf -Scope CurrentUser
         set /a FAIL+=1 >nul
     )
 ) else (
-    echo   %YELLOW%[WARN]%RESET%    pwsh not found — cannot check PowerShell modules
+    echo   %YELLOW%[WARN]%RESET%    pwsh not found --cannot check PowerShell modules
     set /a WARN+=1 >nul
 )
 
 echo.
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Summary
-:: ─────────────────────────────────────────────────────────────────────
-echo %BOLD%%CYAN%══════════════════════════════════════════════════════════════%RESET%
+:: ---------------------------------------------------------------------
+echo %BOLD%%CYAN%==============================================================%RESET%
 set /a TOTAL=!PASS!+!WARN!+!FAIL!
 echo   %GREEN%!PASS! passed%RESET%, %YELLOW%!WARN! warnings%RESET%, %RED%!FAIL! errors%RESET%  ^(%TOTAL% checks^)
-echo %BOLD%%CYAN%══════════════════════════════════════════════════════════════%RESET%
+echo %BOLD%%CYAN%==============================================================%RESET%
 echo.
 
 if !FAIL! gtr 0 (
@@ -253,9 +261,9 @@ if !FAIL! gtr 0 (
     exit /b 0
 )
 
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 ::  Subroutines
-:: ─────────────────────────────────────────────────────────────────────
+:: ---------------------------------------------------------------------
 
 :: :check_tool <name> <version_cmd> <version_line> <install_hint>
 ::   Checks if a tool is on PATH and shows its version.
@@ -274,13 +282,13 @@ if !FAIL! gtr 0 (
             if !LINE_NUM! equ %VER_LINE% set "VER_OUTPUT=%%v"
         )
         if defined VER_OUTPUT (
-            echo   %GREEN%[OK]%RESET%      %TOOL_NAME% — !VER_OUTPUT!
+            echo   %GREEN%[OK]%RESET%      %TOOL_NAME% --!VER_OUTPUT!
         ) else (
-            echo   %GREEN%[OK]%RESET%      %TOOL_NAME% — installed
+            echo   %GREEN%[OK]%RESET%      %TOOL_NAME% --installed
         )
         set /a PASS+=1 >nul
     ) else (
-        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% — install with: %INSTALL%
+        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
         set /a FAIL+=1 >nul
     )
     exit /b
@@ -293,18 +301,18 @@ if !FAIL! gtr 0 (
     set "TPL_PATH=%~3"
 
     if not exist "%TPL_PATH%" (
-        echo   %YELLOW%[WARN]%RESET%    %CFG_LABEL% — template not found: %TPL_PATH%
+        echo   %YELLOW%[WARN]%RESET%    %CFG_LABEL% --template not found: %TPL_PATH%
         set /a WARN+=1 >nul
         exit /b
     )
 
     if exist "%CFG_PATH%" (
-        fc /b "%CFG_PATH%" "%TPL_PATH%" >nul 2>&1
+        fc "%CFG_PATH%" "%TPL_PATH%" >nul 2>&1
         if !errorlevel! equ 0 (
-            echo   %GREEN%[OK]%RESET%      %CFG_LABEL% — matches template
+            echo   %GREEN%[OK]%RESET%      %CFG_LABEL% --matches template
             set /a PASS+=1 >nul
         ) else (
-            echo   %YELLOW%[OUTDATED]%RESET% %CFG_LABEL% — differs from template
+            echo   %YELLOW%[OUTDATED]%RESET% %CFG_LABEL% --differs from template
             echo              %DIM%Actual:   %CFG_PATH%%RESET%
             echo              %DIM%Template: %TPL_PATH%%RESET%
             set /a WARN+=1 >nul
