@@ -1,6 +1,9 @@
 local paths = require("util.paths")
 
-local vault_path = paths.dropbox_path("Vault") or (vim.fn.stdpath("data") .. "/vault")
+local vault_path = paths.dropbox_path("Vault")
+if not vault_path or vim.fn.isdirectory(vault_path) == 0 then
+    return
+end
 
 require("obsidian").setup({
     workspaces = {

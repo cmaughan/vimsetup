@@ -18,22 +18,22 @@ RESET='\033[0m'
 # --- Output helpers ---
 ok() {
     printf "${GREEN}  [OK]${RESET} %s\n" "$*"
-    ((PASS++))
+    ((++PASS))
 }
 
 warn() {
     printf "${YELLOW}  [WARN]${RESET} %s\n" "$*"
-    ((WARN++))
+    ((++WARN))
 }
 
 outdated() {
     printf "${YELLOW}  [OUTDATED]${RESET} %s\n" "$*"
-    ((WARN++))
+    ((++WARN))
 }
 
 missing() {
     printf "${RED}  [MISSING]${RESET} %s\n" "$*"
-    ((FAIL++))
+    ((++FAIL))
 }
 
 section() {
