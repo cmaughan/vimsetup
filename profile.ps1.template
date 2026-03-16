@@ -12,6 +12,12 @@ if ($_uv_pkg) { $env:PATH = "$($_uv_pkg.FullName);$env:PATH" }
 # uv tool-installed executables (e.g. pynvim-python)
 $env:PATH = "$env:APPDATA\uv\bin;$env:PATH"
 
+# Codex shells only need PATH bootstrap; skip the rest of the profile.
+if ($env:IN_CODEX -eq "1") {
+    Write-Host "[codex] IN_CODEX=1 detected; using PATH-only profile startup." -ForegroundColor DarkYellow
+    return
+}
+
 # Shell prompt
 Invoke-Expression (&starship init powershell)
 
