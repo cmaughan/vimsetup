@@ -97,6 +97,10 @@ brew install tmux          # terminal multiplexer
 brew install uv            # Python version manager + package installer
 brew install zoxide        # smart directory jumping (z command)
 brew install btop          # system monitor (CPU, RAM, disk, network)
+brew install graphviz      # dot / dependency graph rendering
+brew install clang-uml     # UML diagram generation from C++ source
+brew install plantuml      # PlantUML renderer (used by gen_uml.py)
+brew install cmake         # build system
 ```
 
 #### Optional (Mac)
@@ -133,6 +137,10 @@ winget install sharkdp.bat              # cat replacement
 winget install astral-sh.uv              # Python version manager + package installer
 winget install ajeetdsouza.zoxide        # smart directory jumping (z command)
 winget install aristocratos.btop4win     # system monitor (CPU, RAM, disk, network)
+winget install Graphviz.Graphviz         # dot / dependency graph rendering
+winget install bkryza.clang-uml         # UML diagram generation from C++ source
+choco install plantuml                   # PlantUML renderer (used by gen_uml.py)
+winget install Kitware.CMake             # build system
 ```
 
 Install [psmux](https://github.com/marlocarlo/psmux) for terminal multiplexing (tmux-compatible, written in Rust):
@@ -225,6 +233,7 @@ Automatically installed via `mason-lspconfig`:
 - `lua_ls` — Lua
 - `rust_analyzer` — Rust
 - `clangd` — C/C++
+- `neocmake` — CMake
 
 Configured, but not auto-installed:
 - `openscad_lsp` — OpenSCAD (install manually via Mason if needed)

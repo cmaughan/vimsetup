@@ -54,11 +54,58 @@ else
     ok "Homebrew installed"
 fi
 
-# ── 3. Install core CLI tools via brew ────────────────────────────────────
+# ── 3. Xcode (macOS only) ─────────────────────────────────────────────────
+
+if [[ "$OS" == "Darwin" ]]; then
+    section "Xcode Command Line Tools"
+
+    if xcode-select -p &>/dev/null; then
+        skip "Xcode CLI tools already installed ($(xcode-select -p))"
+    else
+        info "Installing Xcode Command Line Tools ..."
+        xcode-select --install
+        # Wait for installation to complete
+        until xcode-select -p &>/dev/null; do sleep 5; done
+        ok "Xcode Command Line Tools installed"
+    fi
+
+    section "Xcode developer directory"
+
+    XCODE_APP="/Applications/Xcode.app/Contents/Developer"
+    CURRENT_DEV="$(xcode-select -p 2>/dev/null)"
+
+    if [[ "$CURRENT_DEV" == "$XCODE_APP" ]]; then
+        skip "Developer directory already set to Xcode.app"
+    elif [[ -d "$XCODE_APP" ]]; then
+        info "Switching developer directory to Xcode.app (required for Metal compiler) ..."
+        sudo xcode-select -s "$XCODE_APP"
+        ok "Developer directory set to $XCODE_APP"
+    else
+        info "Xcode.app not found -- Metal compiler (xcrun metal) will not be available"
+        info "Install Xcode from the App Store, then run: sudo xcode-select -s $XCODE_APP"
+    fi
+
+    section "Metal Toolchain"
+
+    if xcrun metal --version &>/dev/null; then
+        skip "Metal toolchain already available"
+    elif [[ -d "$XCODE_APP" ]]; then
+        info "Downloading Metal toolchain ..."
+        if xcodebuild -downloadComponent MetalToolchain 2>/dev/null; then
+            ok "Metal toolchain installed"
+        else
+            err "Metal toolchain download failed (non-fatal) -- try: xcodebuild -runFirstLaunch"
+        fi
+    else
+        info "Skipping Metal toolchain (Xcode.app not installed)"
+    fi
+fi
+
+# ── 4. Install core CLI tools via brew ────────────────────────────────────
 
 section "Installing CLI tools via Homebrew"
 
-BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux)
+BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -70,7 +117,7 @@ for pkg in "${BREW_PACKAGES[@]}"; do
     fi
 done
 
-# ── 4. Install Rust toolchain ─────────────────────────────────────────────
+# ── 5. Install Rust toolchain ─────────────────────────────────────────────
 
 section "Rust toolchain"
 
@@ -84,7 +131,7 @@ else
     ok "Rust toolchain installed"
 fi
 
-# ── 5. Set up Python environment ──────────────────────────────────────────
+# ── 6. Set up Python environment ──────────────────────────────────────────
 
 section "Python environment (via uv)"
 
@@ -106,7 +153,7 @@ info "Installing pynvim into nvim-venv ..."
 uv pip install --python "$NVIM_VENV/bin/python" pynvim
 ok "pynvim installed"
 
-# ── 6. Node neovim provider ──────────────────────────────────────────────
+# ── 7. Node neovim provider ──────────────────────────────────────────────
 
 section "Node neovim provider"
 
@@ -136,6 +183,7 @@ npm_global_install() {
 npm_global_install "claude" "@anthropic-ai/claude-code"
 npm_global_install "codex"  "@openai/codex"
 npm_global_install "gemini" "@google/gemini-cli"
+
 
 # ── 8. Nerd Font ─────────────────────────────────────────────────────────
 
@@ -207,7 +255,9 @@ section "fzf shell integration"
 
 FZF_INSTALL="$(brew --prefix)/opt/fzf/install"
 
-if [[ -x "$FZF_INSTALL" ]]; then
+if [[ -f "$HOME/.fzf.zsh" ]]; then
+    skip "fzf shell integration already configured (~/.fzf.zsh exists)"
+elif [[ -x "$FZF_INSTALL" ]]; then
     info "Running fzf install script ..."
     "$FZF_INSTALL" --all --no-bash --no-fish
     ok "fzf shell integration configured"

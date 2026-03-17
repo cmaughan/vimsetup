@@ -136,6 +136,7 @@ check_tool uv        "brew install uv"
 check_tool rustup    "https://rustup.rs"
 check_tool cargo     "(comes with rustup)"
 check_tool tmux      "brew install tmux"
+check_tool cmake     "brew install cmake"
 
 # ----- Python Environment -----
 section "Python Environment"

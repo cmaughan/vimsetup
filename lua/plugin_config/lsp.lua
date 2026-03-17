@@ -25,7 +25,7 @@ local function clangd_switch_source_header(bufnr, client)
 end
 
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "rust_analyzer", "clangd" }
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "neocmake" }
 })
 
 local lspconfig = require('lspconfig')
