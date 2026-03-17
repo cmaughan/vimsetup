@@ -58,15 +58,7 @@ key.set('n', '<leader>wl', function() require('smart-splits').swap_buf_right() e
 key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]scape Terminal' })
 key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal to normal' })
 
--- Move around splits using Ctrl + {h,j,k,l} (smart-splits: tmux-aware)
-key.set('n', '<C-h>', function() require('smart-splits').move_cursor_left() end,  { desc = '[C-h] Left Pane' })
-key.set('n', '<C-j>', function() require('smart-splits').move_cursor_down() end,  { desc = '[C-j] Down Pane' })
-key.set('n', '<C-k>', function() require('smart-splits').move_cursor_up() end,    { desc = '[C-k] Up Pane' })
-key.set('n', '<C-l>', function() require('smart-splits').move_cursor_right() end, { desc = '[C-l] Right Pane' })
-key.set('t', '<C-h>', function() require('smart-splits').move_cursor_left() end,  { desc = '[C-h] Left Pane' })
-key.set('t', '<C-j>', function() require('smart-splits').move_cursor_down() end,  { desc = '[C-j] Down Pane' })
-key.set('t', '<C-k>', function() require('smart-splits').move_cursor_up() end,    { desc = '[C-k] Up Pane' })
-key.set('t', '<C-l>', function() require('smart-splits').move_cursor_right() end, { desc = '[C-l] Right Pane' })
+-- Move around splits using Ctrl + {h,j,k,l} (vim-tmux-navigator, defined in plugins.lua)
 
 key.set('n', '<c-s-H>', 'gT', { desc = '[C-S-H] Left Tab' })
 key.set('n', '<c-s-L>', 'gt', { desc = '[C-S-L] Right Tab' })
