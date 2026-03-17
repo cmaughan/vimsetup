@@ -122,7 +122,25 @@ require("lazy").setup({
     -- Sharing
     'kristijanhusak/vim-carbon-now-sh',
 
-    -- Window management
+    -- Seamless Vim/tmux pane navigation (tmux side: TPM plugin in tmux.conf.template)
+    {
+        'christoomey/vim-tmux-navigator',
+        cmd = {
+            'TmuxNavigateLeft',
+            'TmuxNavigateDown',
+            'TmuxNavigateUp',
+            'TmuxNavigateRight',
+            'TmuxNavigatePrevious',
+        },
+        keys = {
+            { '<c-h>', '<cmd>TmuxNavigateLeft<cr>',  mode = { 'n', 't' }, desc = '[C-h] Left Pane' },
+            { '<c-j>', '<cmd>TmuxNavigateDown<cr>',  mode = { 'n', 't' }, desc = '[C-j] Down Pane' },
+            { '<c-k>', '<cmd>TmuxNavigateUp<cr>',    mode = { 'n', 't' }, desc = '[C-k] Up Pane' },
+            { '<c-l>', '<cmd>TmuxNavigateRight<cr>', mode = { 'n', 't' }, desc = '[C-l] Right Pane' },
+        },
+    },
+
+    -- Window management (resize and buffer swap; navigation handled by vim-tmux-navigator)
     {
         'mrjones2014/smart-splits.nvim',
         lazy = false,

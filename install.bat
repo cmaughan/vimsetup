@@ -77,6 +77,7 @@ call :winget_install "uv"                "astral-sh.uv"
 call :winget_install "Graphviz"          "Graphviz.Graphviz"
 call :winget_install "clang-uml"         "bkryza.clang-uml"
 call :winget_install "PlantUML"          "PlantUML.PlantUML"
+call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 echo.
 
@@ -344,6 +345,7 @@ if /i "%PKG_ID%"=="astral-sh.uv" set "_CMD=uv"
 if /i "%PKG_ID%"=="Graphviz.Graphviz" set "_CMD=dot"
 if /i "%PKG_ID%"=="bkryza.clang-uml" set "_CMD=clang-uml"
 if /i "%PKG_ID%"=="PlantUML.PlantUML" set "_CMD=plantuml"
+if /i "%PKG_ID%"=="Kitware.CMake" set "_CMD=cmake"
 if defined _CMD (
     where !_CMD! >nul 2>&1
     if !errorlevel! equ 0 (

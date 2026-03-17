@@ -54,11 +54,55 @@ else
     ok "Homebrew installed"
 fi
 
-# ── 3. Install core CLI tools via brew ────────────────────────────────────
+# ── 3. Xcode (macOS only) ─────────────────────────────────────────────────
+
+if [[ "$OS" == "Darwin" ]]; then
+    section "Xcode Command Line Tools"
+
+    if xcode-select -p &>/dev/null; then
+        skip "Xcode CLI tools already installed ($(xcode-select -p))"
+    else
+        info "Installing Xcode Command Line Tools ..."
+        xcode-select --install
+        # Wait for installation to complete
+        until xcode-select -p &>/dev/null; do sleep 5; done
+        ok "Xcode Command Line Tools installed"
+    fi
+
+    section "Xcode developer directory"
+
+    XCODE_APP="/Applications/Xcode.app/Contents/Developer"
+    CURRENT_DEV="$(xcode-select -p 2>/dev/null)"
+
+    if [[ "$CURRENT_DEV" == "$XCODE_APP" ]]; then
+        skip "Developer directory already set to Xcode.app"
+    elif [[ -d "$XCODE_APP" ]]; then
+        info "Switching developer directory to Xcode.app (required for Metal compiler) ..."
+        sudo xcode-select -s "$XCODE_APP"
+        ok "Developer directory set to $XCODE_APP"
+    else
+        info "Xcode.app not found -- Metal compiler (xcrun metal) will not be available"
+        info "Install Xcode from the App Store, then run: sudo xcode-select -s $XCODE_APP"
+    fi
+
+    section "Metal Toolchain"
+
+    if xcrun metal --version &>/dev/null; then
+        skip "Metal toolchain already available"
+    elif [[ -d "$XCODE_APP" ]]; then
+        info "Downloading Metal toolchain ..."
+        xcodebuild -downloadComponent MetalToolchain
+        ok "Metal toolchain installed"
+    else
+        info "Skipping Metal toolchain (Xcode.app not installed)"
+    fi
+fi
+
+# ── 4. Install core CLI tools via brew ────────────────────────────────────
 
 section "Installing CLI tools via Homebrew"
 
-BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml)
+BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -70,7 +114,7 @@ for pkg in "${BREW_PACKAGES[@]}"; do
     fi
 done
 
-# ── 4. Install Rust toolchain ─────────────────────────────────────────────
+# ── 5. Install Rust toolchain ─────────────────────────────────────────────
 
 section "Rust toolchain"
 
@@ -84,7 +128,7 @@ else
     ok "Rust toolchain installed"
 fi
 
-# ── 5. Set up Python environment ──────────────────────────────────────────
+# ── 6. Set up Python environment ──────────────────────────────────────────
 
 section "Python environment (via uv)"
 
@@ -106,7 +150,7 @@ info "Installing pynvim into nvim-venv ..."
 uv pip install --python "$NVIM_VENV/bin/python" pynvim
 ok "pynvim installed"
 
-# ── 6. Node neovim provider ──────────────────────────────────────────────
+# ── 7. Node neovim provider ──────────────────────────────────────────────
 
 section "Node neovim provider"
 
@@ -118,7 +162,7 @@ else
     ok "neovim npm package installed"
 fi
 
-# ── 7. Nerd Font ─────────────────────────────────────────────────────────
+# ── 8. Nerd Font ─────────────────────────────────────────────────────────
 
 section "Nerd Font"
 
@@ -130,7 +174,7 @@ else
     ok "JetBrainsMono Nerd Font installed"
 fi
 
-# ── 8. Symlink nvim config ───────────────────────────────────────────────
+# ── 9. Symlink nvim config ───────────────────────────────────────────────
 
 section "Neovim configuration"
 
@@ -148,7 +192,7 @@ else
     ok "Symlinked $SCRIPT_DIR -> $NVIM_CONFIG_DIR"
 fi
 
-# ── 9. Symlink dotfiles ──────────────────────────────────────────────────
+# ── 10. Symlink dotfiles ──────────────────────────────────────────────────
 
 section "Dotfile symlinks"
 
@@ -182,13 +226,15 @@ link_dotfile "$SCRIPT_DIR/zshrc.template"         "$HOME/.zshrc"
 link_dotfile "$SCRIPT_DIR/starship.toml.template"  "$HOME/.config/starship.toml"
 link_dotfile "$SCRIPT_DIR/tmux.conf.template"      "$HOME/.tmux.conf"
 
-# ── 10. fzf shell integration ────────────────────────────────────────────
+# ── 11. fzf shell integration ────────────────────────────────────────────
 
 section "fzf shell integration"
 
 FZF_INSTALL="$(brew --prefix)/opt/fzf/install"
 
-if [[ -x "$FZF_INSTALL" ]]; then
+if [[ -f "$HOME/.fzf.zsh" ]]; then
+    skip "fzf shell integration already configured (~/.fzf.zsh exists)"
+elif [[ -x "$FZF_INSTALL" ]]; then
     info "Running fzf install script ..."
     "$FZF_INSTALL" --all --no-bash --no-fish
     ok "fzf shell integration configured"
@@ -196,7 +242,7 @@ else
     skip "fzf install script not found (fzf may have been installed differently)"
 fi
 
-# ── 11. Tmux Plugin Manager (TPM) ────────────────────────────────────────
+# ── 12. Tmux Plugin Manager (TPM) ────────────────────────────────────────
 
 section "Tmux Plugin Manager"
 
@@ -210,7 +256,7 @@ else
     ok "TPM installed"
 fi
 
-# ── 12. Summary ───────────────────────────────────────────────────────────
+# ── 13. Summary ───────────────────────────────────────────────────────────
 
 section "All done!"
 
