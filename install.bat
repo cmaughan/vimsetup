@@ -74,6 +74,7 @@ call :winget_install "bat"               "sharkdp.bat"
 call :winget_install "zoxide"            "ajeetdsouza.zoxide"
 call :winget_install "Rustup"            "Rustlang.Rustup"
 call :winget_install "uv"                "astral-sh.uv"
+call :winget_install "CMake"              "Kitware.CMake"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 echo.
 
@@ -338,6 +339,7 @@ if /i "%PKG_ID%"=="sharkdp.bat" set "_CMD=bat"
 if /i "%PKG_ID%"=="ajeetdsouza.zoxide" set "_CMD=zoxide"
 if /i "%PKG_ID%"=="Rustlang.Rustup" set "_CMD=rustup"
 if /i "%PKG_ID%"=="astral-sh.uv" set "_CMD=uv"
+if /i "%PKG_ID%"=="Kitware.CMake" set "_CMD=cmake"
 if defined _CMD (
     where !_CMD! >nul 2>&1
     if !errorlevel! equ 0 (
