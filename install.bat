@@ -35,7 +35,7 @@ echo %BOLD%%CYAN%========================================%RESET%
 echo.
 
 :: --- Check admin ---
-echo %BOLD%[1/9] Checking prerequisites...%RESET%
+echo %BOLD%[1/10] Checking prerequisites...%RESET%
 net session >nul 2>&1
 if !errorlevel! neq 0 (
     echo %YELLOW%  WARNING: Not running as Administrator.%RESET%
@@ -59,7 +59,7 @@ echo.
 :: ============================================================================
 ::  Section 2: Install core CLI tools via winget
 :: ============================================================================
-echo %BOLD%[2/9] Installing core CLI tools via winget...%RESET%
+echo %BOLD%[2/10] Installing core CLI tools via winget...%RESET%
 echo.
 
 call :winget_install "Neovim"            "Neovim.Neovim"
@@ -80,7 +80,7 @@ echo.
 :: ============================================================================
 ::  Section 3: Install PowerShell module (PSFzf)
 :: ============================================================================
-echo %BOLD%[3/9] Installing PowerShell module PSFzf...%RESET%
+echo %BOLD%[3/10] Installing PowerShell module PSFzf...%RESET%
 
 where pwsh >nul 2>&1
 if !errorlevel! neq 0 (
@@ -101,7 +101,7 @@ echo.
 :: ============================================================================
 ::  Section 4: Set up Python environment
 :: ============================================================================
-echo %BOLD%[4/9] Setting up Python environment...%RESET%
+echo %BOLD%[4/10] Setting up Python environment...%RESET%
 
 where uv >nul 2>&1
 if !errorlevel! neq 0 (
@@ -147,9 +147,9 @@ if exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
 echo.
 
 :: ============================================================================
-::  Section 5: Install Node neovim provider
+::  Section 5: Install Node packages (neovim provider + AI CLI tools)
 :: ============================================================================
-echo %BOLD%[5/9] Installing Node neovim provider...%RESET%
+echo %BOLD%[5/10] Installing Node packages...%RESET%
 
 where npm >nul 2>&1
 if !errorlevel! neq 0 (
@@ -172,13 +172,17 @@ if !errorlevel! neq 0 (
 ) else (
     echo %GREEN%  neovim npm package installed.%RESET%
 )
+echo   Installing AI CLI tools...
+call :npm_global_install "claude"  "@anthropic-ai/claude-code"
+call :npm_global_install "codex"   "@openai/codex"
+call :npm_global_install "gemini"  "@google/gemini-cli"
 :after_npm
 echo.
 
 :: ============================================================================
 ::  Section 6: Install Nerd Font
 :: ============================================================================
-echo %BOLD%[6/9] Installing JetBrainsMono Nerd Font...%RESET%
+echo %BOLD%[6/10] Installing JetBrainsMono Nerd Font...%RESET%
 
 :: Check if the font is already installed by looking in the fonts directory
 dir "%LOCALAPPDATA%\Microsoft\Windows\Fonts\JetBrainsMonoNerdFont*" >nul 2>&1
@@ -206,7 +210,7 @@ echo.
 :: ============================================================================
 ::  Section 7: Copy config files
 :: ============================================================================
-echo %BOLD%[7/9] Setting up config files...%RESET%
+echo %BOLD%[7/10] Setting up config files...%RESET%
 
 :: --- PowerShell profile ---
 :: Resolve actual $PROFILE path from PowerShell (handles OneDrive-redirected Documents)
@@ -259,7 +263,7 @@ echo.
 :: ============================================================================
 ::  Section 8: psmux plugins
 :: ============================================================================
-echo %BOLD%[8/9] Checking psmux setup...%RESET%
+echo %BOLD%[8/10] Checking psmux setup...%RESET%
 
 where psmux >nul 2>&1
 if !errorlevel! neq 0 (
@@ -309,6 +313,30 @@ echo.
 
 endlocal
 exit /b 0
+
+:: ============================================================================
+::  Helper: npm_global_install <cmd> <package>
+:: ============================================================================
+:npm_global_install
+set "_NPMCMD=%~1"
+set "_NPMPKG=%~2"
+where !_NPMCMD! >nul 2>&1
+if !errorlevel! equ 0 (
+    echo %GREEN%  [SKIP] !_NPMCMD! already installed.%RESET%
+    set "SKIPPED=!SKIPPED! !_NPMCMD!"
+    goto :eof
+)
+echo   Installing !_NPMPKG!...
+call npm install -g "!_NPMPKG!" >nul 2>&1
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] !_NPMCMD! installation failed.%RESET%
+    set "FAILED=!FAILED! !_NPMCMD!"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   !_NPMCMD! installed.%RESET%
+    set "INSTALLED=!INSTALLED! !_NPMCMD!"
+)
+goto :eof
 
 :: ============================================================================
 ::  Helper: winget_install <display_name> <package_id>

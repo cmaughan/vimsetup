@@ -118,7 +118,26 @@ else
     ok "neovim npm package installed"
 fi
 
-# ── 7. Nerd Font ─────────────────────────────────────────────────────────
+# ── 7. AI CLI tools ──────────────────────────────────────────────────────
+
+section "AI CLI tools (npm)"
+
+npm_global_install() {
+    local cmd="$1" pkg="$2"
+    if command -v "$cmd" &>/dev/null; then
+        skip "$cmd (already installed)"
+    else
+        info "Installing $pkg ..."
+        npm install -g "$pkg"
+        ok "$cmd installed"
+    fi
+}
+
+npm_global_install "claude" "@anthropic-ai/claude-code"
+npm_global_install "codex"  "@openai/codex"
+npm_global_install "gemini" "@google/gemini-cli"
+
+# ── 8. Nerd Font ─────────────────────────────────────────────────────────
 
 section "Nerd Font"
 
@@ -130,7 +149,7 @@ else
     ok "JetBrainsMono Nerd Font installed"
 fi
 
-# ── 8. Symlink nvim config ───────────────────────────────────────────────
+# ── 9. Symlink nvim config ───────────────────────────────────────────────
 
 section "Neovim configuration"
 
@@ -148,7 +167,7 @@ else
     ok "Symlinked $SCRIPT_DIR -> $NVIM_CONFIG_DIR"
 fi
 
-# ── 9. Symlink dotfiles ──────────────────────────────────────────────────
+# ── 10. Symlink dotfiles ─────────────────────────────────────────────────
 
 section "Dotfile symlinks"
 
@@ -182,7 +201,7 @@ link_dotfile "$SCRIPT_DIR/zshrc.template"         "$HOME/.zshrc"
 link_dotfile "$SCRIPT_DIR/starship.toml.template"  "$HOME/.config/starship.toml"
 link_dotfile "$SCRIPT_DIR/tmux.conf.template"      "$HOME/.tmux.conf"
 
-# ── 10. fzf shell integration ────────────────────────────────────────────
+# ── 11. fzf shell integration ────────────────────────────────────────────
 
 section "fzf shell integration"
 
@@ -196,7 +215,7 @@ else
     skip "fzf install script not found (fzf may have been installed differently)"
 fi
 
-# ── 11. Tmux Plugin Manager (TPM) ────────────────────────────────────────
+# ── 12. Tmux Plugin Manager (TPM) ────────────────────────────────────────
 
 section "Tmux Plugin Manager"
 
@@ -210,7 +229,7 @@ else
     ok "TPM installed"
 fi
 
-# ── 12. Summary ───────────────────────────────────────────────────────────
+# ── 13. Summary ───────────────────────────────────────────────────────────
 
 section "All done!"
 
