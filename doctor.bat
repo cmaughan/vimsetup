@@ -53,6 +53,8 @@ call :check_tool uv         "uv --version"         1  "winget install astral-sh.
 call :check_tool rustup     "rustup --version"     1  "winget install Rustlang.Rustup"
 call :check_tool cargo      "cargo --version"      1  "install rustup"
 call :check_tool cmake      "cmake --version"      1  "winget install Kitware.CMake"
+call :check_tool ninja      "ninja --version"      1  "winget install Ninja-build.Ninja"
+call :check_tool doxygen    "doxygen --version"    1  "winget install DimitriVanHeesch.Doxygen"
 call :check_tool psmux      "psmux --version"      1  "cargo install psmux"
 
 echo.

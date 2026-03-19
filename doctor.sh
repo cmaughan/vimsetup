@@ -137,6 +137,8 @@ check_tool rustup    "https://rustup.rs"
 check_tool cargo     "(comes with rustup)"
 check_tool tmux      "brew install tmux"
 check_tool cmake     "brew install cmake"
+check_tool ninja     "brew install ninja"
+check_tool doxygen   "brew install doxygen"
 
 # ----- Python Environment -----
 section "Python Environment"
