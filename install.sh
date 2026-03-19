@@ -105,7 +105,7 @@ fi
 
 section "Installing CLI tools via Homebrew"
 
-BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake)
+BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -290,5 +290,6 @@ printf "  ${YELLOW}1.${NC} Set your terminal font to ${BOLD}JetBrainsMono Nerd F
 printf "  ${YELLOW}2.${NC} Open Neovim and run ${BOLD}:Copilot auth${NC} to authenticate GitHub Copilot\n"
 printf "  ${YELLOW}3.${NC} Open tmux and press ${BOLD}prefix + I${NC} to install tmux plugins\n"
 printf "  ${YELLOW}4.${NC} Neovim will auto-install plugins on first launch -- just let it finish\n"
+printf "  ${YELLOW}5.${NC} In each git repo with a ${BOLD}.pre-commit-config.yaml${NC}, run: ${BOLD}pre-commit install${NC}\n"
 printf "\n"
 ok "Environment bootstrap complete."
