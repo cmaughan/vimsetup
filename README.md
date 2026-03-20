@@ -1,15 +1,53 @@
 # My Config, Mac & PC
 
-Claude/Codex/AI:
+Cross-platform development environment — Neovim, shell, terminal multiplexer, formatters, linters, and LSP — that stays in sync across Windows and macOS. Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management.
 
-"Sync this repo, read it, and make this machine look the same; installing all packages and fixing all configuration"
+## Quick Start
 
-...Done.
+Clone the repo and run the bootstrap script. It installs every tool, sets up Python/Node/Rust, copies config templates, and installs fonts — all idempotently (safe to re-run).
 
-Contains everything I like to have for smooth development work on a Mac or a PC.  It just works.  I can have AI write new features, and make sure that Windows/Mac equivalents are automatically added to the mix when necessary, to keep my machines synchronised.
+**Windows** (run in an elevated `cmd.exe`):
+```bat
+git clone <repo-url> "%LOCALAPPDATA%\nvim"
+cd "%LOCALAPPDATA%\nvim"
+install.bat
+```
 
-Neovim config using [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management.
-Templates for shell and terminal multiplexer setup.
+**Mac / Linux:**
+```sh
+git clone <repo-url> ~/.config/nvim
+cd ~/.config/nvim
+./install.sh
+```
+
+### What `install` does
+
+1. **Installs CLI tools** — Neovim, Git, Node, ripgrep, fd, fzf, Starship, eza, bat, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML (via winget/choco on Windows, brew on Mac)
+2. **Sets up Python** — installs Python 3.12 via `uv`, creates a dedicated `python-global` venv, installs `pynvim`
+3. **Sets up Node** — installs the `neovim` npm provider and AI CLI tools (Claude Code, Codex, Gemini)
+4. **Copies config templates** — PowerShell profile / `.zshrc`, `starship.toml`, `.tmux.conf` (backs up existing files that differ)
+5. **Installs JetBrainsMono Nerd Font**
+6. **Installs PowerShell modules** — PSFzf for fzf shell integration
+
+After install, open Neovim — lazy.nvim bootstraps itself, installs all plugins, and Mason auto-installs LSP servers, formatters, and linters on first launch.
+
+### Validating your setup
+
+Run `doctor` to check environment health without changing anything:
+
+**Windows:**
+```bat
+doctor.bat
+```
+
+**Mac / Linux:**
+```sh
+./doctor.sh
+```
+
+It verifies every tool is on PATH (with versions), checks that config files match their templates, confirms the Python/Node providers work, validates lazy.nvim and Mason are installed, and checks for the Nerd Font. Each check shows `[OK]`, `[WARN]`, or `[MISSING]` with install instructions for anything that's absent.
+
+---
 
 ## Screenshots
 
@@ -20,6 +58,8 @@ Templates for shell and terminal multiplexer setup.
 ### Mac
 
 [<img src="./Screenshot-mac.png" alt="Mac setup screenshot" width="100%" />](./Screenshot-mac.png)
+
+---
 
 ## Structure
 
