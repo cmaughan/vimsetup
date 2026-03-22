@@ -265,7 +265,17 @@ else
     skip "fzf install script not found (fzf may have been installed differently)"
 fi
 
-# ── 12. Tmux Plugin Manager (TPM) ────────────────────────────────────────
+# ── 12. Git aliases ─────────────────────────────────────────────────────
+
+section "Git aliases"
+
+git config --global alias.lol "log --graph --decorate --pretty=oneline --abbrev-commit"
+ok "git lol"
+
+git config --global alias.lola "log --graph --decorate --pretty=oneline --abbrev-commit --all"
+ok "git lola"
+
+# ── 13. Tmux Plugin Manager (TPM) ────────────────────────────────────────
 
 section "Tmux Plugin Manager"
 
@@ -279,7 +289,7 @@ else
     ok "TPM installed"
 fi
 
-# ── 13. Summary ───────────────────────────────────────────────────────────
+# ── 14. Summary ───────────────────────────────────────────────────────────
 
 section "All done!"
 

@@ -29,3 +29,10 @@ export EDITOR=nvim
 
 # zoxide (smart cd / directory jumping)
 eval "$(zoxide init zsh)"
+
+# bun completions
+[ -s "/Users/cmaughan/.bun/_bun" ] && source "/Users/cmaughan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

@@ -267,7 +267,19 @@ if exist "%TMUX_TEMPLATE%" (
 echo.
 
 :: ============================================================================
-::  Section 8: psmux plugins
+::  Section 8: Git aliases
+:: ============================================================================
+echo %BOLD%[8/10] Setting up Git aliases...%RESET%
+
+git config --global alias.lol "log --graph --decorate --pretty=oneline --abbrev-commit"
+echo %GREEN%  [OK] git lol%RESET%
+
+git config --global alias.lola "log --graph --decorate --pretty=oneline --abbrev-commit --all"
+echo %GREEN%  [OK] git lola%RESET%
+echo.
+
+:: ============================================================================
+::  Section 9: psmux plugins
 :: ============================================================================
 echo %BOLD%[8/10] Checking psmux setup...%RESET%
 
