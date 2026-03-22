@@ -76,11 +76,11 @@ call :winget_install "Rustup"            "Rustlang.Rustup"
 call :winget_install "uv"                "astral-sh.uv"
 call :winget_install "Graphviz"          "Graphviz.Graphviz"
 call :winget_install "clang-uml"         "bkryza.clang-uml"
-call :winget_install "PlantUML"          "PlantUML.PlantUML"
 call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
+call :choco_install "PlantUML"          "plantuml"
 echo.
 
 :: ============================================================================
@@ -386,7 +386,6 @@ if /i "%PKG_ID%"=="Rustlang.Rustup" set "_CMD=rustup"
 if /i "%PKG_ID%"=="astral-sh.uv" set "_CMD=uv"
 if /i "%PKG_ID%"=="Graphviz.Graphviz" set "_CMD=dot"
 if /i "%PKG_ID%"=="bkryza.clang-uml" set "_CMD=clang-uml"
-if /i "%PKG_ID%"=="PlantUML.PlantUML" set "_CMD=plantuml"
 if /i "%PKG_ID%"=="Kitware.CMake" set "_CMD=cmake"
 if /i "%PKG_ID%"=="Ninja-build.Ninja" set "_CMD=ninja"
 if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
@@ -401,6 +400,40 @@ if defined _CMD (
 
 echo   Installing %DISPLAY_NAME% (%PKG_ID%)...
 winget install --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] %DISPLAY_NAME% installation failed.%RESET%
+    set "FAILED=!FAILED! %DISPLAY_NAME%"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
+    set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+)
+goto :eof
+
+:: ============================================================================
+::  Helper: choco_install <display_name> <package_name>
+:: ============================================================================
+:choco_install
+set "DISPLAY_NAME=%~1"
+set "PKG_NAME=%~2"
+
+where %PKG_NAME% >nul 2>&1
+if !errorlevel! equ 0 (
+    echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
+    set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
+    goto :eof
+)
+
+where choco >nul 2>&1
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] %DISPLAY_NAME%: Chocolatey not found on PATH. Restart shell after winget install.%RESET%
+    set "FAILED=!FAILED! %DISPLAY_NAME%"
+    set /a ERRORS+=1 >nul
+    goto :eof
+)
+
+echo   Installing %DISPLAY_NAME% via Chocolatey (%PKG_NAME%)...
+choco install %PKG_NAME% -y
 if !errorlevel! neq 0 (
     echo %RED%  [FAIL] %DISPLAY_NAME% installation failed.%RESET%
     set "FAILED=!FAILED! %DISPLAY_NAME%"
