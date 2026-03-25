@@ -43,15 +43,14 @@ if command -v brew &>/dev/null; then
 else
     info "Installing Homebrew ..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    # Make brew available in this session
-    if [[ "$OS" == "Linux" ]]; then
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv 2>/dev/null || true)"
-    fi
-    if [[ "$OS" == "Darwin" && -f /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    fi
     ok "Homebrew installed"
+fi
+
+# Always ensure brew-installed binaries (node, npm, etc.) are in PATH
+if command -v brew &>/dev/null; then
+    eval "$(brew shellenv)"
+elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # ── 3. Xcode (macOS only) ─────────────────────────────────────────────────
@@ -117,6 +116,13 @@ for pkg in "${BREW_PACKAGES[@]}"; do
     fi
 done
 
+# Refresh PATH so newly installed binaries (node, npm, etc.) are visible
+eval "$(brew shellenv)"
+
+# Force-link node in case a stale nodejs.org installer left conflicting files
+# that silently prevented Homebrew from creating the node/npm symlinks.
+brew link --overwrite node 2>/dev/null || true
+
 # ── 5. Install Rust toolchain ─────────────────────────────────────────────
 
 section "Rust toolchain"
@@ -165,7 +171,7 @@ else
     ok "neovim npm package installed"
 fi
 
-# ── 7. AI CLI tools ──────────────────────────────────────────────────────
+# ── 8. AI CLI tools ──────────────────────────────────────────────────────
 
 section "AI CLI tools (npm)"
 
@@ -185,7 +191,7 @@ npm_global_install "codex"  "@openai/codex"
 npm_global_install "gemini" "@google/gemini-cli"
 
 
-# ── 8. Nerd Font ─────────────────────────────────────────────────────────
+# ── 9. Nerd Font ─────────────────────────────────────────────────────────
 
 section "Nerd Font"
 
@@ -197,7 +203,23 @@ else
     ok "JetBrainsMono Nerd Font installed"
 fi
 
-# ── 9. Symlink nvim config ───────────────────────────────────────────────
+# ── 10. GUI desktop applications (brew casks) ───────────────────────
+
+section "GUI desktop applications"
+
+BREW_CASKS=(db-browser-for-sqlite)
+
+for cask in "${BREW_CASKS[@]}"; do
+    if brew list --cask "$cask" &>/dev/null; then
+        skip "$cask (already installed)"
+    else
+        info "Installing $cask ..."
+        brew install --cask "$cask"
+        ok "$cask installed"
+    fi
+done
+
+# ── 11. Symlink nvim config ──────────────────────────────────────────────
 
 section "Neovim configuration"
 
@@ -215,7 +237,7 @@ else
     ok "Symlinked $SCRIPT_DIR -> $NVIM_CONFIG_DIR"
 fi
 
-# ── 10. Symlink dotfiles ─────────────────────────────────────────────────
+# ── 12. Symlink dotfiles ─────────────────────────────────────────────────
 
 section "Dotfile symlinks"
 
@@ -249,7 +271,7 @@ link_dotfile "$SCRIPT_DIR/zshrc.template"         "$HOME/.zshrc"
 link_dotfile "$SCRIPT_DIR/starship.toml.template"  "$HOME/.config/starship.toml"
 link_dotfile "$SCRIPT_DIR/tmux.conf.template"      "$HOME/.tmux.conf"
 
-# ── 11. fzf shell integration ────────────────────────────────────────────
+# ── 13. fzf shell integration ────────────────────────────────────────────
 
 section "fzf shell integration"
 
@@ -265,7 +287,7 @@ else
     skip "fzf install script not found (fzf may have been installed differently)"
 fi
 
-# ── 12. Git aliases ─────────────────────────────────────────────────────
+# ── 14. Git aliases ─────────────────────────────────────────────────────
 
 section "Git aliases"
 
@@ -275,7 +297,7 @@ ok "git lol"
 git config --global alias.lola "log --graph --decorate --pretty=oneline --abbrev-commit --all"
 ok "git lola"
 
-# ── 13. Tmux Plugin Manager (TPM) ────────────────────────────────────────
+# ── 15. Tmux Plugin Manager (TPM) ────────────────────────────────────────
 
 section "Tmux Plugin Manager"
 
@@ -289,7 +311,7 @@ else
     ok "TPM installed"
 fi
 
-# ── 14. Summary ───────────────────────────────────────────────────────────
+# ── 16. Summary ───────────────────────────────────────────────────────────
 
 section "All done!"
 
