@@ -149,6 +149,16 @@ if exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
         echo %GREEN%  pynvim OK.%RESET%
     )
 )
+:: --- pre-commit ---
+echo   Installing pre-commit...
+call uv tool install pre-commit >nul 2>&1
+if !errorlevel! neq 0 (
+    echo %RED%  Failed to install pre-commit.%RESET%
+    set "FAILED=!FAILED! pre-commit"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  pre-commit OK.%RESET%
+)
 :after_python
 echo.
 
@@ -326,7 +336,9 @@ echo.
 echo   3. %CYAN%Launch Neovim%RESET% and let it auto-install plugins, LSP servers,
 echo      and formatters on first launch. This may take a few minutes.
 echo.
-echo   4. Run %BOLD%:Copilot auth%RESET% inside Neovim to authenticate GitHub Copilot.
+echo   4. In each git repo with a %BOLD%.pre-commit-config.yaml%RESET%, run: %BOLD%pre-commit install%RESET%
+echo.
+echo   5. Run %BOLD%:Copilot auth%RESET% inside Neovim to authenticate GitHub Copilot.
 echo.
 
 endlocal
