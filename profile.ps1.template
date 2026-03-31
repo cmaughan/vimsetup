@@ -13,18 +13,48 @@ if ($_uv_pkg) { $env:PATH = "$($_uv_pkg.FullName);$env:PATH" }
 $env:PATH = "$env:APPDATA\uv\bin;$env:PATH"
 
 # Codex shells only need PATH bootstrap; skip the rest of the profile.
-if ($env:IN_CODEX -eq "1") {
-    Write-Host "[codex] IN_CODEX=1 detected; using PATH-only profile startup." -ForegroundColor DarkYellow
+$isCodexShell = ($env:IN_CODEX -eq "1") -or [bool]$env:CODEX_THREAD_ID
+if ($isCodexShell) {
+    if (-not $env:SystemRoot) {
+        $env:SystemRoot = 'C:\Windows'
+    }
+    if (-not $env:windir) {
+        $env:windir = $env:SystemRoot
+    }
+    if (-not $env:ComSpec) {
+        $env:ComSpec = Join-Path $env:SystemRoot 'System32\cmd.exe'
+    }
+    if (-not $env:USERPROFILE -and $HOME) {
+        $env:USERPROFILE = $HOME
+    }
+    if (-not $env:LOCALAPPDATA -and $env:USERPROFILE) {
+        $env:LOCALAPPDATA = Join-Path $env:USERPROFILE 'AppData\Local'
+    }
+    if (-not $env:TEMP) {
+        $env:TEMP = if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA 'Temp' } else { Join-Path $env:SystemRoot 'Temp' }
+    }
+    if (-not $env:TMP) {
+        $env:TMP = $env:TEMP
+    }
+    if (-not $env:PATHEXT -or $env:PATHEXT -notmatch '(^|;)\.EXE($|;)') {
+        $env:PATHEXT = '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL'
+    }
     return
 }
 
 # Shell prompt
-Invoke-Expression (&starship init powershell)
+if (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& starship init powershell)
+}
 
 # Aliases
-Set-Alias -Name ls  -Value eza  -Option AllScope -Force
-function ll { eza -lah @args }
-Set-Alias -Name cat -Value bat  -Option AllScope -Force
+if (Get-Command eza -ErrorAction SilentlyContinue) {
+    Set-Alias -Name ls -Value eza -Option AllScope -Force
+    function ll { eza -lah @args }
+}
+if (Get-Command bat -ErrorAction SilentlyContinue) {
+    Set-Alias -Name cat -Value bat -Option AllScope -Force
+}
 if (Get-Command btop4win -ErrorAction SilentlyContinue) {
     Set-Alias -Name btop -Value btop4win -Option AllScope -Force
 }
@@ -37,11 +67,20 @@ function python { & $_py @args }
 function python3 { & $_py @args }
 
 # Chocolatey
-Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+$chocolateyProfile = if ($env:ChocolateyInstall) {
+    Join-Path $env:ChocolateyInstall 'helpers\chocolateyProfile.psm1'
+}
+if ($chocolateyProfile -and (Test-Path $chocolateyProfile)) {
+    Import-Module $chocolateyProfile
+}
 
 # fzf integration via PSFzf (Install-Module PSFzf)
-Import-Module PSFzf
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+if (Get-Module -ListAvailable -Name PSFzf) {
+    Import-Module PSFzf
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+}
 
 # zoxide (smart directory jumping)
-Invoke-Expression (& { (zoxide init powershell | Out-String) })
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& { zoxide init powershell | Out-String })
+}
