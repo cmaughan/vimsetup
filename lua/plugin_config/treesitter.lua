@@ -3,7 +3,7 @@ vim.defer_fn(function()
   local ok, configs = pcall(require, 'nvim-treesitter.configs')
   if not ok then return end
   configs.setup {
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'html', 'css', 'yaml', 'markdown', 'markdown_inline' },
     auto_install = false,
     sync_install = false,
     ignore_install = {},

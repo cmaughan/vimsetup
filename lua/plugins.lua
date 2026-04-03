@@ -364,6 +364,19 @@ require("lazy").setup({
         end,
     },
 
+    -- Quarto (qmd editing with embedded language support)
+    {
+        'quarto-dev/quarto-nvim',
+        ft = 'quarto',
+        dependencies = {
+            'jmbuhr/otter.nvim',
+            'nvim-treesitter/nvim-treesitter',
+        },
+        config = function()
+            require("plugin_config.quarto")
+        end,
+    },
+
     -- Markdown
     {
         'iamcco/markdown-preview.nvim',

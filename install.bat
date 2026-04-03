@@ -79,6 +79,7 @@ call :winget_install "clang-uml"         "bkryza.clang-uml"
 call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
+call :winget_install "Quarto"            "Posit.Quarto"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
 echo.
@@ -401,6 +402,7 @@ if /i "%PKG_ID%"=="bkryza.clang-uml" set "_CMD=clang-uml"
 if /i "%PKG_ID%"=="Kitware.CMake" set "_CMD=cmake"
 if /i "%PKG_ID%"=="Ninja-build.Ninja" set "_CMD=ninja"
 if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
+if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
 if defined _CMD (
     where !_CMD! >nul 2>&1
     if !errorlevel! equ 0 (
