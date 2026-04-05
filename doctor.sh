@@ -139,6 +139,12 @@ check_tool tmux      "brew install tmux"
 check_tool cmake     "brew install cmake"
 check_tool ninja     "brew install ninja"
 check_tool doxygen   "brew install doxygen"
+check_tool dot       "brew install graphviz"
+check_tool clang-uml "brew install clang-uml"
+check_tool plantuml  "brew install plantuml"
+check_tool pre-commit "brew install pre-commit"
+check_tool clang-format "brew install clang-format"
+check_tool quarto    "brew install quarto"
 
 # ----- Python Environment -----
 section "Python Environment"

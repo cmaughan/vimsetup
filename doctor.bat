@@ -56,6 +56,12 @@ call :check_tool cmake      "cmake --version"      1  "winget install Kitware.CM
 call :check_tool ninja      "ninja --version"      1  "winget install Ninja-build.Ninja"
 call :check_tool doxygen    "doxygen --version"    1  "winget install DimitriVanHeesch.Doxygen"
 call :check_tool psmux      "psmux --version"      1  "cargo install psmux"
+call :check_tool dot        "dot -V"               1  "winget install Graphviz.Graphviz"
+call :check_tool clang-uml  "clang-uml --version"  1  "winget install bkryza.clang-uml"
+call :check_tool plantuml   "plantuml -version"    1  "choco install plantuml"
+call :check_tool pre-commit "pre-commit --version" 1  "uv tool install pre-commit"
+call :check_tool clang-format "clang-format --version" 1  "winget install LLVM.LLVM"
+call :check_tool quarto     "quarto --version"     1  "winget install Posit.Quarto"
 
 echo.
 

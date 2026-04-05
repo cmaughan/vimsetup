@@ -35,7 +35,7 @@ echo %BOLD%%CYAN%========================================%RESET%
 echo.
 
 :: --- Check admin ---
-echo %BOLD%[1/10] Checking prerequisites...%RESET%
+echo %BOLD%[1/9] Checking prerequisites...%RESET%
 net session >nul 2>&1
 if !errorlevel! neq 0 (
     echo %YELLOW%  WARNING: Not running as Administrator.%RESET%
@@ -59,7 +59,7 @@ echo.
 :: ============================================================================
 ::  Section 2: Install core CLI tools via winget
 :: ============================================================================
-echo %BOLD%[2/10] Installing core CLI tools via winget...%RESET%
+echo %BOLD%[2/9] Installing core CLI tools via winget...%RESET%
 echo.
 
 call :winget_install "Neovim"            "Neovim.Neovim"
@@ -80,6 +80,7 @@ call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
 call :winget_install "Quarto"            "Posit.Quarto"
+call :winget_install "LLVM (clang-format)" "LLVM.LLVM"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
 echo.
@@ -87,7 +88,7 @@ echo.
 :: ============================================================================
 ::  Section 3: Install PowerShell module (PSFzf)
 :: ============================================================================
-echo %BOLD%[3/10] Installing PowerShell module PSFzf...%RESET%
+echo %BOLD%[3/9] Installing PowerShell module PSFzf...%RESET%
 
 where pwsh >nul 2>&1
 if !errorlevel! neq 0 (
@@ -108,7 +109,7 @@ echo.
 :: ============================================================================
 ::  Section 4: Set up Python environment
 :: ============================================================================
-echo %BOLD%[4/10] Setting up Python environment...%RESET%
+echo %BOLD%[4/9] Setting up Python environment...%RESET%
 
 where uv >nul 2>&1
 if !errorlevel! neq 0 (
@@ -166,7 +167,7 @@ echo.
 :: ============================================================================
 ::  Section 5: Install Node packages (neovim provider + AI CLI tools)
 :: ============================================================================
-echo %BOLD%[5/10] Installing Node packages...%RESET%
+echo %BOLD%[5/9] Installing Node packages...%RESET%
 
 where npm >nul 2>&1
 if !errorlevel! neq 0 (
@@ -199,7 +200,7 @@ echo.
 :: ============================================================================
 ::  Section 6: Install Nerd Font
 :: ============================================================================
-echo %BOLD%[6/10] Installing JetBrainsMono Nerd Font...%RESET%
+echo %BOLD%[6/9] Installing JetBrainsMono Nerd Font...%RESET%
 
 :: Check if the font is already installed by looking in the fonts directory
 dir "%LOCALAPPDATA%\Microsoft\Windows\Fonts\JetBrainsMonoNerdFont*" >nul 2>&1
@@ -227,7 +228,7 @@ echo.
 :: ============================================================================
 ::  Section 7: Copy config files
 :: ============================================================================
-echo %BOLD%[7/10] Setting up config files...%RESET%
+echo %BOLD%[7/9] Setting up config files...%RESET%
 
 :: --- PowerShell profile ---
 :: Resolve actual $PROFILE path from PowerShell (handles OneDrive-redirected Documents)
@@ -280,7 +281,7 @@ echo.
 :: ============================================================================
 ::  Section 8: Git aliases
 :: ============================================================================
-echo %BOLD%[8/10] Setting up Git aliases...%RESET%
+echo %BOLD%[8/9] Setting up Git aliases...%RESET%
 
 git config --global alias.lol "log --graph --decorate --pretty=oneline --abbrev-commit"
 echo %GREEN%  [OK] git lol%RESET%
@@ -292,7 +293,7 @@ echo.
 :: ============================================================================
 ::  Section 9: psmux plugins
 :: ============================================================================
-echo %BOLD%[8/10] Checking psmux setup...%RESET%
+echo %BOLD%[9/9] Checking psmux setup...%RESET%
 
 where psmux >nul 2>&1
 if !errorlevel! neq 0 (
@@ -309,7 +310,7 @@ if !errorlevel! neq 0 (
 echo.
 
 :: ============================================================================
-::  Section 9: Summary
+::  Summary
 :: ============================================================================
 echo %BOLD%%CYAN%========================================%RESET%
 echo %BOLD%%CYAN%  Setup Complete!%RESET%
@@ -403,6 +404,7 @@ if /i "%PKG_ID%"=="Kitware.CMake" set "_CMD=cmake"
 if /i "%PKG_ID%"=="Ninja-build.Ninja" set "_CMD=ninja"
 if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
 if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
+if /i "%PKG_ID%"=="LLVM.LLVM" set "_CMD=clang-format"
 if defined _CMD (
     where !_CMD! >nul 2>&1
     if !errorlevel! equ 0 (

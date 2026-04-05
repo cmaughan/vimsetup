@@ -21,6 +21,7 @@ alias ls="eza"
 alias ll="eza -lah"
 alias cat="bat"
 alias py=python3
+dr() { if [[ -f ./do.py ]]; then python3 ./do.py "$@"; else echo "No do.py in current directory"; return 1; fi }
 
 export EDITOR=nvim
 
