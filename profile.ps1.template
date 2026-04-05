@@ -59,12 +59,14 @@ if (Get-Command btop4win -ErrorAction SilentlyContinue) {
     Set-Alias -Name btop -Value btop4win -Option AllScope -Force
 }
 
+
 $env:EDITOR = "nvim"
 $env:UV_PYTHON = "3.12"
 $_py = "$env:LOCALAPPDATA\python-global\Scripts\python.exe"
 function py { & $_py @args }
 function python { & $_py @args }
 function python3 { & $_py @args }
+function dr { & $_py do.py @args }
 
 # Chocolatey
 $chocolateyProfile = if ($env:ChocolateyInstall) {
