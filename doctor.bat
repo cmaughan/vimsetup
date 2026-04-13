@@ -62,6 +62,7 @@ call :check_tool plantuml   "plantuml -version"    1  "choco install plantuml"
 call :check_tool pre-commit "pre-commit --version" 1  "uv tool install pre-commit"
 call :check_tool clang-format "clang-format --version" 1  "winget install LLVM.LLVM"
 call :check_tool quarto     "quarto --version"     1  "winget install Posit.Quarto"
+call :check_tool ccache     "ccache --version"     1  "winget install ccache.ccache"
 
 echo.
 
@@ -119,6 +120,17 @@ if exist "!PYGLOBAL!" (
         set /a FAIL+=1 >nul
     )
     del "%TEMP%\_doctor_pynvim.txt" 2>nul
+
+    "!PYGLOBAL!" -c "import yaml; print(yaml.__version__)" >"%TEMP%\_doctor_pyyaml.txt" 2>nul
+    if !errorlevel! equ 0 (
+        set /p PYYAMLVER=<"%TEMP%\_doctor_pyyaml.txt"
+        echo   %GREEN%[OK]%RESET%      PyYAML !PYYAMLVER!
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %RED%[MISSING]%RESET%  PyYAML --install with: uv pip install --python "!PYGLOBAL!" PyYAML
+        set /a FAIL+=1 >nul
+    )
+    del "%TEMP%\_doctor_pyyaml.txt" 2>nul
 ) else (
     echo   %YELLOW%[WARN]%RESET%    pynvim --cannot check ^(python-global not found^)
     set /a WARN+=1 >nul

@@ -145,6 +145,7 @@ check_tool plantuml  "brew install plantuml"
 check_tool pre-commit "brew install pre-commit"
 check_tool clang-format "brew install clang-format"
 check_tool quarto    "brew install quarto"
+check_tool ccache    "brew install ccache"
 
 # ----- Python Environment -----
 section "Python Environment"
@@ -169,6 +170,12 @@ if [[ -x "$NVIM_VENV_PYTHON" ]]; then
         ok "pynvim installed — $PYNVIM_VER"
     else
         missing "pynvim not installed in nvim-venv — $NVIM_VENV_PYTHON -m pip install pynvim"
+    fi
+
+    if PYYAML_VER=$("$NVIM_VENV_PYTHON" -c "import yaml; print(yaml.__version__)" 2>/dev/null); then
+        ok "PyYAML installed — $PYYAML_VER"
+    else
+        missing "PyYAML not installed in nvim-venv — $NVIM_VENV_PYTHON -m pip install PyYAML"
     fi
 else
     missing "nvim-venv Python not found ($NVIM_VENV_PYTHON)"

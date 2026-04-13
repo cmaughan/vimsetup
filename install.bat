@@ -80,6 +80,7 @@ call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
 call :winget_install "Quarto"            "Posit.Quarto"
+call :winget_install "ccache"            "ccache.ccache"
 call :winget_install "LLVM (clang-format)" "LLVM.LLVM"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
@@ -141,14 +142,14 @@ if not exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
     echo %GREEN%  Global venv already exists.%RESET%
 )
 if exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
-    echo   Installing pynvim...
-    call uv pip install --python "%LOCALAPPDATA%\python-global\Scripts\python.exe" pynvim
+    echo   Installing pynvim and PyYAML...
+    call uv pip install --python "%LOCALAPPDATA%\python-global\Scripts\python.exe" pynvim PyYAML
     if !errorlevel! neq 0 (
-        echo %RED%  Failed to install pynvim.%RESET%
-        set "FAILED=!FAILED! pynvim"
+        echo %RED%  Failed to install Python packages.%RESET%
+        set "FAILED=!FAILED! pynvim PyYAML"
         set /a ERRORS+=1 >nul
     ) else (
-        echo %GREEN%  pynvim OK.%RESET%
+        echo %GREEN%  pynvim and PyYAML OK.%RESET%
     )
 )
 :: --- pre-commit ---
@@ -405,6 +406,7 @@ if /i "%PKG_ID%"=="Ninja-build.Ninja" set "_CMD=ninja"
 if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
 if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
 if /i "%PKG_ID%"=="LLVM.LLVM" set "_CMD=clang-format"
+if /i "%PKG_ID%"=="ccache.ccache" set "_CMD=ccache"
 if defined _CMD (
     where !_CMD! >nul 2>&1
     if !errorlevel! equ 0 (

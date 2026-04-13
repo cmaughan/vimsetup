@@ -104,7 +104,7 @@ fi
 
 section "Installing CLI tools via Homebrew"
 
-BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto)
+BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -155,9 +155,9 @@ else
     ok "nvim-venv created"
 fi
 
-info "Installing pynvim into nvim-venv ..."
-uv pip install --python "$NVIM_VENV/bin/python" pynvim
-ok "pynvim installed"
+info "Installing Python packages into nvim-venv ..."
+uv pip install --python "$NVIM_VENV/bin/python" pynvim PyYAML
+ok "pynvim and PyYAML installed"
 
 # ── 7. Node neovim provider ──────────────────────────────────────────────
 

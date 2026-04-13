@@ -60,6 +60,12 @@ if (Get-Command btop4win -ErrorAction SilentlyContinue) {
 }
 
 
+# ccache: tell CMake to use ccache as a compiler launcher when available
+if (Get-Command ccache -ErrorAction SilentlyContinue) {
+    $env:CMAKE_C_COMPILER_LAUNCHER = "ccache"
+    $env:CMAKE_CXX_COMPILER_LAUNCHER = "ccache"
+}
+
 $env:EDITOR = "nvim"
 $env:UV_PYTHON = "3.12"
 $_py = "$env:LOCALAPPDATA\python-global\Scripts\python.exe"

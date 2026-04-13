@@ -23,7 +23,7 @@ cd ~/.config/nvim
 ### What `install` does
 
 1. **Installs CLI tools** — Neovim, Git, Node, ripgrep, fd, fzf, Starship, eza, bat, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML (via winget/choco on Windows, brew on Mac)
-2. **Sets up Python** — installs Python 3.12 via `uv`, creates a dedicated `python-global` venv, installs `pynvim`
+2. **Sets up Python** — installs Python 3.12 via `uv`, creates a dedicated `python-global` venv, installs `pynvim` and `PyYAML`
 3. **Sets up Node** — installs the `neovim` npm provider and AI CLI tools (Claude Code, Codex, Gemini)
 4. **Copies config templates** — PowerShell profile / `.zshrc`, `starship.toml`, `.tmux.conf` (backs up existing files that differ)
 5. **Installs JetBrainsMono Nerd Font**
@@ -215,12 +215,12 @@ uv python install 3.12.9
 uv python pin 3.12.9
 ```
 
-Create a global virtualenv, install pynvim into it, and add its `Scripts` dir to your PATH:
+Create a global virtualenv, install the Neovim Python packages into it, and add its `Scripts` dir to your PATH:
 
 **Windows:**
 ```powershell
 uv venv --python 3.12.9 "$env:LOCALAPPDATA\python-global"
-uv pip install --python "$env:LOCALAPPDATA\python-global\Scripts\python.exe" pip pynvim
+uv pip install --python "$env:LOCALAPPDATA\python-global\Scripts\python.exe" pip pynvim PyYAML
 # Add to PATH (run once):
 $p = [System.Environment]::GetEnvironmentVariable("PATH","User") -split ";"
 [System.Environment]::SetEnvironmentVariable("PATH", ("$env:LOCALAPPDATA\python-global\Scripts;" + ($p -join ";")), "User")
@@ -229,7 +229,7 @@ $p = [System.Environment]::GetEnvironmentVariable("PATH","User") -split ";"
 **Mac / Linux:**
 ```sh
 uv venv --python 3.12.9 ~/.local/share/nvim-venv
-uv pip install --python ~/.local/share/nvim-venv/bin/python pip pynvim
+uv pip install --python ~/.local/share/nvim-venv/bin/python pip pynvim PyYAML
 ```
 
 The venv bin is already on PATH via the `zshrc.template` (`~/.local/share/nvim-venv/bin`).
