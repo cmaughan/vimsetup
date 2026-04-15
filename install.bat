@@ -298,17 +298,25 @@ echo.
 echo %BOLD%[9/9] Checking psmux setup...%RESET%
 
 where psmux >nul 2>&1
-if !errorlevel! neq 0 (
-    echo %YELLOW%  psmux not found in PATH. Skipping psmux plugin setup.%RESET%
-) else (
-    set "PSMUX_PLUGIN_DIR=%USERPROFILE%\.psmux\plugins"
-    if not exist "!PSMUX_PLUGIN_DIR!" (
-        echo   Creating psmux plugins directory: !PSMUX_PLUGIN_DIR!
-        mkdir "!PSMUX_PLUGIN_DIR!" >nul 2>&1
-    )
-    echo %GREEN%  psmux plugins directory ready at !PSMUX_PLUGIN_DIR!%RESET%
-    echo   You may need to install PPM plugins manually via psmux.
+if !errorlevel! equ 0 goto :_psmux_ready
+where cargo >nul 2>&1
+if !errorlevel! neq 0 goto :_psmux_skip
+echo   Installing psmux via cargo...
+cargo install psmux
+where psmux >nul 2>&1
+if !errorlevel! equ 0 goto :_psmux_ready
+:_psmux_skip
+echo %YELLOW%  psmux not found in PATH. Skipping psmux plugin setup.%RESET%
+goto :after_psmux
+:_psmux_ready
+set "PSMUX_PLUGIN_DIR=%USERPROFILE%\.psmux\plugins"
+if not exist "!PSMUX_PLUGIN_DIR!" (
+    echo   Creating psmux plugins directory: !PSMUX_PLUGIN_DIR!
+    mkdir "!PSMUX_PLUGIN_DIR!" >nul 2>&1
 )
+echo %GREEN%  psmux plugins directory ready at !PSMUX_PLUGIN_DIR!%RESET%
+echo   You may need to install PPM plugins manually via psmux.
+:after_psmux
 echo.
 
 :: ============================================================================

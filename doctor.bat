@@ -63,6 +63,10 @@ call :check_tool pre-commit "pre-commit --version" 1  "uv tool install pre-commi
 call :check_tool clang-format "clang-format --version" 1  "winget install LLVM.LLVM"
 call :check_tool quarto     "quarto --version"     1  "winget install Posit.Quarto"
 call :check_tool ccache     "ccache --version"     1  "winget install ccache.ccache"
+call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
+call :check_tool claude     "claude --version"     1  "npm install -g @anthropic-ai/claude-code"
+call :check_tool codex      "codex --version"      1  "npm install -g @openai/codex"
+call :check_tool gemini     "gemini --version"     1  "npm install -g @google/gemini-cli"
 
 echo.
 
@@ -172,6 +176,17 @@ if not defined PS_PROFILE set "PS_PROFILE=%USERPROFILE%\Documents\PowerShell\Mic
 call :check_config "PowerShell profile"  "!PS_PROFILE!"  "%CFGDIR%profile.ps1.template"
 call :check_config "Starship config"     "%USERPROFILE%\.config\starship.toml"                                  "%CFGDIR%starship.toml.template"
 call :check_config "Tmux config"         "%USERPROFILE%\.tmux.conf"                                             "%CFGDIR%tmux.windows.conf.template"
+
+echo.
+
+:: ---------------------------------------------------------------------
+::  Section: Git Aliases
+:: ---------------------------------------------------------------------
+echo %BOLD%-- Git Aliases -----------------------------------------------------%RESET%
+echo.
+
+call :check_git_alias "lol"  "log --graph --decorate --pretty=oneline --abbrev-commit"
+call :check_git_alias "lola" "log --graph --decorate --pretty=oneline --abbrev-commit --all"
 
 echo.
 
@@ -342,5 +357,22 @@ if !FAIL! gtr 0 (
         echo   %RED%[MISSING]%RESET%  %CFG_LABEL%
         echo              %DIM%Expected: %CFG_PATH%%RESET%
         set /a FAIL+=1 >nul
+    )
+    exit /b
+
+:: :check_git_alias <alias_name> <expected_value>
+::   Checks if a git alias is configured with the expected value.
+:check_git_alias
+    set "ALIAS_NAME=%~1"
+    set "EXPECTED=%~2"
+
+    set "ACTUAL="
+    for /f "tokens=*" %%v in ('git config --global alias.%ALIAS_NAME% 2^>nul') do set "ACTUAL=%%v"
+    if not defined ACTUAL (
+        echo   %RED%[MISSING]%RESET%  git %ALIAS_NAME% --run install.bat to configure
+        set /a FAIL+=1 >nul
+    ) else (
+        echo   %GREEN%[OK]%RESET%      git %ALIAS_NAME%
+        set /a PASS+=1 >nul
     )
     exit /b
