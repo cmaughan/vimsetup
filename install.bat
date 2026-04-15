@@ -81,7 +81,7 @@ call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
 call :winget_install "Quarto"            "Posit.Quarto"
 call :winget_install "ccache"            "ccache.ccache"
-call :winget_install "LLVM (clang-format)" "LLVM.LLVM"
+call :winget_install "LLVM - clang-format" "LLVM.LLVM"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
 echo.
@@ -128,30 +128,31 @@ if !errorlevel! neq 0 (
 ) else (
     echo %GREEN%  Python 3.12 OK.%RESET%
 )
-if not exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
-    echo   Creating global venv at %LOCALAPPDATA%\python-global...
-    call uv venv "%LOCALAPPDATA%\python-global" --python 3.12
-    if !errorlevel! neq 0 (
-        echo %RED%  Failed to create global venv.%RESET%
-        set "FAILED=!FAILED! python-global-venv"
-        set /a ERRORS+=1 >nul
-    ) else (
-        echo %GREEN%  Global venv created.%RESET%
-    )
-) else (
-    echo %GREEN%  Global venv already exists.%RESET%
-)
 if exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" (
-    echo   Installing pynvim and PyYAML...
-    call uv pip install --python "%LOCALAPPDATA%\python-global\Scripts\python.exe" pynvim PyYAML
-    if !errorlevel! neq 0 (
-        echo %RED%  Failed to install Python packages.%RESET%
-        set "FAILED=!FAILED! pynvim PyYAML"
-        set /a ERRORS+=1 >nul
-    ) else (
-        echo %GREEN%  pynvim and PyYAML OK.%RESET%
-    )
+    echo %GREEN%  Global venv already exists.%RESET%
+    goto :_install_pynvim
 )
+echo   Creating global venv at %LOCALAPPDATA%\python-global...
+call uv venv "%LOCALAPPDATA%\python-global" --python 3.12
+if !errorlevel! neq 0 (
+    echo %RED%  Failed to create global venv.%RESET%
+    set "FAILED=!FAILED! python-global-venv"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  Global venv created.%RESET%
+)
+:_install_pynvim
+if not exist "%LOCALAPPDATA%\python-global\Scripts\python.exe" goto :_after_pynvim
+echo   Installing pynvim and PyYAML...
+call uv pip install --python "%LOCALAPPDATA%\python-global\Scripts\python.exe" pynvim PyYAML
+if !errorlevel! neq 0 (
+    echo %RED%  Failed to install Python packages.%RESET%
+    set "FAILED=!FAILED! pynvim PyYAML"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  pynvim and PyYAML OK.%RESET%
+)
+:_after_pynvim
 :: --- pre-commit ---
 echo   Installing pre-commit...
 call uv tool install pre-commit >nul 2>&1
@@ -407,14 +408,13 @@ if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
 if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
 if /i "%PKG_ID%"=="LLVM.LLVM" set "_CMD=clang-format"
 if /i "%PKG_ID%"=="ccache.ccache" set "_CMD=ccache"
-if defined _CMD (
-    where !_CMD! >nul 2>&1
-    if !errorlevel! equ 0 (
-        echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
-        set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
-        goto :eof
-    )
-)
+if not defined _CMD goto :_winget_do_install
+where !_CMD! >nul 2>&1
+if !errorlevel! neq 0 goto :_winget_do_install
+echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
+set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
+goto :eof
+:_winget_do_install
 
 echo   Installing %DISPLAY_NAME% (%PKG_ID%)...
 winget install --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
