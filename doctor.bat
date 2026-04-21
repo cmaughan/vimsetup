@@ -63,6 +63,7 @@ call :check_tool pre-commit "pre-commit --version" 1  "uv tool install pre-commi
 call :check_tool clang-format "clang-format --version" 1  "winget install LLVM.LLVM"
 call :check_tool quarto     "quarto --version"     1  "winget install Posit.Quarto"
 call :check_tool ccache     "ccache --version"     1  "winget install ccache.ccache"
+call :check_tool ffmpeg     "ffmpeg -version"      1  "winget install Gyan.FFmpeg"
 call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
 call :check_tool claude     "claude --version"     1  "npm install -g @anthropic-ai/claude-code"
 call :check_tool codex      "codex --version"      1  "npm install -g @openai/codex"

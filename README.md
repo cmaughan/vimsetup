@@ -22,7 +22,7 @@ cd ~/.config/nvim
 
 ### What `install` does
 
-1. **Installs CLI tools** — Neovim, Git, Node, ripgrep, fd, fzf, Starship, eza, bat, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML (via winget/choco on Windows, brew on Mac)
+1. **Installs CLI tools** — Neovim, Git, Node, ripgrep, fd, fzf, Starship, eza, bat, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML, ffmpeg (via winget/choco on Windows, brew on Mac)
 2. **Sets up Python** — installs Python 3.12 via `uv`, creates a dedicated `python-global` venv, installs `pynvim` and `PyYAML`
 3. **Sets up Node** — installs the `neovim` npm provider and AI CLI tools (Claude Code, Codex, Gemini)
 4. **Copies config templates** — PowerShell profile / `.zshrc`, `starship.toml`, `.tmux.conf` (backs up existing files that differ)
@@ -137,6 +137,7 @@ brew install tmux          # terminal multiplexer
 brew install uv            # Python version manager + package installer
 brew install zoxide        # smart directory jumping (z command)
 brew install btop          # system monitor (CPU, RAM, disk, network)
+brew install ffmpeg        # video capture / encoding support
 brew install graphviz      # dot / dependency graph rendering
 brew install clang-uml     # UML diagram generation from C++ source
 brew install plantuml      # PlantUML renderer (used by gen_uml.py)
@@ -177,6 +178,7 @@ winget install sharkdp.bat              # cat replacement
 winget install astral-sh.uv              # Python version manager + package installer
 winget install ajeetdsouza.zoxide        # smart directory jumping (z command)
 winget install aristocratos.btop4win     # system monitor (CPU, RAM, disk, network)
+winget install Gyan.FFmpeg               # video capture / encoding support
 winget install Graphviz.Graphviz         # dot / dependency graph rendering
 winget install bkryza.clang-uml         # UML diagram generation from C++ source
 choco install plantuml                   # PlantUML renderer (used by gen_uml.py)

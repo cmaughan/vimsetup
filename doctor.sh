@@ -146,6 +146,7 @@ check_tool pre-commit "brew install pre-commit"
 check_tool clang-format "brew install clang-format"
 check_tool quarto    "brew install quarto"
 check_tool ccache    "brew install ccache"
+check_tool ffmpeg    "brew install ffmpeg"
 
 # ----- Python Environment -----
 section "Python Environment"

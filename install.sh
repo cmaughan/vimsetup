@@ -104,7 +104,7 @@ fi
 
 section "Installing CLI tools via Homebrew"
 
-BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache)
+BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache ffmpeg)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
