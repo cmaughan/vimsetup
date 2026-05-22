@@ -207,7 +207,7 @@ fi
 
 section "GUI desktop applications"
 
-BREW_CASKS=(db-browser-for-sqlite)
+BREW_CASKS=(db-browser-for-sqlite blackhole-2ch)
 
 for cask in "${BREW_CASKS[@]}"; do
     if brew list --cask "$cask" &>/dev/null; then
