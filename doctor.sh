@@ -40,6 +40,50 @@ section() {
     printf "\n${BOLD}=== %s ===${RESET}\n" "$*"
 }
 
+MIN_NVIM_VERSION="0.12.0"
+
+version_at_least() {
+    local version="${1#v}" required="${2#v}"
+    version="${version%%-*}"
+    required="${required%%-*}"
+
+    local major minor patch req_major req_minor req_patch
+    IFS=. read -r major minor patch <<< "$version"
+    IFS=. read -r req_major req_minor req_patch <<< "$required"
+
+    major=${major:-0}
+    minor=${minor:-0}
+    patch=${patch:-0}
+    req_major=${req_major:-0}
+    req_minor=${req_minor:-0}
+    req_patch=${req_patch:-0}
+
+    (( major > req_major )) && return 0
+    (( major < req_major )) && return 1
+    (( minor > req_minor )) && return 0
+    (( minor < req_minor )) && return 1
+    (( patch >= req_patch ))
+}
+
+nvim_version() {
+    nvim --version 2>/dev/null | sed -n 's/^NVIM v\([0-9][^ ]*\).*/\1/p' | head -1
+}
+
+check_nvim() {
+    if ! command -v nvim &>/dev/null; then
+        missing "nvim — install with: brew install neovim"
+        return
+    fi
+
+    local version
+    version="$(nvim_version)"
+    if [[ -n "$version" ]] && version_at_least "$version" "$MIN_NVIM_VERSION"; then
+        ok "nvim — NVIM v$version"
+    else
+        outdated "nvim — NVIM v${version:-unknown} (requires >= $MIN_NVIM_VERSION; upgrade with: brew upgrade neovim)"
+    fi
+}
+
 # --- Check a CLI tool is installed and show its version ---
 # Usage: check_tool <cmd> [install_hint]
 check_tool() {
@@ -121,7 +165,7 @@ printf "Running from: %s\n" "$SCRIPT_DIR"
 
 # ----- Core Tools -----
 section "Core Tools"
-check_tool nvim      "https://neovim.io or brew install neovim"
+check_nvim
 check_tool git       "brew install git"
 check_tool node      "brew install node"
 check_tool npm       "(comes with node)"

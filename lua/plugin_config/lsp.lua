@@ -1,5 +1,28 @@
 local key = require("util.keymap")
 
+local clangd_root_markers = {
+    '.clangd',
+    '.clang-tidy',
+    '.clang-format',
+    'compile_commands.json',
+    'compile_flags.txt',
+    'configure.ac',
+    '.git',
+}
+
+local function clangd_root_dir(bufnr, on_dir)
+    local root = vim.fs.root(bufnr, clangd_root_markers)
+    if root then
+        on_dir(root)
+        return
+    end
+
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if name ~= '' then
+        on_dir(vim.fs.dirname(name))
+    end
+end
+
 local function clangd_switch_source_header(bufnr, client)
     local method = 'textDocument/switchSourceHeader'
 
@@ -53,7 +76,9 @@ vim.lsp.config('lua_ls', {
     }
 })
 
-vim.lsp.config('clangd', {})
+vim.lsp.config('clangd', {
+    root_dir = clangd_root_dir,
+})
 
 vim.lsp.config('openscad_lsp', {
     settings = {

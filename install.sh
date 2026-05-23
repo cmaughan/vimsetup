@@ -23,6 +23,54 @@ info()    { printf "${BLUE}  [INFO]${NC} %s\n" "$*"; }
 err()     { printf "${RED}  [ERROR]${NC} %s\n" "$*" >&2; }
 section() { printf "\n${BOLD}── %s ──${NC}\n" "$*"; }
 
+MIN_NVIM_VERSION="0.12.0"
+
+version_at_least() {
+    local version="${1#v}" required="${2#v}"
+    version="${version%%-*}"
+    required="${required%%-*}"
+
+    local major minor patch req_major req_minor req_patch
+    IFS=. read -r major minor patch <<< "$version"
+    IFS=. read -r req_major req_minor req_patch <<< "$required"
+
+    major=${major:-0}
+    minor=${minor:-0}
+    patch=${patch:-0}
+    req_major=${req_major:-0}
+    req_minor=${req_minor:-0}
+    req_patch=${req_patch:-0}
+
+    (( major > req_major )) && return 0
+    (( major < req_major )) && return 1
+    (( minor > req_minor )) && return 0
+    (( minor < req_minor )) && return 1
+    (( patch >= req_patch ))
+}
+
+nvim_version() {
+    nvim --version 2>/dev/null | sed -n 's/^NVIM v\([0-9][^ ]*\).*/\1/p' | head -1
+}
+
+ensure_neovim() {
+    if command -v nvim &>/dev/null; then
+        local version
+        version="$(nvim_version)"
+        if [[ -n "$version" ]] && version_at_least "$version" "$MIN_NVIM_VERSION"; then
+            skip "neovim $version (already installed)"
+            return
+        fi
+
+        info "Upgrading neovim ${version:-unknown} to >= $MIN_NVIM_VERSION ..."
+        brew upgrade neovim || brew install neovim
+        ok "neovim $(nvim_version) installed"
+    else
+        info "Installing neovim ..."
+        brew install neovim
+        ok "neovim $(nvim_version) installed"
+    fi
+}
+
 # ── 1. Detect OS ──────────────────────────────────────────────────────────
 
 section "Detecting operating system"
@@ -104,7 +152,9 @@ fi
 
 section "Installing CLI tools via Homebrew"
 
-BREW_PACKAGES=(neovim git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache ffmpeg)
+ensure_neovim
+
+BREW_PACKAGES=(git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache ffmpeg)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
