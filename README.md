@@ -85,16 +85,15 @@ It verifies every tool is on PATH (with versions), checks that config files matc
 │       ├── linting.lua         # Linting via nvim-lint
 │       ├── treesitter.lua      # Treesitter
 │       ├── telescope.lua       # Fuzzy finder
-│       ├── completions.lua     # nvim-cmp
+│       ├── completions.lua     # blink.cmp
 │       ├── mason.lua           # Mason + tool installer
 │       ├── colorscheme.lua     # Colorscheme
 │       ├── copilot.lua         # GitHub Copilot
 │       ├── aerial.lua          # Code outline
 │       ├── gitsigns.lua        # Git signs
 │       ├── harpoon.lua         # Harpoon
-│       ├── leap.lua            # Leap motion
+│       ├── flash.lua           # Flash motion
 │       ├── lualine.lua         # Status line
-│       ├── markdown_preview.lua# Markdown preview
 │       ├── mini-files.lua      # Mini file explorer
 │       ├── neotest.lua         # Test runner integration
 │       ├── obsidian.lua        # Obsidian integration
@@ -129,7 +128,7 @@ brew install git
 brew install ripgrep       # telescope live_grep
 brew install fd            # telescope file search
 brew install fzf           # fzf.zsh shell integration
-brew install node          # markdown-preview, LSP servers
+brew install node          # LSP servers
 brew install starship      # shell prompt
 brew install eza           # ls replacement (aliased in .zshrc)
 brew install bat           # cat replacement (aliased in .zshrc)
@@ -171,7 +170,7 @@ winget install Git.Git
 winget install BurntSushi.ripgrep.MSVC   # telescope live_grep
 winget install sharkdp.fd                # telescope file search
 winget install junegunn.fzf              # fzf integration
-winget install OpenJS.NodeJS             # markdown-preview, LSP servers
+winget install OpenJS.NodeJS             # LSP servers
 winget install Starship.Starship         # shell prompt
 winget install eza-community.eza         # ls replacement
 winget install sharkdp.bat              # cat replacement

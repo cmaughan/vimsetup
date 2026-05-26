@@ -175,7 +175,7 @@ require("lazy").setup({
         end,
     },
 
-    -- Copilot (inline suggestions disabled; used as cmp source)
+    -- Copilot (inline suggestions disabled; used as a Blink completion source)
     {
         'zbirenbaum/copilot.lua',
         event = 'InsertEnter',
@@ -294,7 +294,7 @@ require("lazy").setup({
             -- LSP status info on bottom right
             { 'j-hui/fidget.nvim',       opts = {} },
 
-            'hrsh7th/cmp-nvim-lsp',
+            'saghen/blink.cmp',
         },
         config = function()
             require("plugin_config.lsp")
@@ -326,28 +326,17 @@ require("lazy").setup({
         event = 'InsertEnter',
         config = function()
             require('nvim-autopairs').setup({ check_ts = true })
-            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-            require('cmp').event:on('confirm_done', cmp_autopairs.on_confirm_done())
         end,
     },
 
     -- Completions
     {
-        'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
+        'saghen/blink.cmp',
+        version = '1.*',
+        event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = {
-            { 'L3MON4D3/LuaSnip', version = 'v2.4.1' },
-            'saadparwaiz1/cmp_luasnip',
-            'hrsh7th/cmp-nvim-lsp',
-            'hrsh7th/cmp-path',
-            'onsails/lspkind.nvim',
             'rafamadriz/friendly-snippets',
-            {
-                'zbirenbaum/copilot-cmp',
-                config = function()
-                    require("copilot_cmp").setup()
-                end,
-            },
+            'giuxtaposition/blink-cmp-copilot',
         },
         config = function()
             require("plugin_config.completions")
@@ -379,12 +368,13 @@ require("lazy").setup({
 
     -- Markdown
     {
-        'iamcco/markdown-preview.nvim',
-        ft = 'markdown',
-        build = "cd app && npm install",
-        config = function()
-            require("plugin_config.markdown_preview")
-        end,
+        'MeanderingProgrammer/render-markdown.nvim',
+        ft = { 'markdown', 'quarto' },
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        },
+        opts = {},
     },
 
     -- VimTex
@@ -406,18 +396,18 @@ require("lazy").setup({
 
     -- Obsidian vault navigation
     {
-        'epwalsh/obsidian.nvim',
+        'obsidian-nvim/obsidian.nvim',
         version = '*',
         ft = 'markdown',
         dependencies = { 'nvim-lua/plenary.nvim' },
         keys = {
-            { '<leader>of', '<cmd>ObsidianQuickSwitch<cr>',  desc = '[O]bsidian [F]ind note' },
-            { '<leader>og', '<cmd>ObsidianSearch<cr>',       desc = '[O]bsidian [G]rep' },
-            { '<leader>on', '<cmd>ObsidianNew<cr>',          desc = '[O]bsidian [N]ew note' },
-            { '<leader>od', '<cmd>ObsidianDailies<cr>',      desc = '[O]bsidian [D]aily notes' },
-            { '<leader>ob', '<cmd>ObsidianBacklinks<cr>',    desc = '[O]bsidian [B]acklinks' },
-            { '<leader>ot', '<cmd>ObsidianTags<cr>',         desc = '[O]bsidian [T]ags' },
-            { '<leader>ol', '<cmd>ObsidianFollowLink<cr>',   desc = '[O]bsidian fo[L]low link' },
+            { '<leader>of', '<cmd>Obsidian quick_switch<cr>', desc = '[O]bsidian [F]ind note' },
+            { '<leader>og', '<cmd>Obsidian search<cr>',       desc = '[O]bsidian [G]rep' },
+            { '<leader>on', '<cmd>Obsidian new<cr>',          desc = '[O]bsidian [N]ew note' },
+            { '<leader>od', '<cmd>Obsidian dailies<cr>',      desc = '[O]bsidian [D]aily notes' },
+            { '<leader>ob', '<cmd>Obsidian backlinks<cr>',    desc = '[O]bsidian [B]acklinks' },
+            { '<leader>ot', '<cmd>Obsidian tags<cr>',         desc = '[O]bsidian [T]ags' },
+            { '<leader>ol', '<cmd>Obsidian follow_link<cr>',  desc = '[O]bsidian fo[L]low link' },
         },
         config = function()
             require("plugin_config.obsidian")
@@ -452,11 +442,18 @@ require("lazy").setup({
         end,
     },
     {
-        url = "https://codeberg.org/andyg/leap.nvim",
-        keys = { 's', 'S' },
+        'folke/flash.nvim',
+        event = 'VeryLazy',
         config = function()
-            require("plugin_config.leap")
+            require("plugin_config.flash")
         end,
+        keys = {
+            { 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = '[S]earch flash' },
+            { 'S', mode = { 'n', 'x', 'o' }, function() require('flash').treesitter() end, desc = '[S]earch treesitter' },
+            { 'r', mode = 'o', function() require('flash').remote() end, desc = '[R]emote flash' },
+            { 'R', mode = { 'o', 'x' }, function() require('flash').treesitter_search() end, desc = '[R]emote treesitter search' },
+            { '<c-s>', mode = 'c', function() require('flash').toggle() end, desc = 'Toggle flash search' },
+        },
     },
 
     -- Persistent terminal (replaces the manual split term:// approach)

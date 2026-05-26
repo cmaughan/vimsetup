@@ -6,6 +6,8 @@ if not vault_path or vim.fn.isdirectory(vault_path) == 0 then
 end
 
 require("obsidian").setup({
+    legacy_commands = false,
+
     workspaces = {
         { name = "vault", path = vault_path },
     },
@@ -13,14 +15,9 @@ require("obsidian").setup({
     -- Use Telescope for search/picker
     picker = { name = "telescope.nvim" },
 
-    -- Follow markdown links with gf
-    follow_url_func = function(url)
-        vim.fn.jobstart({ "cmd", "/c", "start", url })
-    end,
-
-    -- Don't use obsidian.nvim's own completion (use nvim-cmp via its source instead)
+    -- Use obsidian.nvim's Blink source for wiki links and tags.
     completion = {
-        nvim_cmp = true,
+        blink = true,
         min_chars = 2,
     },
 
@@ -31,7 +28,7 @@ require("obsidian").setup({
     },
 
     ui = {
-        -- Disable if you find it conflicts with other plugins
-        enable = true,
+        -- render-markdown.nvim handles markdown decoration.
+        enable = false,
     },
 })
