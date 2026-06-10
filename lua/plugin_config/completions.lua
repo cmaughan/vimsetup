@@ -32,7 +32,7 @@ require('blink.cmp').setup({
         providers = {
             copilot = {
                 name = 'copilot',
-                module = 'blink-copilot',
+                module = 'blink-cmp-copilot',
                 async = true,
                 score_offset = 100,
             },
