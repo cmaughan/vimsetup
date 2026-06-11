@@ -73,6 +73,14 @@ function py { & $_py @args }
 function python { & $_py @args }
 function python3 { & $_py @args }
 function dr { & $_py do.py @args }
+function drr {
+    if (-not $env:MORNY_DEV_ROOT -or -not (Test-Path (Join-Path $env:MORNY_DEV_ROOT 'do.py'))) {
+        Write-Error "No do.py in MORNY_DEV_ROOT"
+        return
+    }
+    Push-Location $env:MORNY_DEV_ROOT
+    try { & $_py do.py @args } finally { Pop-Location }
+}
 
 # Chocolatey
 $chocolateyProfile = if ($env:ChocolateyInstall) {
