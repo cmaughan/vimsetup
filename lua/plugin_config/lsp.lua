@@ -105,7 +105,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local telescope = require('telescope.builtin')
 
         key.set('n', 'ge', function() vim.diagnostic.open_float(nil, { focus = false }) end, { buffer = ev.buf, desc = 'LSP: [G]oto [E]rror' })
-        key.set('n', 'gd', telescope.lsp_definitions, { buffer = ev.buf, desc = 'LSP: [G]oto [D]efinitions' })
+        key.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc = 'LSP: [G]oto [D]efinitions' })
         key.set('n', 'gD', telescope.lsp_type_definitions, { buffer = ev.buf, desc = 'LSP: [G]oto Type [D]efinitions' })
         key.set('n', 'gr', telescope.lsp_references, { buffer = ev.buf, desc = 'LSP: [G]oto [R]eferences' })
         key.set('n', 'gm', telescope.lsp_implementations, { buffer = ev.buf, desc = 'LSP: [G]oto I[M]plementations' })
