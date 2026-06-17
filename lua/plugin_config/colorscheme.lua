@@ -25,6 +25,9 @@ require("ibl").setup({
 })
 
 local function set_custom_highlights()
+  vim.api.nvim_set_hl(0, "Visual", { bg = "#2E6A9E" })
+  vim.api.nvim_set_hl(0, "VisualNOS", { bg = "#2E6A9E" })
+
   vim.api.nvim_set_hl(0, "VimwikiHeader1", { fg = "#78A9FF", bold = true })
   vim.api.nvim_set_hl(0, "VimwikiHeader2", { fg = "#BE95FF", bold = true })
   vim.api.nvim_set_hl(0, "VimwikiHeader3", { fg = "#FF7EB6", bold = true })

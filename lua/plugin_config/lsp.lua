@@ -51,16 +51,10 @@ require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "neocmake" }
 })
 
-local lspconfig = require('lspconfig')
-local lsp_defaults = lspconfig.util.default_config
-
-lsp_defaults.capabilities = vim.tbl_deep_extend(
-    'force',
-    lsp_defaults.capabilities,
-    require('cmp_nvim_lsp').default_capabilities()
-)
+local lsp_capabilities = require('blink.cmp').get_lsp_capabilities()
 
 vim.lsp.config('lua_ls', {
+    capabilities = lsp_capabilities,
     settings = {
         Lua = {
             diagnostics = {
@@ -77,10 +71,12 @@ vim.lsp.config('lua_ls', {
 })
 
 vim.lsp.config('clangd', {
+    capabilities = lsp_capabilities,
     root_dir = clangd_root_dir,
 })
 
 vim.lsp.config('openscad_lsp', {
+    capabilities = lsp_capabilities,
     settings = {
         openscad = {
             indent = "    "
