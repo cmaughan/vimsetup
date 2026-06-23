@@ -58,6 +58,15 @@ key.set('n', '<leader>wl', function() require('smart-splits').swap_buf_right() e
 key.set('t', '<Esc>', '<C-\\><C-n>', { desc = '[E]scape Terminal' })
 key.set('t', '<C-o>', '<C-\\><C-n><C-o>', { desc = '[E]scape Terminal to normal' })
 
+key.set('n', 'gd', function()
+    if #vim.lsp.get_clients({ bufnr = 0 }) == 0 then
+        vim.notify('No LSP client attached for this buffer; run :checkhealth vim.lsp', vim.log.levels.WARN)
+        return
+    end
+
+    vim.lsp.buf.definition()
+end, { desc = 'LSP: [G]oto [D]efinitions', override = true })
+
 -- Move around splits using Ctrl + {h,j,k,l} (vim-tmux-navigator, defined in plugins.lua)
 
 key.set('n', '<c-s-H>', 'gT', { desc = '[C-S-H] Left Tab' })
