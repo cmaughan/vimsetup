@@ -78,8 +78,18 @@ function drr {
         Write-Error "No do.py in MORNY_DEV_ROOT"
         return
     }
+    $hadLaunchDir = Test-Path Env:MORNY_DEV_LAUNCH_DIR
+    $previousLaunchDir = $env:MORNY_DEV_LAUNCH_DIR
+    $env:MORNY_DEV_LAUNCH_DIR = (Get-Location).ProviderPath
     Push-Location $env:MORNY_DEV_ROOT
-    try { & $_py do.py @args } finally { Pop-Location }
+    try { & $_py do.py @args } finally {
+        Pop-Location
+        if ($hadLaunchDir) {
+            $env:MORNY_DEV_LAUNCH_DIR = $previousLaunchDir
+        } else {
+            Remove-Item Env:MORNY_DEV_LAUNCH_DIR -ErrorAction SilentlyContinue
+        }
+    }
 }
 
 # Chocolatey
