@@ -33,7 +33,27 @@ alias cat="bat"
 alias py=python3
 export MORNY_DEV_ROOT="$HOME/dev"
 dr() { if [[ -f ./do.py ]]; then python3 ./do.py "$@"; else echo "No do.py in current directory"; return 1; fi }
-drr() { if [[ -n "$MORNY_DEV_ROOT" && -f "$MORNY_DEV_ROOT/do.py" ]]; then (cd "$MORNY_DEV_ROOT" && python3 ./do.py "$@"); else echo "No do.py in MORNY_DEV_ROOT"; return 1; fi }
+drr() {
+    if [[ -z "$MORNY_DEV_ROOT" || ! -f "$MORNY_DEV_ROOT/do.py" ]]; then
+        echo "No do.py in MORNY_DEV_ROOT"
+        return 1
+    fi
+    local had_launch_dir=0
+    local previous_launch_dir=
+    if [[ -v MORNY_DEV_LAUNCH_DIR ]]; then
+        had_launch_dir=1
+        previous_launch_dir="$MORNY_DEV_LAUNCH_DIR"
+    fi
+    export MORNY_DEV_LAUNCH_DIR="$PWD"
+    (cd "$MORNY_DEV_ROOT" && python3 ./do.py "$@")
+    local status=$?
+    if (( had_launch_dir )); then
+        export MORNY_DEV_LAUNCH_DIR="$previous_launch_dir"
+    else
+        unset MORNY_DEV_LAUNCH_DIR
+    fi
+    return $status
+}
 
 export EDITOR=nvim
 
