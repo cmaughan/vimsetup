@@ -31,6 +31,7 @@ alias ls="eza"
 alias ll="eza -lah"
 alias cat="bat"
 alias py=python3
+export MORNY_DEV_ROOT="$HOME/dev"
 dr() { if [[ -f ./do.py ]]; then python3 ./do.py "$@"; else echo "No do.py in current directory"; return 1; fi }
 drr() { if [[ -n "$MORNY_DEV_ROOT" && -f "$MORNY_DEV_ROOT/do.py" ]]; then (cd "$MORNY_DEV_ROOT" && python3 ./do.py "$@"); else echo "No do.py in MORNY_DEV_ROOT"; return 1; fi }
 
