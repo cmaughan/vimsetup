@@ -64,18 +64,26 @@ echo.
 
 call :winget_install "Neovim"            "Neovim.Neovim"
 call :winget_install "Git"               "Git.Git"
+call :winget_install "GitHub CLI"        "GitHub.cli"
+call :winget_install "PowerShell 7"      "Microsoft.PowerShell"
+call :winget_install "Visual Studio Code" "Microsoft.VisualStudioCode"
+call :winget_install "Cursor"            "Anysphere.Cursor"
 call :winget_install "Node.js LTS"       "OpenJS.NodeJS.LTS"
+call :winget_install "7-Zip"             "7zip.7zip"
 call :winget_install "ripgrep"           "BurntSushi.ripgrep.MSVC"
 call :winget_install "fd"                "sharkdp.fd"
 call :winget_install "fzf"               "junegunn.fzf"
 call :winget_install "Starship"          "Starship.Starship"
 call :winget_install "eza"               "eza-community.eza"
 call :winget_install "bat"               "sharkdp.bat"
+call :winget_install "btop"              "aristocratos.btop4win"
+call :winget_install "hexyl"             "sharkdp.hexyl"
 call :winget_install "zoxide"            "ajeetdsouza.zoxide"
 call :winget_install "Rustup"            "Rustlang.Rustup"
 call :winget_install "uv"                "astral-sh.uv"
 call :winget_install "Graphviz"          "Graphviz.Graphviz"
 call :winget_install "clang-uml"         "bkryza.clang-uml"
+call :winget_install "OpenSCAD Nightly"  "OpenSCAD.OpenSCAD.Nightly"
 call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
@@ -83,8 +91,17 @@ call :winget_install "Quarto"            "Posit.Quarto"
 call :winget_install "ccache"            "ccache.ccache"
 call :winget_install "FFmpeg"            "Gyan.FFmpeg"
 call :winget_install "LLVM - clang-format" "LLVM.LLVM"
+call :winget_install "Codex CLI"         "OpenAI.Codex"
+call :winget_store_install "Codex App"   "9PLM9XGG6VKS"
+call :winget_install "Claude App"        "Anthropic.Claude"
+call :winget_install "Claude Code"       "Anthropic.ClaudeCode"
+call :winget_install "Google Antigravity" "Google.Antigravity"
+call :winget_install "Antigravity CLI"   "Google.AntigravityCLI"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
+call :prepend_path_if_exists "%ProgramFiles%\OpenSCAD (Nightly)"
+call :prepend_path_if_exists "%ProgramFiles%\clang-uml\bin"
+call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
 echo.
 
 :: ============================================================================
@@ -194,8 +211,6 @@ if !errorlevel! neq 0 (
     echo %GREEN%  neovim npm package installed.%RESET%
 )
 echo   Installing AI CLI tools...
-call :npm_global_install "claude"  "@anthropic-ai/claude-code"
-call :npm_global_install "codex"   "@openai/codex"
 call :npm_global_install "gemini"  "@google/gemini-cli"
 :after_npm
 echo.
@@ -399,13 +414,20 @@ if !errorlevel! equ 0 (
 set "_CMD="
 if /i "%PKG_ID%"=="Neovim.Neovim" set "_CMD=nvim"
 if /i "%PKG_ID%"=="Git.Git" set "_CMD=git"
+if /i "%PKG_ID%"=="GitHub.cli" set "_CMD=gh"
+if /i "%PKG_ID%"=="Microsoft.PowerShell" set "_CMD=pwsh"
+if /i "%PKG_ID%"=="Microsoft.VisualStudioCode" set "_CMD=code"
+if /i "%PKG_ID%"=="Anysphere.Cursor" set "_CMD=cursor"
 if /i "%PKG_ID%"=="OpenJS.NodeJS.LTS" set "_CMD=node"
+if /i "%PKG_ID%"=="7zip.7zip" set "_CMD=7z"
 if /i "%PKG_ID%"=="BurntSushi.ripgrep.MSVC" set "_CMD=rg"
 if /i "%PKG_ID%"=="sharkdp.fd" set "_CMD=fd"
 if /i "%PKG_ID%"=="junegunn.fzf" set "_CMD=fzf"
 if /i "%PKG_ID%"=="Starship.Starship" set "_CMD=starship"
 if /i "%PKG_ID%"=="eza-community.eza" set "_CMD=eza"
 if /i "%PKG_ID%"=="sharkdp.bat" set "_CMD=bat"
+if /i "%PKG_ID%"=="aristocratos.btop4win" set "_CMD=btop"
+if /i "%PKG_ID%"=="sharkdp.hexyl" set "_CMD=hexyl"
 if /i "%PKG_ID%"=="ajeetdsouza.zoxide" set "_CMD=zoxide"
 if /i "%PKG_ID%"=="Rustlang.Rustup" set "_CMD=rustup"
 if /i "%PKG_ID%"=="astral-sh.uv" set "_CMD=uv"
@@ -417,6 +439,9 @@ if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
 if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
 if /i "%PKG_ID%"=="LLVM.LLVM" set "_CMD=clang-format"
 if /i "%PKG_ID%"=="ccache.ccache" set "_CMD=ccache"
+if /i "%PKG_ID%"=="OpenAI.Codex" set "_CMD=codex"
+if /i "%PKG_ID%"=="Anthropic.ClaudeCode" set "_CMD=claude"
+if /i "%PKG_ID%"=="Google.AntigravityCLI" set "_CMD=agy"
 if not defined _CMD goto :_winget_do_install
 where !_CMD! >nul 2>&1
 if !errorlevel! neq 0 goto :_winget_do_install
@@ -435,6 +460,44 @@ if !errorlevel! neq 0 (
     echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
     set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
 )
+goto :eof
+
+:: ============================================================================
+::  Helper: winget_store_install <display_name> <store_product_id>
+:: ============================================================================
+:winget_store_install
+set "DISPLAY_NAME=%~1"
+set "PKG_ID=%~2"
+
+winget list --source msstore --id "%PKG_ID%" --exact >nul 2>&1
+if !errorlevel! equ 0 (
+    echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
+    set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
+    goto :eof
+)
+
+echo   Installing %DISPLAY_NAME% (%PKG_ID%) from Microsoft Store...
+winget install --source msstore --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] %DISPLAY_NAME% installation failed.%RESET%
+    set "FAILED=!FAILED! %DISPLAY_NAME%"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
+    set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+)
+goto :eof
+
+:: ============================================================================
+::  Helper: prepend_path_if_exists <directory>
+:: ============================================================================
+:prepend_path_if_exists
+set "_PATHDIR=%~1"
+if not exist "!_PATHDIR!" goto :eof
+echo !PATH! | find /I "!_PATHDIR!" >nul 2>&1
+if !errorlevel! equ 0 goto :eof
+set "PATH=!_PATHDIR!;!PATH!"
+echo %GREEN%  [OK] Added to current PATH: !_PATHDIR!%RESET%
 goto :eof
 
 :: ============================================================================

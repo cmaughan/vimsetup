@@ -120,6 +120,41 @@ check_tool() {
     fi
 }
 
+# --- Check one of several equivalent commands is installed ---
+# Usage: check_any_tool <label> <install_hint> <cmd> [cmd...]
+check_any_tool() {
+    local label="$1"
+    local hint="$2"
+    shift 2
+
+    local cmd
+    for cmd in "$@"; do
+        if command -v "$cmd" &>/dev/null; then
+            ok "$label — found $cmd"
+            return 0
+        fi
+    done
+
+    missing "$label — install with: $hint"
+}
+
+# --- Check a Homebrew cask is installed ---
+check_brew_cask() {
+    local cask="$1"
+    local label="$2"
+
+    if ! command -v brew &>/dev/null; then
+        warn "$label — cannot check Homebrew cask (brew not found)"
+        return
+    fi
+
+    if brew list --cask "$cask" &>/dev/null; then
+        ok "$label — $cask cask installed"
+    else
+        missing "$label — install with: brew install --cask $cask"
+    fi
+}
+
 # --- Check file exists ---
 check_file() {
     local path="$1"
@@ -167,14 +202,26 @@ printf "Running from: %s\n" "$SCRIPT_DIR"
 section "Core Tools"
 check_nvim
 check_tool git       "brew install git"
+check_tool gh        "brew install gh"
+check_tool pwsh      "brew install --cask powershell"
+if [[ "$OS" == "Darwin" ]]; then
+    check_tool code      "brew install --cask visual-studio-code"
+    check_tool cursor    "brew install --cask cursor"
+else
+    check_tool code      "sudo snap install code --classic"
+    warn "Cursor desktop is not installed by this Linux bootstrap; install it manually from https://cursor.com/download if needed."
+fi
 check_tool node      "brew install node"
 check_tool npm       "(comes with node)"
+check_any_tool "7-Zip" "brew install sevenzip" 7zz 7z
 check_tool rg        "brew install ripgrep"
 check_tool fd        "brew install fd"
 check_tool fzf       "brew install fzf"
 check_tool starship  "brew install starship"
 check_tool eza       "brew install eza"
 check_tool bat       "brew install bat"
+check_tool btop      "brew install btop"
+check_tool hexyl     "brew install hexyl"
 check_tool zoxide    "brew install zoxide"
 check_tool uv        "brew install uv"
 check_tool rustup    "https://rustup.rs"
@@ -185,12 +232,26 @@ check_tool ninja     "brew install ninja"
 check_tool doxygen   "brew install doxygen"
 check_tool dot       "brew install graphviz"
 check_tool clang-uml "brew install clang-uml"
+check_any_tool "OpenSCAD snapshot/nightly" "brew install --cask openscad@snapshot" openscad-nightly openscad
 check_tool plantuml  "brew install plantuml"
 check_tool pre-commit "brew install pre-commit"
 check_tool clang-format "brew install clang-format"
 check_tool quarto    "brew install quarto"
 check_tool ccache    "brew install ccache"
 check_tool ffmpeg    "brew install ffmpeg"
+check_tool claude    "brew install --cask claude-code"
+check_tool codex     "brew install --cask codex"
+check_tool agy       "brew install --cask antigravity-cli"
+check_tool gemini    "npm install -g @google/gemini-cli"
+
+if [[ "$OS" == "Darwin" ]]; then
+    check_brew_cask "codex-app" "Codex App"
+    check_brew_cask "claude" "Claude Desktop"
+    check_brew_cask "antigravity" "Google Antigravity"
+    check_brew_cask "openscad@snapshot" "OpenSCAD snapshot"
+else
+    warn "Codex App and Claude Desktop are not officially available on Linux; CLI checks cover Linux."
+fi
 
 # ----- Python Environment -----
 section "Python Environment"

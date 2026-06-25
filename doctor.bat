@@ -32,6 +32,10 @@ echo %BOLD%%CYAN%==============================================================%
 echo   %DIM%Config dir: %CFGDIR%%RESET%
 echo.
 
+call :prepend_path_if_exists "%ProgramFiles%\OpenSCAD (Nightly)"
+call :prepend_path_if_exists "%ProgramFiles%\clang-uml\bin"
+call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
+
 :: ---------------------------------------------------------------------
 ::  Section: Core Tools
 :: ---------------------------------------------------------------------
@@ -40,14 +44,21 @@ echo.
 
 call :check_tool nvim       "nvim --version"       1  "winget install Neovim.Neovim"
 call :check_tool git        "git --version"        1  "winget install Git.Git"
+call :check_tool gh         "gh --version"         1  "winget install GitHub.cli"
+call :check_tool pwsh       "pwsh --version"       1  "winget install Microsoft.PowerShell"
+call :check_tool code       "code --version"       1  "winget install Microsoft.VisualStudioCode"
+call :check_tool cursor     "cursor --version"     1  "winget install Anysphere.Cursor"
 call :check_tool node       "node --version"       1  "winget install OpenJS.NodeJS.LTS"
 call :check_tool npm        "npm --version"        1  "install node"
+call :check_tool 7z         "7z i"                 2  "winget install 7zip.7zip"
 call :check_tool rg         "rg --version"         1  "winget install BurntSushi.ripgrep.MSVC"
 call :check_tool fd         "fd --version"         1  "winget install sharkdp.fd"
 call :check_tool fzf        "fzf --version"        1  "winget install junegunn.fzf"
 call :check_tool starship   "starship --version"   1  "winget install Starship.Starship"
 call :check_tool eza        "eza --version"        1  "winget install eza-community.eza"
 call :check_tool bat        "bat --version"        1  "winget install sharkdp.bat"
+call :check_tool btop       "btop --version"       1  "winget install aristocratos.btop4win"
+call :check_tool hexyl      "hexyl --version"      1  "winget install sharkdp.hexyl"
 call :check_tool zoxide     "zoxide --version"     1  "winget install ajeetdsouza.zoxide"
 call :check_tool uv         "uv --version"         1  "winget install astral-sh.uv"
 call :check_tool rustup     "rustup --version"     1  "winget install Rustlang.Rustup"
@@ -58,6 +69,7 @@ call :check_tool doxygen    "doxygen --version"    1  "winget install DimitriVan
 call :check_tool psmux      "psmux --version"      1  "cargo install psmux"
 call :check_tool dot        "dot -V"               1  "winget install Graphviz.Graphviz"
 call :check_tool clang-uml  "clang-uml --version"  1  "winget install bkryza.clang-uml"
+call :check_tool openscad   "openscad --version"   1  "winget install OpenSCAD.OpenSCAD.Nightly"
 call :check_tool plantuml   "plantuml -version"    1  "choco install plantuml"
 call :check_tool pre-commit "pre-commit --version" 1  "uv tool install pre-commit"
 call :check_tool clang-format "clang-format --version" 1  "winget install LLVM.LLVM"
@@ -65,9 +77,15 @@ call :check_tool quarto     "quarto --version"     1  "winget install Posit.Quar
 call :check_tool ccache     "ccache --version"     1  "winget install ccache.ccache"
 call :check_tool ffmpeg     "ffmpeg -version"      1  "winget install Gyan.FFmpeg"
 call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
-call :check_tool claude     "claude --version"     1  "npm install -g @anthropic-ai/claude-code"
-call :check_tool codex      "codex --version"      1  "npm install -g @openai/codex"
+call :check_tool claude     "claude --version"     1  "winget install Anthropic.ClaudeCode"
+call :check_tool codex      "codex --version"      1  "winget install OpenAI.Codex"
+call :check_tool agy        "agy --version"        1  "winget install Google.AntigravityCLI"
 call :check_tool gemini     "gemini --version"     1  "npm install -g @google/gemini-cli"
+
+call :check_winget_package "Codex App"             "9PLM9XGG6VKS"                  "winget install --source msstore --id 9PLM9XGG6VKS"
+call :check_winget_package "Claude App"            "Anthropic.Claude"              "winget install Anthropic.Claude"
+call :check_winget_package "Google Antigravity"    "Google.Antigravity"            "winget install Google.Antigravity"
+call :check_command_path_contains "OpenSCAD Nightly path" "openscad" "Nightly" "winget install OpenSCAD.OpenSCAD.Nightly"
 
 echo.
 
@@ -302,6 +320,16 @@ if !FAIL! gtr 0 (
 ::  Subroutines
 :: ---------------------------------------------------------------------
 
+:: :prepend_path_if_exists <directory>
+::   Adds known standalone install directories to this process PATH.
+:prepend_path_if_exists
+    set "_PATHDIR=%~1"
+    if not exist "!_PATHDIR!" exit /b
+    echo !PATH! | find /I "!_PATHDIR!" >nul 2>&1
+    if !errorlevel! equ 0 exit /b
+    set "PATH=!_PATHDIR!;!PATH!"
+    exit /b
+
 :: :check_tool <name> <version_cmd> <version_line> <install_hint>
 ::   Checks if a tool is on PATH and shows its version.
 :check_tool
@@ -326,6 +354,53 @@ if !FAIL! gtr 0 (
         set /a PASS+=1 >nul
     ) else (
         echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
+        set /a FAIL+=1 >nul
+    )
+    exit /b
+
+:: :check_winget_package <label> <package_id> <install_hint>
+::   Checks whether a WinGet/MS Store package is installed.
+:check_winget_package
+    set "PKG_LABEL=%~1"
+    set "PKG_ID=%~2"
+    set "INSTALL=%~3"
+
+    where winget >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo   %YELLOW%[WARN]%RESET%    %PKG_LABEL% --cannot check ^(winget not found^)
+        set /a WARN+=1 >nul
+        exit /b
+    )
+
+    winget list --id "%PKG_ID%" --exact >nul 2>&1
+    if !errorlevel! equ 0 (
+        echo   %GREEN%[OK]%RESET%      %PKG_LABEL%
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %RED%[MISSING]%RESET%  %PKG_LABEL% --install with: %INSTALL%
+        set /a FAIL+=1 >nul
+    )
+    exit /b
+
+:: :check_command_path_contains <label> <command> <path_text> <install_hint>
+::   Checks whether a command resolves to a path containing expected text.
+:check_command_path_contains
+    set "PATH_LABEL=%~1"
+    set "PATH_CMD=%~2"
+    set "PATH_TEXT=%~3"
+    set "INSTALL=%~4"
+
+    set "FOUND_PATH="
+    for /f "tokens=*" %%p in ('where "%PATH_CMD%" 2^>nul') do (
+        echo %%p | find /I "%PATH_TEXT%" >nul 2>&1
+        if !errorlevel! equ 0 set "FOUND_PATH=%%p"
+    )
+
+    if defined FOUND_PATH (
+        echo   %GREEN%[OK]%RESET%      %PATH_LABEL% --!FOUND_PATH!
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %RED%[MISSING]%RESET%  %PATH_LABEL% --install with: %INSTALL%
         set /a FAIL+=1 >nul
     )
     exit /b
