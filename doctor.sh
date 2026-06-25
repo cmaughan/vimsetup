@@ -120,6 +120,26 @@ check_tool() {
     fi
 }
 
+check_tool_min_version() {
+    local cmd="$1"
+    local min_version="$2"
+    local hint="${3:-}"
+
+    if ! command -v "$cmd" &>/dev/null; then
+        missing "$cmd — install with: $hint"
+        return
+    fi
+
+    local ver_output version
+    ver_output=$(${cmd} --version 2>/dev/null | head -1 || true)
+    version=$(printf "%s\n" "$ver_output" | grep -Eo '[0-9]+(\.[0-9]+)+' | head -1)
+    if [[ -n "$version" ]] && version_at_least "$version" "$min_version"; then
+        ok "$cmd — $ver_output"
+    else
+        outdated "$cmd — ${ver_output:-unknown} (need >= $min_version; run: $hint)"
+    fi
+}
+
 # --- Check one of several equivalent commands is installed ---
 # Usage: check_any_tool <label> <install_hint> <cmd> [cmd...]
 check_any_tool() {
@@ -227,7 +247,7 @@ check_tool uv        "brew install uv"
 check_tool rustup    "https://rustup.rs"
 check_tool cargo     "(comes with rustup)"
 check_tool tmux      "brew install tmux"
-check_tool cmake     "brew install cmake"
+check_tool_min_version cmake "4.0.0" "brew upgrade cmake"
 check_tool ninja     "brew install ninja"
 check_tool doxygen   "brew install doxygen"
 check_tool dot       "brew install graphviz"

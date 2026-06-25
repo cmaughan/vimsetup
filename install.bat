@@ -84,7 +84,7 @@ call :winget_install "uv"                "astral-sh.uv"
 call :winget_install "Graphviz"          "Graphviz.Graphviz"
 call :winget_install "clang-uml"         "bkryza.clang-uml"
 call :winget_install "OpenSCAD Nightly"  "OpenSCAD.OpenSCAD.Nightly"
-call :winget_install "CMake"             "Kitware.CMake"
+call :winget_upgrade_or_install "CMake"  "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
 call :winget_install "Quarto"            "Posit.Quarto"
@@ -104,6 +104,7 @@ call :configure_vulkan_sdk
 call :prepend_path_if_exists "%ProgramFiles%\OpenSCAD (Nightly)"
 call :prepend_path_if_exists "%ProgramFiles%\clang-uml\bin"
 call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
+call :prepend_path_if_exists "%ProgramFiles%\CMake\bin"
 echo.
 
 :: ============================================================================
@@ -452,6 +453,40 @@ echo %GREEN%  [SKIP] %DISPLAY_NAME% already installed.%RESET%
 set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
 goto :eof
 :_winget_do_install
+
+echo   Installing %DISPLAY_NAME% (%PKG_ID%)...
+winget install --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] %DISPLAY_NAME% installation failed.%RESET%
+    set "FAILED=!FAILED! %DISPLAY_NAME%"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
+    set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+)
+goto :eof
+
+:: ============================================================================
+::  Helper: winget_upgrade_or_install <display_name> <package_id>
+::  Uses WinGet's package version instead of accepting an older tool on PATH.
+:: ============================================================================
+:winget_upgrade_or_install
+set "DISPLAY_NAME=%~1"
+set "PKG_ID=%~2"
+
+winget list --id "%PKG_ID%" --exact >nul 2>&1
+if !errorlevel! equ 0 (
+    echo   Upgrading %DISPLAY_NAME% (%PKG_ID%)...
+    winget upgrade --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
+    if !errorlevel! neq 0 (
+        echo %YELLOW%  [SKIP] %DISPLAY_NAME% upgrade not applied; it may already be current.%RESET%
+        set "SKIPPED=!SKIPPED! %DISPLAY_NAME%"
+    ) else (
+        echo %GREEN%  [OK]   %DISPLAY_NAME% upgraded.%RESET%
+        set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+    )
+    goto :eof
+)
 
 echo   Installing %DISPLAY_NAME% (%PKG_ID%)...
 winget install --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"

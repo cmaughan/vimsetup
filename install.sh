@@ -71,6 +71,21 @@ ensure_neovim() {
     fi
 }
 
+cmake_version() {
+    cmake --version 2>/dev/null | sed -n 's/^cmake version \([0-9][^ ]*\).*/\1/p' | head -1
+}
+
+ensure_cmake() {
+    if brew list --formula cmake &>/dev/null; then
+        info "Upgrading cmake to the latest Homebrew formula ..."
+        brew upgrade cmake || brew install cmake
+    else
+        info "Installing cmake ..."
+        brew install cmake
+    fi
+    ok "cmake $(cmake_version) installed"
+}
+
 # ── 1. Detect OS ──────────────────────────────────────────────────────────
 
 section "Detecting operating system"
@@ -153,8 +168,9 @@ fi
 section "Installing CLI tools via Homebrew"
 
 ensure_neovim
+ensure_cmake
 
-BREW_PACKAGES=(git gh node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
+BREW_PACKAGES=(git gh node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then

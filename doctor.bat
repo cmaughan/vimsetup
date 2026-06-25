@@ -21,6 +21,7 @@ set "RESET=%ESC%[0m"
 set /a PASS=0
 set /a WARN=0
 set /a FAIL=0
+set "MIN_CMAKE_VERSION=4.0.0"
 
 :: Config directory (where this script lives)
 set "CFGDIR=%~dp0"
@@ -63,7 +64,7 @@ call :check_tool zoxide     "zoxide --version"     1  "winget install ajeetdsouz
 call :check_tool uv         "uv --version"         1  "winget install astral-sh.uv"
 call :check_tool rustup     "rustup --version"     1  "winget install Rustlang.Rustup"
 call :check_tool cargo      "cargo --version"      1  "install rustup"
-call :check_tool cmake      "cmake --version"      1  "winget install Kitware.CMake"
+call :check_tool_min_version cmake "cmake --version" 1 "%MIN_CMAKE_VERSION%" "winget upgrade Kitware.CMake"
 call :check_tool ninja      "ninja --version"      1  "winget install Ninja-build.Ninja"
 call :check_tool doxygen    "doxygen --version"    1  "winget install DimitriVanHeesch.Doxygen"
 call :check_tool psmux      "psmux --version"      1  "cargo install psmux"
@@ -358,6 +359,44 @@ if !FAIL! gtr 0 (
     ) else (
         echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
         set /a FAIL+=1 >nul
+    )
+    exit /b
+
+:: :check_tool_min_version <name> <version_cmd> <version_line> <min_version> <install_hint>
+::   Checks if a tool is on PATH and meets a minimum semantic version.
+:check_tool_min_version
+    set "TOOL_NAME=%~1"
+    set "VER_CMD=%~2"
+    set "VER_LINE=%~3"
+    set "MIN_VERSION=%~4"
+    set "INSTALL=%~5"
+
+    where %TOOL_NAME% >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
+        set /a FAIL+=1 >nul
+        exit /b
+    )
+
+    set "VER_OUTPUT="
+    set "LINE_NUM=0"
+    for /f "tokens=*" %%v in ('%VER_CMD% 2^>^&1') do (
+        set /a LINE_NUM+=1 >nul
+        if !LINE_NUM! equ %VER_LINE% set "VER_OUTPUT=%%v"
+    )
+
+    set "CHECK_VERSION_OUTPUT=!VER_OUTPUT!"
+    set "CHECK_MIN_VERSION=%MIN_VERSION%"
+    powershell -NoProfile -Command "$m = [regex]::Match($env:CHECK_VERSION_OUTPUT, '\d+(\.\d+)+'); if (-not $m.Success) { exit 2 }; if ([version]$m.Value -ge [version]$env:CHECK_MIN_VERSION) { exit 0 } else { exit 1 }" >nul 2>&1
+    if !errorlevel! geq 2 (
+        echo   %YELLOW%[WARN]%RESET%    %TOOL_NAME% --could not parse version from: !VER_OUTPUT!
+        set /a WARN+=1 >nul
+    ) else if !errorlevel! equ 1 (
+        echo   %YELLOW%[OUTDATED]%RESET% %TOOL_NAME% --!VER_OUTPUT! ^(need >= %MIN_VERSION%; run: %INSTALL%^)
+        set /a WARN+=1 >nul
+    ) else (
+        echo   %GREEN%[OK]%RESET%      %TOOL_NAME% --!VER_OUTPUT!
+        set /a PASS+=1 >nul
     )
     exit /b
 
