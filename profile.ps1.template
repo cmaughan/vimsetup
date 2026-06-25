@@ -38,6 +38,21 @@ if ($_vulkanSdk) {
     }
 }
 
+# Some WinGet installers do not publish their bin directories to PATH reliably.
+if (-not $env:ProgramFiles) {
+    $env:ProgramFiles = 'C:\Program Files'
+}
+$_toolBins = @(
+    (Join-Path $env:ProgramFiles 'OpenSCAD (Nightly)'),
+    (Join-Path $env:ProgramFiles 'clang-uml\bin'),
+    (Join-Path $env:ProgramFiles 'Graphviz\bin')
+)
+foreach ($_toolBin in $_toolBins) {
+    if ((Test-Path $_toolBin) -and ($env:PATH -notlike "*$_toolBin*")) {
+        $env:PATH = "$_toolBin;$env:PATH"
+    }
+}
+
 # Codex shells only need PATH bootstrap; skip the rest of the profile.
 $isCodexShell = ($env:IN_CODEX -eq "1") -or [bool]$env:CODEX_THREAD_ID
 if ($isCodexShell) {

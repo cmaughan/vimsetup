@@ -22,9 +22,9 @@ cd ~/.config/nvim
 
 ### What `install` does
 
-1. **Installs CLI tools** — Neovim, Git, Node, ripgrep, fd, fzf, Starship, eza, bat, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML, ffmpeg (via winget/choco on Windows, brew on Mac)
+1. **Installs CLI tools** — Neovim, Git, GitHub CLI, PowerShell 7, Node, ripgrep, fd, fzf, Starship, eza, bat, btop, hexyl, 7-Zip, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML, ffmpeg (via winget/choco on Windows, brew on Mac)
 2. **Sets up Python** — installs Python 3.12 via `uv`, creates a dedicated `python-global` venv, installs `pynvim` and `PyYAML`
-3. **Sets up Node** — installs the `neovim` npm provider and AI CLI tools (Claude Code, Codex, Gemini)
+3. **Sets up Node / AI tools** — installs the `neovim` npm provider, Codex CLI/App, Claude Code/App, Google Antigravity, and Gemini CLI
 4. **Copies config templates** — PowerShell profile / `.zshrc`, `starship.toml`, `.tmux.conf` (backs up existing files that differ)
 5. **Installs JetBrainsMono Nerd Font**
 6. **Installs PowerShell modules** — PSFzf for fzf shell integration
@@ -125,6 +125,7 @@ Install packages via [Homebrew](https://brew.sh):
 ```sh
 brew install neovim
 brew install git
+brew install gh             # GitHub CLI
 brew install ripgrep       # telescope live_grep
 brew install fd            # telescope file search
 brew install fzf           # fzf.zsh shell integration
@@ -136,6 +137,8 @@ brew install tmux          # terminal multiplexer
 brew install uv            # Python version manager + package installer
 brew install zoxide        # smart directory jumping (z command)
 brew install btop          # system monitor (CPU, RAM, disk, network)
+brew install hexyl         # hex viewer
+brew install sevenzip      # 7-Zip command-line tools
 brew install ffmpeg        # video capture / encoding support
 brew install graphviz      # dot / dependency graph rendering
 brew install clang-uml     # UML diagram generation from C++ source
@@ -147,7 +150,9 @@ brew install cmake         # build system
 
 ```sh
 brew install mactex        # for vimtex / LaTeX support
-brew install openscad      # for vim-openscad support
+brew install --cask openscad@snapshot # latest OpenSCAD snapshot for vim-openscad support
+brew install --cask visual-studio-code cursor
+brew install --cask codex-app codex claude claude-code antigravity antigravity-cli
 ```
 
 ---
@@ -167,6 +172,11 @@ Install packages via [winget](https://learn.microsoft.com/en-us/windows/package-
 ```powershell
 winget install Neovim.Neovim
 winget install Git.Git
+winget install GitHub.cli
+winget install Microsoft.PowerShell
+winget install Microsoft.VisualStudioCode
+winget install Anysphere.Cursor
+winget install 7zip.7zip
 winget install BurntSushi.ripgrep.MSVC   # telescope live_grep
 winget install sharkdp.fd                # telescope file search
 winget install junegunn.fzf              # fzf integration
@@ -177,9 +187,17 @@ winget install sharkdp.bat              # cat replacement
 winget install astral-sh.uv              # Python version manager + package installer
 winget install ajeetdsouza.zoxide        # smart directory jumping (z command)
 winget install aristocratos.btop4win     # system monitor (CPU, RAM, disk, network)
+winget install sharkdp.hexyl             # hex viewer
 winget install Gyan.FFmpeg               # video capture / encoding support
 winget install Graphviz.Graphviz         # dot / dependency graph rendering
 winget install bkryza.clang-uml         # UML diagram generation from C++ source
+winget install OpenSCAD.OpenSCAD.Nightly # latest OpenSCAD beta/nightly
+winget install OpenAI.Codex              # Codex CLI
+winget install --source msstore --id 9PLM9XGG6VKS # Codex App
+winget install Anthropic.ClaudeCode      # Claude CLI
+winget install Anthropic.Claude          # Claude App
+winget install Google.Antigravity        # Google Antigravity App
+winget install Google.AntigravityCLI     # Google Antigravity CLI
 choco install plantuml                   # PlantUML renderer (used by gen_uml.py)
 winget install Kitware.CMake             # build system
 ```
@@ -200,7 +218,6 @@ Install-Module PSFzf
 
 ```powershell
 winget install MiKTeX.MiKTeX     # for vimtex / LaTeX support
-winget install OpenSCAD.OpenSCAD # for vim-openscad support
 ```
 
 ---
