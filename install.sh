@@ -154,7 +154,7 @@ section "Installing CLI tools via Homebrew"
 
 ensure_neovim
 
-BREW_PACKAGES=(git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache ffmpeg)
+BREW_PACKAGES=(git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -168,6 +168,10 @@ done
 
 # Refresh PATH so newly installed binaries (node, npm, etc.) are visible
 eval "$(brew shellenv)"
+
+# Expose Homebrew's Vulkan SDK-equivalent prefix to child processes.
+export VULKAN_SDK="$(brew --prefix)"
+export PATH="$VULKAN_SDK/bin:$PATH"
 
 # Force-link node in case a stale nodejs.org installer left conflicting files
 # that silently prevented Homebrew from creating the node/npm symlinks.

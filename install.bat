@@ -80,11 +80,13 @@ call :winget_install "CMake"             "Kitware.CMake"
 call :winget_install "Ninja"             "Ninja-build.Ninja"
 call :winget_install "Doxygen"           "DimitriVanHeesch.Doxygen"
 call :winget_install "Quarto"            "Posit.Quarto"
-call :winget_install "ccache"            "ccache.ccache"
+call :winget_install "ccache"            "Ccache.Ccache"
+call :winget_install "Vulkan SDK"        "KhronosGroup.VulkanSDK"
 call :winget_install "FFmpeg"            "Gyan.FFmpeg"
 call :winget_install "LLVM - clang-format" "LLVM.LLVM"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
+call :configure_vulkan_sdk
 echo.
 
 :: ============================================================================
@@ -344,7 +346,7 @@ echo.
 echo   1. %CYAN%Set your terminal font%RESET% to %BOLD%JetBrainsMono Nerd Font Mono%RESET%
 echo      (Windows Terminal: Settings ^> Profiles ^> Defaults ^> Appearance ^> Font face)
 echo.
-echo   2. %CYAN%Restart your terminal%RESET% so new PATH entries take effect.
+echo   2. %CYAN%Restart your terminal%RESET% so new PATH and VULKAN_SDK entries take effect.
 echo.
 echo   3. %CYAN%Launch Neovim%RESET% and let it auto-install plugins, LSP servers,
 echo      and formatters on first launch. This may take a few minutes.
@@ -416,7 +418,8 @@ if /i "%PKG_ID%"=="Ninja-build.Ninja" set "_CMD=ninja"
 if /i "%PKG_ID%"=="DimitriVanHeesch.Doxygen" set "_CMD=doxygen"
 if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
 if /i "%PKG_ID%"=="LLVM.LLVM" set "_CMD=clang-format"
-if /i "%PKG_ID%"=="ccache.ccache" set "_CMD=ccache"
+if /i "%PKG_ID%"=="Ccache.Ccache" set "_CMD=ccache"
+if /i "%PKG_ID%"=="KhronosGroup.VulkanSDK" set "_CMD=glslc"
 if not defined _CMD goto :_winget_do_install
 where !_CMD! >nul 2>&1
 if !errorlevel! neq 0 goto :_winget_do_install
@@ -434,6 +437,38 @@ if !errorlevel! neq 0 (
 ) else (
     echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
     set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+)
+goto :eof
+
+:: ============================================================================
+::  Helper: configure_vulkan_sdk
+::  Finds the Vulkan SDK, exports it for this process, and persists user env.
+:: ============================================================================
+:configure_vulkan_sdk
+set "VULKAN_DIR="
+for /f "delims=" %%d in ('powershell -NoProfile -ExecutionPolicy Bypass -Command "$roots = New-Object System.Collections.Generic.List[string]; if ($env:VULKAN_SDK) { $roots.Add($env:VULKAN_SDK) }; $roots.Add('C:\VulkanSDK'); $pf = [Environment]::GetFolderPath('ProgramFiles'); if ($pf) { $roots.Add((Join-Path $pf 'VulkanSDK')) }; $pfx86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)'); if ($pfx86) { $roots.Add((Join-Path $pfx86 'VulkanSDK')) }; $found = @(); foreach ($root in $roots) { if (-not $root) { continue }; if (Test-Path (Join-Path $root 'Bin\glslc.exe')) { $found += $root }; if (Test-Path $root) { foreach ($child in Get-ChildItem $root -Directory -ErrorAction SilentlyContinue) { if (Test-Path (Join-Path $child.FullName 'Bin\glslc.exe')) { $found += $child.FullName } } } }; if ($found.Count -gt 0) { [Array]::Sort($found); $found[$found.Count - 1] }"') do set "VULKAN_DIR=%%d"
+
+if not defined VULKAN_DIR (
+    echo %YELLOW%  [WARN] Vulkan SDK directory not found. Re-run install.bat after WinGet finishes installing the SDK.%RESET%
+    set "FAILED=!FAILED! VulkanSDK-env"
+    set /a ERRORS+=1 >nul
+    goto :eof
+)
+
+set "VULKAN_SDK=!VULKAN_DIR!"
+set "VULKAN_BIN=!VULKAN_SDK!\Bin"
+
+echo   Configuring Vulkan SDK environment: !VULKAN_SDK!
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$sdk = $env:VULKAN_SDK; $bin = Join-Path $sdk 'Bin'; [Environment]::SetEnvironmentVariable('VULKAN_SDK', $sdk, 'User'); $userPath = [Environment]::GetEnvironmentVariable('Path', 'User'); $exists = $false; if ($userPath) { foreach ($part in $userPath.Split(';')) { if ($part.TrimEnd('\') -ieq $bin.TrimEnd('\')) { $exists = $true } } }; if (-not $exists) { if ([string]::IsNullOrWhiteSpace($userPath)) { $newPath = $bin } else { $newPath = $userPath.TrimEnd(';') + ';' + $bin }; [Environment]::SetEnvironmentVariable('Path', $newPath, 'User') }"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] Could not persist VULKAN_SDK environment.%RESET%
+    set "FAILED=!FAILED! VulkanSDK-env"
+    set /a ERRORS+=1 >nul
+) else (
+    echo ;!PATH!; | find /i ";!VULKAN_BIN!;" >nul
+    if !errorlevel! neq 0 set "PATH=!VULKAN_BIN!;!PATH!"
+    echo %GREEN%  [OK]   VULKAN_SDK configured.%RESET%
+    set "INSTALLED=!INSTALLED! VulkanSDK-env"
 )
 goto :eof
 

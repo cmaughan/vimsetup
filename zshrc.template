@@ -19,6 +19,18 @@ if command -v ccache &>/dev/null; then
     export CMAKE_CXX_COMPILER_LAUNCHER=ccache
 fi
 
+# Vulkan SDK via Homebrew
+if command -v brew &>/dev/null; then
+    _vulkan_sdk="$(brew --prefix)"
+    if [[ -x "$_vulkan_sdk/bin/glslc" || -x "$_vulkan_sdk/bin/vulkaninfo" ]]; then
+        export VULKAN_SDK="$_vulkan_sdk"
+        case ":$PATH:" in
+            *":$VULKAN_SDK/bin:"*) ;;
+            *) export PATH="$VULKAN_SDK/bin:$PATH" ;;
+        esac
+    fi
+fi
+
 # uv (Python version manager + package installer)
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/share/nvim-venv/bin:$PATH"

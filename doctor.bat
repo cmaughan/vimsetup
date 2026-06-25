@@ -62,7 +62,10 @@ call :check_tool plantuml   "plantuml -version"    1  "choco install plantuml"
 call :check_tool pre-commit "pre-commit --version" 1  "uv tool install pre-commit"
 call :check_tool clang-format "clang-format --version" 1  "winget install LLVM.LLVM"
 call :check_tool quarto     "quarto --version"     1  "winget install Posit.Quarto"
-call :check_tool ccache     "ccache --version"     1  "winget install ccache.ccache"
+call :check_tool ccache     "ccache --version"     1  "winget install Ccache.Ccache"
+call :check_tool vulkaninfo "vulkaninfo --version" 1  "winget install KhronosGroup.VulkanSDK"
+call :check_tool glslc      "glslc --version"      1  "winget install KhronosGroup.VulkanSDK"
+call :check_vulkan_sdk_env
 call :check_tool ffmpeg     "ffmpeg -version"      1  "winget install Gyan.FFmpeg"
 call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
 call :check_tool claude     "claude --version"     1  "npm install -g @anthropic-ai/claude-code"
@@ -326,6 +329,25 @@ if !FAIL! gtr 0 (
         set /a PASS+=1 >nul
     ) else (
         echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
+        set /a FAIL+=1 >nul
+    )
+    exit /b
+
+:: :check_vulkan_sdk_env
+::   Checks VULKAN_SDK points at a real SDK with shader tools.
+:check_vulkan_sdk_env
+    set "SDK_ENV="
+    for /f "delims=" %%v in ('powershell -NoProfile -Command "$sdk = $env:VULKAN_SDK; if (-not $sdk) { $sdk = [Environment]::GetEnvironmentVariable('VULKAN_SDK', 'User') }; if (-not $sdk) { $sdk = [Environment]::GetEnvironmentVariable('VULKAN_SDK', 'Machine') }; if ($sdk) { $sdk }"') do set "SDK_ENV=%%v"
+    if not defined SDK_ENV (
+        echo   %RED%[MISSING]%RESET%  VULKAN_SDK --run install.bat, then restart the terminal
+        set /a FAIL+=1 >nul
+        exit /b
+    )
+    if exist "!SDK_ENV!\Bin\glslc.exe" (
+        echo   %GREEN%[OK]%RESET%      VULKAN_SDK --!SDK_ENV!
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %RED%[MISSING]%RESET%  VULKAN_SDK --invalid path: !SDK_ENV!
         set /a FAIL+=1 >nul
     )
     exit /b

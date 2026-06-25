@@ -190,6 +190,15 @@ check_tool pre-commit "brew install pre-commit"
 check_tool clang-format "brew install clang-format"
 check_tool quarto    "brew install quarto"
 check_tool ccache    "brew install ccache"
+check_tool vulkaninfo "brew install vulkan-tools"
+check_tool glslc     "brew install shaderc"
+
+if [[ -n "${VULKAN_SDK:-}" && -d "$VULKAN_SDK" && -x "$VULKAN_SDK/bin/glslc" ]]; then
+    ok "VULKAN_SDK — $VULKAN_SDK"
+else
+    missing "VULKAN_SDK — run install.sh, then start a new shell or source ~/.zshrc"
+fi
+
 check_tool ffmpeg    "brew install ffmpeg"
 
 # ----- Python Environment -----

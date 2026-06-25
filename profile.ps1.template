@@ -12,6 +12,32 @@ if ($_uv_pkg) { $env:PATH = "$($_uv_pkg.FullName);$env:PATH" }
 # uv tool-installed executables (e.g. pynvim-python)
 $env:PATH = "$env:APPDATA\uv\bin;$env:PATH"
 
+# Vulkan SDK
+$_vulkanRoots = @($env:VULKAN_SDK, 'C:\VulkanSDK')
+if ($env:ProgramFiles) { $_vulkanRoots += (Join-Path $env:ProgramFiles 'VulkanSDK') }
+$_programFilesX86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)')
+if ($_programFilesX86) { $_vulkanRoots += (Join-Path $_programFilesX86 'VulkanSDK') }
+$_vulkanSdk = @(
+    foreach ($_root in $_vulkanRoots) {
+        if (-not $_root) { continue }
+        if (Test-Path (Join-Path $_root 'Bin\glslc.exe')) {
+            Get-Item $_root
+        }
+        if (Test-Path $_root) {
+            Get-ChildItem $_root -Directory -ErrorAction SilentlyContinue |
+                Where-Object { Test-Path (Join-Path $_.FullName 'Bin\glslc.exe') }
+        }
+    }
+) | Sort-Object FullName -Descending | Select-Object -First 1
+if ($_vulkanSdk) {
+    $env:VULKAN_SDK = $_vulkanSdk.FullName
+    $_vulkanBin = Join-Path $env:VULKAN_SDK 'Bin'
+    $_vulkanBinInPath = ($env:PATH -split ';') | Where-Object { $_.TrimEnd('\') -ieq $_vulkanBin.TrimEnd('\') }
+    if (-not $_vulkanBinInPath) {
+        $env:PATH = "$_vulkanBin;$env:PATH"
+    }
+}
+
 # Codex shells only need PATH bootstrap; skip the rest of the profile.
 $isCodexShell = ($env:IN_CODEX -eq "1") -or [bool]$env:CODEX_THREAD_ID
 if ($isCodexShell) {
