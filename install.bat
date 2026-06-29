@@ -476,7 +476,7 @@ set "PKG_ID=%~2"
 
 winget list --id "%PKG_ID%" --exact >nul 2>&1
 if !errorlevel! equ 0 (
-    echo   Upgrading %DISPLAY_NAME% (%PKG_ID%)...
+    echo   Upgrading %DISPLAY_NAME% ^(%PKG_ID%^)...
     winget upgrade --accept-package-agreements --accept-source-agreements -e --id "%PKG_ID%"
     if !errorlevel! neq 0 (
         echo %YELLOW%  [SKIP] %DISPLAY_NAME% upgrade not applied; it may already be current.%RESET%
