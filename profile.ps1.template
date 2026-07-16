@@ -12,6 +12,47 @@ if ($_uv_pkg) { $env:PATH = "$($_uv_pkg.FullName);$env:PATH" }
 # uv tool-installed executables (e.g. pynvim-python)
 $env:PATH = "$env:APPDATA\uv\bin;$env:PATH"
 
+# Vulkan SDK
+$_vulkanRoots = @($env:VULKAN_SDK, 'C:\VulkanSDK')
+if ($env:ProgramFiles) { $_vulkanRoots += (Join-Path $env:ProgramFiles 'VulkanSDK') }
+$_programFilesX86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)')
+if ($_programFilesX86) { $_vulkanRoots += (Join-Path $_programFilesX86 'VulkanSDK') }
+$_vulkanSdk = @(
+    foreach ($_root in $_vulkanRoots) {
+        if (-not $_root) { continue }
+        if (Test-Path (Join-Path $_root 'Bin\glslc.exe')) {
+            Get-Item $_root
+        }
+        if (Test-Path $_root) {
+            Get-ChildItem $_root -Directory -ErrorAction SilentlyContinue |
+                Where-Object { Test-Path (Join-Path $_.FullName 'Bin\glslc.exe') }
+        }
+    }
+) | Sort-Object FullName -Descending | Select-Object -First 1
+if ($_vulkanSdk) {
+    $env:VULKAN_SDK = $_vulkanSdk.FullName
+    $_vulkanBin = Join-Path $env:VULKAN_SDK 'Bin'
+    $_vulkanBinInPath = ($env:PATH -split ';') | Where-Object { $_.TrimEnd('\') -ieq $_vulkanBin.TrimEnd('\') }
+    if (-not $_vulkanBinInPath) {
+        $env:PATH = "$_vulkanBin;$env:PATH"
+    }
+}
+
+# Some WinGet installers do not publish their bin directories to PATH reliably.
+if (-not $env:ProgramFiles) {
+    $env:ProgramFiles = 'C:\Program Files'
+}
+$_toolBins = @(
+    (Join-Path $env:ProgramFiles 'OpenSCAD (Nightly)'),
+    (Join-Path $env:ProgramFiles 'clang-uml\bin'),
+    (Join-Path $env:ProgramFiles 'Graphviz\bin')
+)
+foreach ($_toolBin in $_toolBins) {
+    if ((Test-Path $_toolBin) -and ($env:PATH -notlike "*$_toolBin*")) {
+        $env:PATH = "$_toolBin;$env:PATH"
+    }
+}
+
 # Codex shells only need PATH bootstrap; skip the rest of the profile.
 $isCodexShell = ($env:IN_CODEX -eq "1") -or [bool]$env:CODEX_THREAD_ID
 if ($isCodexShell) {
@@ -78,8 +119,18 @@ function drr {
         Write-Error "No do.py in MORNY_DEV_ROOT"
         return
     }
+    $hadLaunchDir = Test-Path Env:MORNY_DEV_LAUNCH_DIR
+    $previousLaunchDir = $env:MORNY_DEV_LAUNCH_DIR
+    $env:MORNY_DEV_LAUNCH_DIR = (Get-Location).ProviderPath
     Push-Location $env:MORNY_DEV_ROOT
-    try { & $_py do.py @args } finally { Pop-Location }
+    try { & $_py do.py @args } finally {
+        Pop-Location
+        if ($hadLaunchDir) {
+            $env:MORNY_DEV_LAUNCH_DIR = $previousLaunchDir
+        } else {
+            Remove-Item Env:MORNY_DEV_LAUNCH_DIR -ErrorAction SilentlyContinue
+        }
+    }
 }
 
 # Chocolatey

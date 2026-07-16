@@ -71,6 +71,21 @@ ensure_neovim() {
     fi
 }
 
+cmake_version() {
+    cmake --version 2>/dev/null | sed -n 's/^cmake version \([0-9][^ ]*\).*/\1/p' | head -1
+}
+
+ensure_cmake() {
+    if brew list --formula cmake &>/dev/null; then
+        info "Upgrading cmake to the latest Homebrew formula ..."
+        brew upgrade cmake || brew install cmake
+    else
+        info "Installing cmake ..."
+        brew install cmake
+    fi
+    ok "cmake $(cmake_version) installed"
+}
+
 # ── 1. Detect OS ──────────────────────────────────────────────────────────
 
 section "Detecting operating system"
@@ -153,8 +168,9 @@ fi
 section "Installing CLI tools via Homebrew"
 
 ensure_neovim
+ensure_cmake
 
-BREW_PACKAGES=(git node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml cmake pre-commit clang-format ninja doxygen quarto ccache ffmpeg)
+BREW_PACKAGES=(git gh node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -168,6 +184,10 @@ done
 
 # Refresh PATH so newly installed binaries (node, npm, etc.) are visible
 eval "$(brew shellenv)"
+
+# Expose Homebrew's Vulkan SDK-equivalent prefix to child processes.
+export VULKAN_SDK="$(brew --prefix)"
+export PATH="$VULKAN_SDK/bin:$PATH"
 
 # Force-link node in case a stale nodejs.org installer left conflicting files
 # that silently prevented Homebrew from creating the node/npm symlinks.
@@ -236,10 +256,29 @@ npm_global_install() {
     fi
 }
 
-npm_global_install "claude" "@anthropic-ai/claude-code"
-npm_global_install "codex"  "@openai/codex"
+if [[ "$OS" == "Darwin" ]]; then
+    for cask in codex claude-code antigravity-cli; do
+        if brew list --cask "$cask" &>/dev/null; then
+            skip "$cask (already installed)"
+        else
+            info "Installing $cask ..."
+            brew install --cask "$cask"
+            ok "$cask installed"
+        fi
+    done
+else
+    npm_global_install "claude" "@anthropic-ai/claude-code"
+    npm_global_install "codex"  "@openai/codex"
+fi
 npm_global_install "gemini" "@google/gemini-cli"
 
+if command -v agy &>/dev/null; then
+    skip "agy (already installed)"
+else
+    info "Installing Antigravity CLI ..."
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+    ok "Antigravity CLI installed"
+fi
 
 # ── 9. Nerd Font ─────────────────────────────────────────────────────────
 
@@ -257,17 +296,57 @@ fi
 
 section "GUI desktop applications"
 
-BREW_CASKS=(db-browser-for-sqlite blackhole-2ch)
+if [[ "$OS" == "Darwin" ]]; then
+    BREW_CASKS=(powershell visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot codex-app claude antigravity)
 
-for cask in "${BREW_CASKS[@]}"; do
-    if brew list --cask "$cask" &>/dev/null; then
-        skip "$cask (already installed)"
+    for cask in "${BREW_CASKS[@]}"; do
+        if brew list --cask "$cask" &>/dev/null; then
+            skip "$cask (already installed)"
+        else
+            info "Installing $cask ..."
+            brew install --cask "$cask"
+            ok "$cask installed"
+        fi
+    done
+else
+    info "Skipping macOS-only desktop casks on Linux."
+    info "Codex App and Claude Desktop are not officially available on Linux; CLI tools were installed instead."
+    info "Install VS Code/Cursor/Antigravity desktop from their official Linux packages if you want GUI apps on Linux."
+fi
+
+if [[ "$OS" == "Linux" ]]; then
+    section "Linux desktop extras"
+
+    if command -v pwsh &>/dev/null; then
+        skip "PowerShell 7 already available"
+    elif command -v snap &>/dev/null; then
+        info "Installing PowerShell 7 via snap ..."
+        sudo snap install powershell --classic
+        ok "PowerShell 7 installed"
     else
-        info "Installing $cask ..."
-        brew install --cask "$cask"
-        ok "$cask installed"
+        info "PowerShell 7 requires snap or the Microsoft package repository on Linux."
     fi
-done
+
+    if command -v code &>/dev/null; then
+        skip "Visual Studio Code already available"
+    elif command -v snap &>/dev/null; then
+        info "Installing Visual Studio Code via snap ..."
+        sudo snap install code --classic
+        ok "Visual Studio Code installed"
+    else
+        info "Visual Studio Code requires snap or the Microsoft package repository on Linux."
+    fi
+
+    if command -v openscad-nightly &>/dev/null || command -v openscad &>/dev/null; then
+        skip "OpenSCAD snapshot/nightly already available"
+    elif command -v snap &>/dev/null; then
+        info "Installing OpenSCAD Nightly via snap ..."
+        sudo snap install openscad-nightly
+        ok "OpenSCAD Nightly installed"
+    else
+        info "OpenSCAD Nightly requires snap on Linux; install with: sudo snap install openscad-nightly"
+    fi
+fi
 
 # ── 11. Symlink nvim config ──────────────────────────────────────────────
 
