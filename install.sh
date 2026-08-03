@@ -297,7 +297,7 @@ fi
 section "GUI desktop applications"
 
 if [[ "$OS" == "Darwin" ]]; then
-    BREW_CASKS=(powershell visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot codex-app claude antigravity)
+    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity)
 
     for cask in "${BREW_CASKS[@]}"; do
         if brew list --cask "$cask" &>/dev/null; then
@@ -310,7 +310,7 @@ if [[ "$OS" == "Darwin" ]]; then
     done
 else
     info "Skipping macOS-only desktop casks on Linux."
-    info "Codex App and Claude Desktop are not officially available on Linux; CLI tools were installed instead."
+    info "ChatGPT and Claude Desktop are not officially available on Linux; CLI tools were installed instead."
     info "Install VS Code/Cursor/Antigravity desktop from their official Linux packages if you want GUI apps on Linux."
 fi
 

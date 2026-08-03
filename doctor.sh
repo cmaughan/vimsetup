@@ -223,7 +223,9 @@ section "Core Tools"
 check_nvim
 check_tool git       "brew install git"
 check_tool gh        "brew install gh"
-check_tool pwsh      "brew install --cask powershell"
+if [[ "$OS" == "Linux" ]]; then
+    check_tool pwsh  "sudo snap install powershell --classic"
+fi
 if [[ "$OS" == "Darwin" ]]; then
     check_tool code      "brew install --cask visual-studio-code"
     check_tool cursor    "brew install --cask cursor"
@@ -274,12 +276,12 @@ check_tool agy       "brew install --cask antigravity-cli"
 check_tool gemini    "npm install -g @google/gemini-cli"
 
 if [[ "$OS" == "Darwin" ]]; then
-    check_brew_cask "codex-app" "Codex App"
+    check_brew_cask "chatgpt" "ChatGPT"
     check_brew_cask "claude" "Claude Desktop"
     check_brew_cask "antigravity" "Google Antigravity"
     check_brew_cask "openscad@snapshot" "OpenSCAD snapshot"
 else
-    warn "Codex App and Claude Desktop are not officially available on Linux; CLI checks cover Linux."
+    warn "ChatGPT and Claude Desktop are not officially available on Linux; CLI checks cover Linux."
 fi
 
 # ----- Python Environment -----
