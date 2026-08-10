@@ -107,7 +107,6 @@ require("lazy").setup({
     },
     { 'rebelot/kanagawa.nvim', lazy = true },
     { 'ellisonleao/gruvbox.nvim', lazy = true },
-    { 'nyoom-engineering/oxocarbon.nvim', lazy = true },
     'nvim-tree/nvim-web-devicons',
     {
         'nvim-lualine/lualine.nvim',
@@ -173,38 +172,6 @@ require("lazy").setup({
         config = function()
             require('plugin_config.ufo')
         end,
-    },
-
-    -- Copilot (inline suggestions disabled; used as a Blink completion source)
-    {
-        'zbirenbaum/copilot.lua',
-        event = 'InsertEnter',
-        config = function()
-            require("copilot").setup({
-                suggestion = { enabled = false },
-                panel      = { enabled = false },
-            })
-            require("plugin_config.copilot")
-        end,
-    },
-
-    -- CopilotChat
-    {
-        'CopilotC-Nvim/CopilotChat.nvim',
-        cmd = { 'CopilotChat', 'CopilotChatOpen' },
-        dependencies = {
-            'zbirenbaum/copilot.lua',
-            'nvim-lua/plenary.nvim',
-        },
-        keys = {
-            { '<leader>cc', '<cmd>CopilotChatToggle<cr>',  desc = '[C]opilot [C]hat toggle' },
-            { '<leader>ce', '<cmd>CopilotChatExplain<cr>', desc = '[C]opilot [E]xplain' },
-            { '<leader>cr', '<cmd>CopilotChatReview<cr>',  desc = '[C]opilot [R]eview' },
-            { '<leader>cf', '<cmd>CopilotChatFix<cr>',     desc = '[C]opilot [F]ix' },
-        },
-        opts = {
-            window = { layout = 'vertical', width = 0.35 },
-        },
     },
 
     -- Project-wide search & replace
@@ -336,7 +303,6 @@ require("lazy").setup({
         event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = {
             'rafamadriz/friendly-snippets',
-            'giuxtaposition/blink-cmp-copilot',
         },
         config = function()
             require("plugin_config.completions")

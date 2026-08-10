@@ -28,15 +28,7 @@ require('blink.cmp').setup({
     snippets = { preset = 'default' },
 
     sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot' },
-        providers = {
-            copilot = {
-                name = 'copilot',
-                module = 'blink-cmp-copilot',
-                async = true,
-                score_offset = 100,
-            },
-        },
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
 
     fuzzy = { implementation = 'prefer_rust_with_warning' },

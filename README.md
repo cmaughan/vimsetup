@@ -88,7 +88,6 @@ It verifies every tool is on PATH (with versions), checks that config files matc
 │       ├── completions.lua     # blink.cmp
 │       ├── mason.lua           # Mason + tool installer
 │       ├── colorscheme.lua     # Colorscheme
-│       ├── copilot.lua         # GitHub Copilot
 │       ├── aerial.lua          # Code outline
 │       ├── gitsigns.lua        # Git signs
 │       ├── harpoon.lua         # Harpoon

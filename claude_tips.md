@@ -38,22 +38,14 @@ with harpoon's project-scoped marks more aggressively. Better yet: stop manually
 navigating entirely. Tell Claude Code "open the auth module" and let it find the
 files. Your brain shouldn't be a file index.
 
-## 5. You're using Copilot as a cmp source instead of inline
-
-You deliberately disabled Copilot inline suggestions and shoved it into the completion
-menu. That's *backwards*. Inline ghost text for Copilot, completion menu for LSP
-symbols and snippets. Copilot in cmp means you're manually triggering and selecting
-completions for code that should just *appear*. You're adding friction to the one tool
-designed to remove it.
-
-## 6. No AI-assisted git workflow
+## 5. No AI-assisted git workflow
 
 Your git aliases are fine (`lol`, `squash`, `save`, `undo`) but you're still writing
 commit messages by hand and doing manual code review. Use `/commit` in Claude Code —
 it reads the diff, writes a proper message, and commits. Use agents to review PRs. The
 boring parts of git should be fully automated.
 
-## 7. You have zero test infrastructure outside of neotest
+## 6. You have zero test infrastructure outside of neotest
 
 Neotest is configured but your actual test *strategy* is missing. No pre-commit hooks,
 no CI config in your dotfiles repo, no test-on-save. The killer workflow: write code
@@ -61,7 +53,7 @@ with an agent, have it write the tests, run them automatically, fix failures in 
 loop. If your test cycle isn't < 5 seconds, you're context-switching yourself to
 death.
 
-## 8. No task runner / just-file / Makefile
+## 7. No task runner / just-file / Makefile
 
 I see no `Justfile`, `Makefile`, or `Taskfile` in your workflow. Every project should
 have a single entry point for "build", "test", "lint", "run". Not because *you* need
@@ -69,7 +61,7 @@ it — because *agents* need it. When Claude Code sees a `just test` command in 
 `CLAUDE.md`, it can run your entire test suite without asking. Without it, every agent
 session wastes time figuring out how to build your project.
 
-## 9. Your formatting/linting is good but not *enforced*
+## 8. Your formatting/linting is good but not *enforced*
 
 You have conform.nvim and nvim-lint configured beautifully. But there's no pre-commit
 hook, no `lint-staged`, nothing stopping bad code from hitting your repo.
@@ -77,7 +69,7 @@ Format-on-save is great until you edit from a different machine or a quick
 `git commit -a` bypasses your editor. Use **pre-commit** hooks. Make it impossible to
 commit garbage.
 
-## 10. Terminal workflow is undercooked
+## 9. Terminal workflow is undercooked
 
 You have `toggleterm` bound to `<C-\>` — one terminal. Power users run **multiple
 named terminals**: one for builds, one for tests, one for a dev server, one for agent
@@ -85,7 +77,7 @@ output. Set up toggleterm with numbered terminals (`1<C-\>`, `2<C-\>`, etc.) or
 switch to a psmux-first workflow where nvim is just one pane. Your current setup
 forces you to toggle one terminal on and off like a light switch.
 
-## 11. You're not using quickfix lists aggressively enough
+## 10. You're not using quickfix lists aggressively enough
 
 You have `<F8>` for quickfix navigation and Trouble for diagnostics, but you're not
 *populating* quickfix from agents. The workflow: Claude Code finds all the places that
@@ -93,7 +85,7 @@ need changing -> dumps them into a quickfix list -> you `:cdo` the fix across al
 them. Or better: the agent does the `:cdo` for you. Quickfix is the bridge between
 "find" and "fix at scale."
 
-## 12. No snippet library for your patterns
+## 11. No snippet library for your patterns
 
 LuaSnip is installed with friendly-snippets, but you have zero custom snippets. You
 write the same boilerplate — test scaffolds, error handling patterns, struct
@@ -101,7 +93,7 @@ definitions — over and over. Spend 30 minutes creating snippets for your top 1
 patterns in Rust/C++/Lua. Or better: ask Claude Code to generate them from your
 existing codebase.
 
-## 13. Your Obsidian workflow is disconnected from your code
+## 12. Your Obsidian workflow is disconnected from your code
 
 You have a PARA-structured vault, daily notes, project tracking — but it's a separate
 world from your code. The killer move: link your Obsidian project notes to actual
@@ -109,7 +101,7 @@ repos, use Claude Code with MCP to query your vault when working on code, and ha
 agents update project notes when milestones ship. Your knowledge system and your code
 system should be one system.
 
-## 14. No workspace-specific settings
+## 13. No workspace-specific settings
 
 Every project gets the same nvim config. But your Rust projects need different
 formatters than your Lua projects. Your C++ projects need different compile commands.
@@ -117,7 +109,7 @@ Use **exrc** (built into neovim) or `.nvim.lua` project-local configs to set
 per-project LSP settings, formatters, and test commands. Stop relying on filetype
 detection for everything.
 
-## 15. You're not leveraging multiple agents in parallel
+## 14. You're not leveraging multiple agents in parallel
 
 When you use Claude Code, you're probably running one task at a time. The real move:
 kick off an agent in a worktree to refactor module A, another to write tests for
@@ -125,21 +117,21 @@ module B, and a third to update docs — all simultaneously. Your git worktree s
 is sitting right there. Use `--worktree` flags. Parallelize your agents like you'd
 parallelize your builds.
 
-## 16. Your debug workflow needs ergonomic shortcuts
+## 15. Your debug workflow needs ergonomic shortcuts
 
 Your DAP config is solid but the keybindings are all `<leader>d` prefixed — that's
 two keystrokes before every debug action during a hot debugging session. Map
 F5/F9/F10/F11 to continue/breakpoint/step-over/step-into like every debugger since
 1990. Your muscle memory from Visual Studio will thank you.
 
-## 17. Leap.nvim is installed but you're probably still using `/search`
+## 16. Leap.nvim is installed but you're probably still using `/search`
 
 You have leap for `s`/`S` motion. Are you actually using it? Most people install
 motion plugins and then forget they exist. Leap should replace 80% of your `/`
 searches for navigation. If you're still typing `/functionName<CR>` to jump around a
 file, you're doing it wrong. `s` + two chars = you're there.
 
-## 18. No persistent undo strategy beyond Dropbox sync
+## 17. No persistent undo strategy beyond Dropbox sync
 
 You sync undo files to Dropbox — that's backup, not strategy. Combine persistent undo
 with **telescope-undo** (which you have!) as your primary "oh no" recovery tool. But
@@ -147,7 +139,7 @@ more importantly: commit early, commit often, use `git save` (your alias) as a
 checkpoint before risky changes. Undo trees are a safety net; frequent commits are the
 real strategy.
 
-## 19. Your config repo has no bootstrap/install script
+## 18. Your config repo has no bootstrap/install script
 
 You've got template files for zsh, PowerShell, starship, tmux — but no script that
 actually *installs* everything. When you set up a new machine (or your SSD dies), you
@@ -156,11 +148,11 @@ aren't just for you — they're documentation of your entire workflow. If you ca
 reproduce your setup in under 5 minutes, your setup owns you, not the other way
 around.
 
-## 20. You're spending too much time in your config
+## 19. You're spending too much time in your config
 
 Your `init.lua` has been touched more recently than your actual project code. I can
-see it. 40+ plugins, meticulously configured keybindings, three backup colorschemes
-you never use (gruvbox, kanagawa, oxocarbon — you always pick carbonfox). **Stop
+see it. 40+ plugins, meticulously configured keybindings, two backup colorschemes
+you never use (gruvbox and kanagawa — you always pick carbonfox). **Stop
 configuring. Start shipping.** The best productivity hack isn't a new plugin — it's
 closing your config and opening your project. Every minute spent on config is a minute
 an agent could have been writing features for you.

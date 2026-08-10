@@ -369,8 +369,6 @@ echo      and formatters on first launch. This may take a few minutes.
 echo.
 echo   4. In each git repo with a %BOLD%.pre-commit-config.yaml%RESET%, run: %BOLD%pre-commit install%RESET%
 echo.
-echo   5. Run %BOLD%:Copilot auth%RESET% inside Neovim to authenticate GitHub Copilot.
-echo.
 
 endlocal
 exit /b 0
