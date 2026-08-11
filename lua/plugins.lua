@@ -11,7 +11,7 @@ require("lazy").setup({
     },
 
     -- Basics
-    'tpope/vim-repeat',
+    { 'tpope/vim-repeat', event = 'VeryLazy' },
 
     -- Mini files
     {
@@ -66,7 +66,7 @@ require("lazy").setup({
     },
 
     -- Open SCAD
-    "sirtaj/vim-openscad",
+    { "sirtaj/vim-openscad", ft = "openscad" },
 
     -- Telescope
     {
@@ -107,7 +107,7 @@ require("lazy").setup({
     },
     { 'rebelot/kanagawa.nvim', lazy = true },
     { 'ellisonleao/gruvbox.nvim', lazy = true },
-    'nvim-tree/nvim-web-devicons',
+    { 'nvim-tree/nvim-web-devicons', lazy = true },
     {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
@@ -115,11 +115,16 @@ require("lazy").setup({
             require("plugin_config.lualine")
         end,
     },
-    'hiphish/rainbow-delimiters.nvim',
-    { 'lukas-reineke/indent-blankline.nvim', event = { 'BufReadPost', 'BufNewFile' }, main = 'ibl', opts = {} },
+    { 'hiphish/rainbow-delimiters.nvim', event = { 'BufReadPost', 'BufNewFile' } },
+    {
+        'lukas-reineke/indent-blankline.nvim',
+        event = 'VeryLazy',
+        main = 'ibl',
+        opts = { scope = { enabled = false } },
+    },
 
     -- Sharing
-    'kristijanhusak/vim-carbon-now-sh',
+    { 'kristijanhusak/vim-carbon-now-sh', cmd = 'CarbonNowSh' },
 
     -- Seamless Vim/tmux pane navigation (tmux side: TPM plugin in tmux.conf.template)
     {
@@ -142,19 +147,19 @@ require("lazy").setup({
     -- Window management (resize and buffer swap; navigation handled by vim-tmux-navigator)
     {
         'mrjones2014/smart-splits.nvim',
-        lazy = false,
+        lazy = true,
         opts = {},
     },
 
     -- Git
-    'tpope/vim-fugitive',
+    { 'tpope/vim-fugitive', cmd = { 'Git', 'G' } },
 
     { 'sindrets/diffview.nvim', cmd = { 'DiffviewOpen', 'DiffviewFileHistory', 'DiffviewClose' } },
 
     -- Highlight TODO/FIXME/HACK/NOTE comments
     {
         'folke/todo-comments.nvim',
-        event = { 'BufReadPost', 'BufNewFile' },
+        event = 'VeryLazy',
         dependencies = { 'nvim-lua/plenary.nvim' },
         opts = {},
         keys = {
@@ -167,7 +172,7 @@ require("lazy").setup({
     -- Better folding with counts
     {
         'kevinhwang91/nvim-ufo',
-        event = { 'BufReadPost', 'BufNewFile' },
+        event = 'VeryLazy',
         dependencies = { 'kevinhwang91/promise-async' },
         config = function()
             require('plugin_config.ufo')
@@ -198,7 +203,7 @@ require("lazy").setup({
     -- Git signs in gutter + hunk actions
     {
         'lewis6991/gitsigns.nvim',
-        event = { 'BufReadPost', 'BufNewFile' },
+        event = 'VeryLazy',
         config = function()
             require('plugin_config.gitsigns')
         end,
@@ -240,7 +245,7 @@ require("lazy").setup({
     {
         -- Highlight, edit, and navigate code
         'nvim-treesitter/nvim-treesitter',
-        event = { 'BufReadPost', 'BufNewFile' },
+        event = 'VeryLazy',
         dependencies = {
             'nvim-treesitter/nvim-treesitter-textobjects',
             'nvim-treesitter/nvim-treesitter-context',
@@ -253,7 +258,9 @@ require("lazy").setup({
 
     {
         'neovim/nvim-lspconfig',
-        event = { 'BufReadPre', 'BufNewFile' },
+        -- Load after the first UI render. mason-lspconfig's vim.lsp.enable()
+        -- attaches the configured servers to buffers that are already open.
+        event = 'VeryLazy',
         dependencies = {
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
@@ -344,7 +351,9 @@ require("lazy").setup({
     },
 
     -- VimTex
-    { 'lervag/vimtex' },
+    -- VimTeX manages its own filetype/autoload behavior and advises against
+    -- plugin-manager lazy loading.
+    { 'lervag/vimtex', lazy = false },
 
     -- Test
     {

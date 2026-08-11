@@ -4,7 +4,6 @@ lint.linters_by_ft = {
     bash = { "shellcheck" },
     json = { "jsonlint" },
     markdown = { "markdownlint" },
-    python = { "ruff" },
     sh = { "shellcheck" },
     yaml = { "yamllint" },
 }

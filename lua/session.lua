@@ -45,21 +45,8 @@ local function current_dir()
 end
 
 local function git_root(path)
-    if vim.fn.executable("git") ~= 1 then
-        return nil
-    end
-
-    local output = vim.fn.systemlist({ "git", "-C", path, "rev-parse", "--show-toplevel" })
-    if vim.v.shell_error ~= 0 then
-        return nil
-    end
-
-    local root = output[1]
-    if not root or root == "" then
-        return nil
-    end
-
-    return normalize(root)
+    local root = vim.fs.root(path, ".git")
+    return root and normalize(root) or nil
 end
 
 local function project_name(root)

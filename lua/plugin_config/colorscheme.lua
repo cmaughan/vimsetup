@@ -18,12 +18,6 @@ require("nightfox").setup({
 
 vim.cmd.colorscheme("carbonfox")
 
-require("ibl").setup({
-    scope = {
-        enabled = false,
-    },
-})
-
 local function set_custom_highlights()
   vim.api.nvim_set_hl(0, "Visual", { bg = "#2E6A9E" })
   vim.api.nvim_set_hl(0, "VisualNOS", { bg = "#2E6A9E" })
