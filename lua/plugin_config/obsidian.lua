@@ -15,9 +15,8 @@ require("obsidian").setup({
     -- Use Telescope for search/picker
     picker = { name = "telescope.nvim" },
 
-    -- Use obsidian.nvim's Blink source for wiki links and tags.
+    -- Completion for wiki links and tags comes from the built-in obsidian-ls.
     completion = {
-        blink = true,
         min_chars = 2,
     },
 
