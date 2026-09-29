@@ -243,7 +243,10 @@ fi
 
 # ── 8. AI CLI tools ──────────────────────────────────────────────────────
 
-section "AI CLI tools (npm)"
+section "AI CLI tools"
+
+# Prefer the directories used by the official AI CLI installers.
+export PATH="${CODEX_INSTALL_DIR:-$HOME/.local/bin}:${GROK_BIN_DIR:-$HOME/.grok/bin}:$HOME/.local/bin:$PATH"
 
 npm_global_install() {
     local cmd="$1" pkg="$2"
@@ -256,29 +259,31 @@ npm_global_install() {
     fi
 }
 
-if [[ "$OS" == "Darwin" ]]; then
-    for cask in codex claude-code antigravity-cli; do
-        if brew list --cask "$cask" &>/dev/null; then
-            skip "$cask (already installed)"
-        else
-            info "Installing $cask ..."
-            brew install --cask "$cask"
-            ok "$cask installed"
-        fi
-    done
-else
-    npm_global_install "claude" "@anthropic-ai/claude-code"
-    npm_global_install "codex"  "@openai/codex"
-fi
-npm_global_install "gemini" "@google/gemini-cli"
+# Check the native path so a package-manager copy does not suppress installation.
+website_cli_install() {
+    local cmd="$1" url="$2" interpreter="$3" binary="$4"
+    if [[ -x "$binary" ]]; then
+        skip "$cmd (website installation already present at $binary)"
+        return
+    fi
 
-if command -v agy &>/dev/null; then
-    skip "agy (already installed)"
-else
-    info "Installing Antigravity CLI ..."
-    curl -fsSL https://antigravity.google/cli/install.sh | bash
-    ok "Antigravity CLI installed"
-fi
+    info "Installing $cmd from $url ..."
+    if ! curl -fsSL "$url" | "$interpreter"; then
+        err "$cmd website installer failed"
+        return 1
+    fi
+    if [[ ! -x "$binary" ]]; then
+        err "$cmd installer did not create $binary"
+        return 1
+    fi
+    ok "$cmd installed ($binary)"
+}
+
+website_cli_install "claude" "https://claude.ai/install.sh" bash "$HOME/.local/bin/claude"
+website_cli_install "codex" "https://chatgpt.com/codex/install.sh" sh "${CODEX_INSTALL_DIR:-$HOME/.local/bin}/codex"
+website_cli_install "agy" "https://antigravity.google/cli/install.sh" bash "$HOME/.local/bin/agy"
+website_cli_install "grok" "https://x.ai/cli/install.sh" bash "${GROK_BIN_DIR:-$HOME/.grok/bin}/grok"
+npm_global_install "gemini" "@google/gemini-cli"
 
 # ── 9. Nerd Font ─────────────────────────────────────────────────────────
 

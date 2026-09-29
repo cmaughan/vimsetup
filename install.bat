@@ -92,12 +92,9 @@ call :winget_install "ccache"            "Ccache.Ccache"
 call :winget_install "Vulkan SDK"        "KhronosGroup.VulkanSDK"
 call :winget_install "FFmpeg"            "Gyan.FFmpeg"
 call :winget_install "LLVM - clang-format" "LLVM.LLVM"
-call :winget_install "Codex CLI"         "OpenAI.Codex"
 call :winget_store_install "Codex App"   "9PLM9XGG6VKS"
 call :winget_install "Claude App"        "Anthropic.Claude"
-call :winget_install "Claude Code"       "Anthropic.ClaudeCode"
 call :winget_install "Google Antigravity" "Google.Antigravity"
-call :winget_install "Antigravity CLI"   "Google.AntigravityCLI"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
 call :choco_install "PlantUML"          "plantuml"
 call :configure_vulkan_sdk
@@ -105,6 +102,18 @@ call :prepend_path_if_exists "%ProgramFiles%\OpenSCAD (Nightly)"
 call :prepend_path_if_exists "%ProgramFiles%\clang-uml\bin"
 call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
 call :prepend_path_if_exists "%ProgramFiles%\CMake\bin"
+
+echo Installing AI CLI tools from their official websites...
+:: Prefer the directories used by the official AI CLI installers.
+set "CODEX_NATIVE_BIN=%LOCALAPPDATA%\Programs\OpenAI\Codex\bin"
+if defined CODEX_INSTALL_DIR set "CODEX_NATIVE_BIN=%CODEX_INSTALL_DIR%"
+set "GROK_NATIVE_BIN=%USERPROFILE%\.grok\bin"
+if defined GROK_BIN_DIR set "GROK_NATIVE_BIN=%GROK_BIN_DIR%"
+set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%PATH%"
+call :website_cli_install "claude" "https://claude.ai/install.ps1" "%USERPROFILE%\.local\bin"
+call :website_cli_install "codex" "https://chatgpt.com/codex/install.ps1" "%CODEX_NATIVE_BIN%"
+call :website_cli_install "agy" "https://antigravity.google/cli/install.ps1" "%LOCALAPPDATA%\agy\bin"
+call :website_cli_install "grok" "https://x.ai/cli/install.ps1" "%GROK_NATIVE_BIN%"
 echo.
 
 :: ============================================================================
@@ -374,6 +383,32 @@ endlocal
 exit /b 0
 
 :: ============================================================================
+::  Helper: website_cli_install <cmd> <installer_url> <native_bin_directory>
+:: ============================================================================
+:website_cli_install
+set "_AICMD=%~1"
+set "_AIURL=%~2"
+set "_AIBIN=%~3"
+if exist "!_AIBIN!\!_AICMD!.exe" (
+    echo %GREEN%  [SKIP] !_AICMD! website installation already present.%RESET%
+    set "SKIPPED=!SKIPPED! !_AICMD!"
+    goto :eof
+)
+echo   Installing !_AICMD! from !_AIURL!...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; try { Invoke-RestMethod '%_AIURL%' | Invoke-Expression } catch { Write-Error $_; exit 1 }"
+if errorlevel 1 goto :_website_cli_failed
+if not exist "!_AIBIN!\!_AICMD!.exe" goto :_website_cli_failed
+call :prepend_path_if_exists "!_AIBIN!"
+echo %GREEN%  [OK]   !_AICMD! installed.%RESET%
+set "INSTALLED=!INSTALLED! !_AICMD!"
+goto :eof
+:_website_cli_failed
+echo %RED%  [FAIL] !_AICMD! website installation failed.%RESET%
+set "FAILED=!FAILED! !_AICMD!"
+set /a ERRORS+=1 >nul
+goto :eof
+
+:: ============================================================================
 ::  Helper: npm_global_install <cmd> <package>
 :: ============================================================================
 :npm_global_install
@@ -441,9 +476,6 @@ if /i "%PKG_ID%"=="Posit.Quarto" set "_CMD=quarto"
 if /i "%PKG_ID%"=="LLVM.LLVM" set "_CMD=clang-format"
 if /i "%PKG_ID%"=="Ccache.Ccache" set "_CMD=ccache"
 if /i "%PKG_ID%"=="KhronosGroup.VulkanSDK" set "_CMD=glslc"
-if /i "%PKG_ID%"=="OpenAI.Codex" set "_CMD=codex"
-if /i "%PKG_ID%"=="Anthropic.ClaudeCode" set "_CMD=claude"
-if /i "%PKG_ID%"=="Google.AntigravityCLI" set "_CMD=agy"
 if not defined _CMD goto :_winget_do_install
 where !_CMD! >nul 2>&1
 if !errorlevel! neq 0 goto :_winget_do_install

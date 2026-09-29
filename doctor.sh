@@ -2,6 +2,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+OS="$(uname -s)"
+
+# Prefer the directories used by the official AI CLI installers.
+export PATH="${CODEX_INSTALL_DIR:-$HOME/.local/bin}:${GROK_BIN_DIR:-$HOME/.grok/bin}:$HOME/.local/bin:$PATH"
 
 # --- Counters ---
 PASS=0
@@ -270,9 +274,10 @@ else
 fi
 
 check_tool ffmpeg    "brew install ffmpeg"
-check_tool claude    "brew install --cask claude-code"
-check_tool codex     "brew install --cask codex"
-check_tool agy       "brew install --cask antigravity-cli"
+check_tool claude    "curl -fsSL https://claude.ai/install.sh | bash"
+check_tool codex     "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+check_tool agy       "curl -fsSL https://antigravity.google/cli/install.sh | bash"
+check_tool grok      "curl -fsSL https://x.ai/cli/install.sh | bash"
 check_tool gemini    "npm install -g @google/gemini-cli"
 
 if [[ "$OS" == "Darwin" ]]; then

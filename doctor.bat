@@ -37,6 +37,13 @@ call :prepend_path_if_exists "%ProgramFiles%\OpenSCAD (Nightly)"
 call :prepend_path_if_exists "%ProgramFiles%\clang-uml\bin"
 call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
 
+:: Prefer the directories used by the official AI CLI installers.
+set "CODEX_NATIVE_BIN=%LOCALAPPDATA%\Programs\OpenAI\Codex\bin"
+if defined CODEX_INSTALL_DIR set "CODEX_NATIVE_BIN=%CODEX_INSTALL_DIR%"
+set "GROK_NATIVE_BIN=%USERPROFILE%\.grok\bin"
+if defined GROK_BIN_DIR set "GROK_NATIVE_BIN=%GROK_BIN_DIR%"
+set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%PATH%"
+
 :: ---------------------------------------------------------------------
 ::  Section: Core Tools
 :: ---------------------------------------------------------------------
@@ -81,9 +88,10 @@ call :check_tool glslc      "glslc --version"      1  "winget install KhronosGro
 call :check_vulkan_sdk_env
 call :check_tool ffmpeg     "ffmpeg -version"      1  "winget install Gyan.FFmpeg"
 call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
-call :check_tool claude     "claude --version"     1  "winget install Anthropic.ClaudeCode"
-call :check_tool codex      "codex --version"      1  "winget install OpenAI.Codex"
-call :check_tool agy        "agy --version"        1  "winget install Google.AntigravityCLI"
+call :check_tool claude     "claude --version"     1  "PowerShell: irm https://claude.ai/install.ps1 | iex"
+call :check_tool codex      "codex --version"      1  "PowerShell: irm https://chatgpt.com/codex/install.ps1 | iex"
+call :check_tool agy        "agy --version"        1  "PowerShell: irm https://antigravity.google/cli/install.ps1 | iex"
+call :check_tool grok       "grok --version"       1  "PowerShell: irm https://x.ai/cli/install.ps1 | iex"
 call :check_tool gemini     "gemini --version"     1  "npm install -g @google/gemini-cli"
 
 call :check_winget_package "Codex App"             "9PLM9XGG6VKS"                  "winget install --source msstore --id 9PLM9XGG6VKS"
@@ -357,7 +365,7 @@ if !FAIL! gtr 0 (
         )
         set /a PASS+=1 >nul
     ) else (
-        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
+        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: !INSTALL!
         set /a FAIL+=1 >nul
     )
     exit /b
@@ -373,7 +381,7 @@ if !FAIL! gtr 0 (
 
     where %TOOL_NAME% >nul 2>&1
     if !errorlevel! neq 0 (
-        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: %INSTALL%
+        echo   %RED%[MISSING]%RESET%  %TOOL_NAME% --install with: !INSTALL!
         set /a FAIL+=1 >nul
         exit /b
     )
