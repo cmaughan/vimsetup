@@ -24,7 +24,7 @@ cd ~/.config/nvim
 
 1. **Installs development tools** — Neovim, Git/GitHub CLI, Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
 2. **Sets up Python** — installs Python 3.12 via `uv`, creates `~/.local/share/nvim-venv` on macOS/Linux or `%LOCALAPPDATA%\python-global` on Windows, and installs `pynvim` and `PyYAML` there.
-3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), and uses npm for Gemini CLI. See [AI CLI installers](#ai-cli-installers-all-platforms).
+3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), installs [abtop](https://github.com/graykode/abtop) to monitor coding-agent sessions, and uses npm for Gemini CLI. See [AI CLI installers](#ai-cli-installers-all-platforms).
 4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Claude, and Antigravity. Windows includes VS Code, Cursor, OpenSCAD Nightly, Codex App, Claude, and Antigravity.
 5. **Sets up configuration** — symlinks `.zshrc`, `starship.toml`, and `.tmux.conf` on macOS/Linux; copies the PowerShell profile, Starship, and psmux templates on Windows. Also configures the `git lol` and `git lola` aliases.
 6. **Sets up fonts and terminal integration** — installs JetBrainsMono Nerd Font, configures fzf and TPM on macOS/Linux, and installs PSFzf and creates the psmux plugin directory on Windows. Terminal plugin installation still requires the manual steps printed by the installer.
@@ -52,7 +52,7 @@ doctor.bat
 
 Doctor covers the tools, apps, and configuration listed by the installer, plus Neovim's first-launch setup. It checks CLI availability, desktop packages, installed Python 3.12 and the dedicated venv, Python/Node providers, config templates, Git alias values, the Vulkan environment, fonts, and terminal integration. macOS also checks Xcode/Metal, glslang, and Vulkan validation layers; Windows checks PSFzf and the psmux plugin directory.
 
-The four AI CLI checks require binaries in the website installers' native locations. An older Homebrew, npm, or WinGet copy elsewhere on PATH does not satisfy these checks. `CODEX_INSTALL_DIR` and `GROK_BIN_DIR` overrides are respected by both install and doctor.
+The four AI CLI checks and abtop check require binaries in the website installers' native locations. An older Homebrew, npm, or WinGet copy elsewhere on PATH does not satisfy these checks. `CODEX_INSTALL_DIR` and `GROK_BIN_DIR` overrides are respected by both install and doctor.
 
 Results show `[OK]`, `[WARN]`, `[OUTDATED]`, or `[MISSING]`, with repair hints where applicable. Doctor exits with status 1 when errors are found; warnings alone return status 0.
 
@@ -281,7 +281,7 @@ alias py=python3
 
 ### AI CLI installers (all platforms)
 
-The bootstrap scripts use these official website installers and skip a CLI when its native binary already exists.
+The bootstrap scripts use these official website installers and skip a tool when its native binary already exists. This includes abtop, a terminal monitor for Claude Code, Codex CLI, and OpenCode sessions.
 
 **Mac / Linux:**
 
@@ -290,6 +290,7 @@ curl -fsSL https://claude.ai/install.sh | bash
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 curl -fsSL https://antigravity.google/cli/install.sh | bash
 curl -fsSL https://x.ai/cli/install.sh | bash
+curl -fsSL https://github.com/graykode/abtop/releases/latest/download/abtop-installer.sh | sh
 ```
 
 **Windows (PowerShell):**
@@ -299,6 +300,7 @@ irm https://claude.ai/install.ps1 | iex
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
 irm https://antigravity.google/cli/install.ps1 | iex
 irm https://x.ai/cli/install.ps1 | iex
+irm https://github.com/graykode/abtop/releases/latest/download/abtop-installer.ps1 | iex
 ```
 
 Default binary locations checked by doctor:
@@ -309,6 +311,9 @@ Default binary locations checked by doctor:
 | `codex` | `~/.local/bin/codex` | `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin\codex.exe` |
 | `agy` | `~/.local/bin/agy` | `%LOCALAPPDATA%\agy\bin\agy.exe` |
 | `grok` | `~/.grok/bin/grok` | `%USERPROFILE%\.grok\bin\grok.exe` |
+| `abtop` | `~/.cargo/bin/abtop` | `%USERPROFILE%\.cargo\bin\abtop.exe` |
+
+abtop uses the upstream Cargo-style layout: binaries live under `bin` within `ABTOP_INSTALL_DIR`, `CARGO_DIST_FORCE_INSTALL_DIR`, or `CARGO_HOME` (in that order), defaulting to `~/.cargo`. Install and doctor use the same paths. Run `abtop` to open the monitor. OpenCode monitoring additionally needs `sqlite3` on PATH; on Windows, install it with `winget install SQLite.SQLite`.
 
 ### npm packages (all platforms)
 

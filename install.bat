@@ -105,15 +105,21 @@ call :prepend_path_if_exists "%ProgramFiles%\CMake\bin"
 
 echo Installing AI CLI tools from their official websites...
 :: Prefer the directories used by the official AI CLI installers.
+set "ABTOP_NATIVE_ROOT=%USERPROFILE%\.cargo"
+if defined CARGO_HOME set "ABTOP_NATIVE_ROOT=%CARGO_HOME%"
+if defined CARGO_DIST_FORCE_INSTALL_DIR set "ABTOP_NATIVE_ROOT=%CARGO_DIST_FORCE_INSTALL_DIR%"
+if defined ABTOP_INSTALL_DIR set "ABTOP_NATIVE_ROOT=%ABTOP_INSTALL_DIR%"
+set "ABTOP_NATIVE_BIN=%ABTOP_NATIVE_ROOT%\bin"
 set "CODEX_NATIVE_BIN=%LOCALAPPDATA%\Programs\OpenAI\Codex\bin"
 if defined CODEX_INSTALL_DIR set "CODEX_NATIVE_BIN=%CODEX_INSTALL_DIR%"
 set "GROK_NATIVE_BIN=%USERPROFILE%\.grok\bin"
 if defined GROK_BIN_DIR set "GROK_NATIVE_BIN=%GROK_BIN_DIR%"
-set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%PATH%"
+set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%ABTOP_NATIVE_BIN%;%PATH%"
 call :website_cli_install "claude" "https://claude.ai/install.ps1" "%USERPROFILE%\.local\bin"
 call :website_cli_install "codex" "https://chatgpt.com/codex/install.ps1" "%CODEX_NATIVE_BIN%"
 call :website_cli_install "agy" "https://antigravity.google/cli/install.ps1" "%LOCALAPPDATA%\agy\bin"
 call :website_cli_install "grok" "https://x.ai/cli/install.ps1" "%GROK_NATIVE_BIN%"
+call :website_cli_install "abtop" "https://github.com/graykode/abtop/releases/latest/download/abtop-installer.ps1" "%ABTOP_NATIVE_BIN%"
 echo.
 
 :: ============================================================================

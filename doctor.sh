@@ -5,7 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OS="$(uname -s)"
 
 # Prefer the directories used by the official AI CLI installers.
-export PATH="${CODEX_INSTALL_DIR:-$HOME/.local/bin}:${GROK_BIN_DIR:-$HOME/.grok/bin}:$HOME/.local/bin:$PATH"
+ABTOP_NATIVE_BIN="${ABTOP_INSTALL_DIR:-${CARGO_DIST_FORCE_INSTALL_DIR:-${CARGO_HOME:-$HOME/.cargo}}}/bin"
+export PATH="${CODEX_INSTALL_DIR:-$HOME/.local/bin}:${GROK_BIN_DIR:-$HOME/.grok/bin}:$HOME/.local/bin:$ABTOP_NATIVE_BIN:$PATH"
 
 # --- Counters ---
 PASS=0
@@ -349,6 +350,7 @@ check_website_cli "claude" "$HOME/.local/bin/claude" "curl -fsSL https://claude.
 check_website_cli "codex" "${CODEX_INSTALL_DIR:-$HOME/.local/bin}/codex" "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
 check_website_cli "agy" "$HOME/.local/bin/agy" "curl -fsSL https://antigravity.google/cli/install.sh | bash"
 check_website_cli "grok" "${GROK_BIN_DIR:-$HOME/.grok/bin}/grok" "curl -fsSL https://x.ai/cli/install.sh | bash"
+check_website_cli "abtop" "$ABTOP_NATIVE_BIN/abtop" "curl -fsSL https://github.com/graykode/abtop/releases/latest/download/abtop-installer.sh | sh"
 check_tool gemini    "npm install -g @google/gemini-cli"
 
 if [[ "$OS" == "Darwin" ]]; then

@@ -246,7 +246,8 @@ fi
 section "AI CLI tools"
 
 # Prefer the directories used by the official AI CLI installers.
-export PATH="${CODEX_INSTALL_DIR:-$HOME/.local/bin}:${GROK_BIN_DIR:-$HOME/.grok/bin}:$HOME/.local/bin:$PATH"
+ABTOP_NATIVE_BIN="${ABTOP_INSTALL_DIR:-${CARGO_DIST_FORCE_INSTALL_DIR:-${CARGO_HOME:-$HOME/.cargo}}}/bin"
+export PATH="${CODEX_INSTALL_DIR:-$HOME/.local/bin}:${GROK_BIN_DIR:-$HOME/.grok/bin}:$HOME/.local/bin:$ABTOP_NATIVE_BIN:$PATH"
 
 npm_global_install() {
     local cmd="$1" pkg="$2"
@@ -283,6 +284,7 @@ website_cli_install "claude" "https://claude.ai/install.sh" bash "$HOME/.local/b
 website_cli_install "codex" "https://chatgpt.com/codex/install.sh" sh "${CODEX_INSTALL_DIR:-$HOME/.local/bin}/codex"
 website_cli_install "agy" "https://antigravity.google/cli/install.sh" bash "$HOME/.local/bin/agy"
 website_cli_install "grok" "https://x.ai/cli/install.sh" bash "${GROK_BIN_DIR:-$HOME/.grok/bin}/grok"
+website_cli_install "abtop" "https://github.com/graykode/abtop/releases/latest/download/abtop-installer.sh" sh "$ABTOP_NATIVE_BIN/abtop"
 npm_global_install "gemini" "@google/gemini-cli"
 
 # ── 9. Nerd Font ─────────────────────────────────────────────────────────

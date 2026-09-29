@@ -39,11 +39,16 @@ call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
 call :prepend_path_if_exists "%ProgramFiles%\CMake\bin"
 
 :: Prefer the directories used by the official AI CLI installers.
+set "ABTOP_NATIVE_ROOT=%USERPROFILE%\.cargo"
+if defined CARGO_HOME set "ABTOP_NATIVE_ROOT=%CARGO_HOME%"
+if defined CARGO_DIST_FORCE_INSTALL_DIR set "ABTOP_NATIVE_ROOT=%CARGO_DIST_FORCE_INSTALL_DIR%"
+if defined ABTOP_INSTALL_DIR set "ABTOP_NATIVE_ROOT=%ABTOP_INSTALL_DIR%"
+set "ABTOP_NATIVE_BIN=%ABTOP_NATIVE_ROOT%\bin"
 set "CODEX_NATIVE_BIN=%LOCALAPPDATA%\Programs\OpenAI\Codex\bin"
 if defined CODEX_INSTALL_DIR set "CODEX_NATIVE_BIN=%CODEX_INSTALL_DIR%"
 set "GROK_NATIVE_BIN=%USERPROFILE%\.grok\bin"
 if defined GROK_BIN_DIR set "GROK_NATIVE_BIN=%GROK_BIN_DIR%"
-set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%PATH%"
+set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%ABTOP_NATIVE_BIN%;%PATH%"
 
 :: ---------------------------------------------------------------------
 ::  Section: Core Tools
@@ -94,6 +99,7 @@ call :check_website_cli "claude" "%USERPROFILE%\.local\bin\claude.exe" "PowerShe
 call :check_website_cli "codex" "%CODEX_NATIVE_BIN%\codex.exe" "PowerShell: irm https://chatgpt.com/codex/install.ps1 | iex"
 call :check_website_cli "agy" "%LOCALAPPDATA%\agy\bin\agy.exe" "PowerShell: irm https://antigravity.google/cli/install.ps1 | iex"
 call :check_website_cli "grok" "%GROK_NATIVE_BIN%\grok.exe" "PowerShell: irm https://x.ai/cli/install.ps1 | iex"
+call :check_website_cli "abtop" "%ABTOP_NATIVE_BIN%\abtop.exe" "PowerShell: irm https://github.com/graykode/abtop/releases/latest/download/abtop-installer.ps1 | iex"
 call :check_tool gemini     "gemini --version"     1  "npm install -g @google/gemini-cli"
 
 call :check_winget_package "Codex App"             "9PLM9XGG6VKS"                  "winget install --source msstore --id 9PLM9XGG6VKS"
