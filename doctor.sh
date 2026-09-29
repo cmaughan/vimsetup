@@ -144,6 +144,30 @@ check_tool_min_version() {
     fi
 }
 
+# --- Check the native binary created by website_cli_install in install.sh ---
+check_website_cli() {
+    local cmd="$1" binary="$2" hint="$3"
+    if [[ -x "$binary" ]]; then
+        local version
+        version=$("$binary" --version 2>/dev/null | sed -n '1p' || true)
+        ok "$cmd — ${version:-installed} ($binary)"
+    else
+        missing "$cmd website installation not found ($binary) — install with: $hint"
+    fi
+}
+
+check_git_alias() {
+    local name="$1" expected="$2" actual
+    actual=$(git config --global --get "alias.$name" 2>/dev/null || true)
+    if [[ "$actual" == "$expected" ]]; then
+        ok "git $name matches install.sh"
+    elif [[ -n "$actual" ]]; then
+        outdated "git $name differs from install.sh — run: git config --global alias.$name '$expected'"
+    else
+        missing "git $name — run: git config --global alias.$name '$expected'"
+    fi
+}
+
 # --- Check one of several equivalent commands is installed ---
 # Usage: check_any_tool <label> <install_hint> <cmd> [cmd...]
 check_any_tool() {
@@ -176,6 +200,18 @@ check_brew_cask() {
         ok "$label — $cask cask installed"
     else
         missing "$label — install with: brew install --cask $cask"
+    fi
+}
+
+# --- Check a library package that has no CLI to probe ---
+check_brew_formula() {
+    local formula="$1"
+    if ! command -v brew &>/dev/null; then
+        warn "$formula — cannot check Homebrew formula (brew not found)"
+    elif brew list --formula "$formula" &>/dev/null; then
+        ok "$formula installed"
+    else
+        missing "$formula — install with: brew install $formula"
     fi
 }
 
@@ -222,6 +258,35 @@ check_config() {
 printf "${BOLD}Neovim Development Environment Doctor${RESET}\n"
 printf "Running from: %s\n" "$SCRIPT_DIR"
 
+# ----- Bootstrap prerequisites -----
+section "Bootstrap prerequisites"
+check_tool brew "https://brew.sh"
+
+if [[ "$OS" == "Darwin" ]]; then
+    section "Xcode and Metal"
+    if DEV_DIR=$(xcode-select -p 2>/dev/null); then
+        ok "Xcode Command Line Tools — $DEV_DIR"
+    else
+        missing "Xcode Command Line Tools — run: xcode-select --install"
+        DEV_DIR=""
+    fi
+    XCODE_APP="/Applications/Xcode.app/Contents/Developer"
+    if [[ -d "$XCODE_APP" ]]; then
+        if [[ "$DEV_DIR" == "$XCODE_APP" ]]; then
+            ok "Xcode developer directory selected"
+        else
+            warn "Xcode developer directory — run: sudo xcode-select -s $XCODE_APP"
+        fi
+        if xcrun metal --version &>/dev/null; then
+            ok "Metal toolchain available"
+        else
+            warn "Metal toolchain — run: xcodebuild -downloadComponent MetalToolchain"
+        fi
+    else
+        warn "Optional Xcode.app/Metal toolchain not installed (install.sh skips Metal without Xcode.app)"
+    fi
+fi
+
 # ----- Core Tools -----
 section "Core Tools"
 check_nvim
@@ -258,7 +323,11 @@ check_tool ninja     "brew install ninja"
 check_tool doxygen   "brew install doxygen"
 check_tool dot       "brew install graphviz"
 check_tool clang-uml "brew install clang-uml"
-check_any_tool "OpenSCAD snapshot/nightly" "brew install --cask openscad@snapshot" openscad-nightly openscad
+if [[ "$OS" == "Darwin" ]]; then
+    check_any_tool "OpenSCAD snapshot/nightly" "brew install --cask openscad@snapshot" openscad-nightly openscad
+else
+    check_any_tool "OpenSCAD snapshot/nightly" "sudo snap install openscad-nightly" openscad-nightly openscad
+fi
 check_tool plantuml  "brew install plantuml"
 check_tool pre-commit "brew install pre-commit"
 check_tool clang-format "brew install clang-format"
@@ -266,6 +335,8 @@ check_tool quarto    "brew install quarto"
 check_tool ccache    "brew install ccache"
 check_tool vulkaninfo "brew install vulkan-tools"
 check_tool glslc     "brew install shaderc"
+check_any_tool "glslang" "brew install glslang" glslang glslangValidator
+check_brew_formula "vulkan-validationlayers"
 
 if [[ -n "${VULKAN_SDK:-}" && -d "$VULKAN_SDK" && -x "$VULKAN_SDK/bin/glslc" ]]; then
     ok "VULKAN_SDK — $VULKAN_SDK"
@@ -274,13 +345,15 @@ else
 fi
 
 check_tool ffmpeg    "brew install ffmpeg"
-check_tool claude    "curl -fsSL https://claude.ai/install.sh | bash"
-check_tool codex     "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
-check_tool agy       "curl -fsSL https://antigravity.google/cli/install.sh | bash"
-check_tool grok      "curl -fsSL https://x.ai/cli/install.sh | bash"
+check_website_cli "claude" "$HOME/.local/bin/claude" "curl -fsSL https://claude.ai/install.sh | bash"
+check_website_cli "codex" "${CODEX_INSTALL_DIR:-$HOME/.local/bin}/codex" "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+check_website_cli "agy" "$HOME/.local/bin/agy" "curl -fsSL https://antigravity.google/cli/install.sh | bash"
+check_website_cli "grok" "${GROK_BIN_DIR:-$HOME/.grok/bin}/grok" "curl -fsSL https://x.ai/cli/install.sh | bash"
 check_tool gemini    "npm install -g @google/gemini-cli"
 
 if [[ "$OS" == "Darwin" ]]; then
+    check_brew_cask "db-browser-for-sqlite" "DB Browser for SQLite"
+    check_brew_cask "blackhole-2ch" "BlackHole 2ch"
     check_brew_cask "chatgpt" "ChatGPT"
     check_brew_cask "claude" "Claude Desktop"
     check_brew_cask "antigravity" "Google Antigravity"
@@ -295,7 +368,7 @@ section "Python Environment"
 if command -v uv &>/dev/null; then
     ok "uv is installed"
 
-    if uv python list 2>/dev/null | grep -q "3\.12"; then
+    if uv python list --only-installed 2>/dev/null | grep -E '^cpython-3\.12\.' >/dev/null; then
         ok "Python 3.12 available via uv"
     else
         missing "Python 3.12 not available via uv — install with: uv python install 3.12"
@@ -306,18 +379,22 @@ fi
 
 NVIM_VENV_PYTHON="$HOME/.local/share/nvim-venv/bin/python"
 if [[ -x "$NVIM_VENV_PYTHON" ]]; then
-    ok "nvim-venv Python exists ($NVIM_VENV_PYTHON)"
+    if "$NVIM_VENV_PYTHON" -c 'import sys; sys.exit(sys.version_info[:2] != (3, 12))' 2>/dev/null; then
+        ok "nvim-venv uses Python 3.12 ($NVIM_VENV_PYTHON)"
+    else
+        outdated "nvim-venv is not using Python 3.12 ($NVIM_VENV_PYTHON)"
+    fi
 
     if PYNVIM_VER=$("$NVIM_VENV_PYTHON" -c "import pynvim; print(pynvim.__version__)" 2>/dev/null); then
         ok "pynvim installed — $PYNVIM_VER"
     else
-        missing "pynvim not installed in nvim-venv — $NVIM_VENV_PYTHON -m pip install pynvim"
+        missing "pynvim not installed in nvim-venv — uv pip install --python \"$NVIM_VENV_PYTHON\" pynvim"
     fi
 
     if PYYAML_VER=$("$NVIM_VENV_PYTHON" -c "import yaml; print(yaml.__version__)" 2>/dev/null); then
         ok "PyYAML installed — $PYYAML_VER"
     else
-        missing "PyYAML not installed in nvim-venv — $NVIM_VENV_PYTHON -m pip install PyYAML"
+        missing "PyYAML not installed in nvim-venv — uv pip install --python \"$NVIM_VENV_PYTHON\" PyYAML"
     fi
 else
     missing "nvim-venv Python not found ($NVIM_VENV_PYTHON)"
@@ -339,6 +416,11 @@ section "Config Files"
 check_config "$HOME/.zshrc"              "$SCRIPT_DIR/zshrc.template"          "zshrc"
 check_config "$HOME/.config/starship.toml" "$SCRIPT_DIR/starship.toml.template"  "Starship config"
 check_config "$HOME/.tmux.conf"          "$SCRIPT_DIR/tmux.conf.template"      "Tmux config"
+
+# ----- Git aliases -----
+section "Git aliases"
+check_git_alias "lol" "log --graph --decorate --pretty=oneline --abbrev-commit"
+check_git_alias "lola" "log --graph --decorate --pretty=oneline --abbrev-commit --all"
 
 # ----- Neovim Config Link -----
 section "Neovim Config Link"
@@ -404,16 +486,16 @@ FZF_ZSH="$HOME/.fzf.zsh"
 if [[ -e "$FZF_ZSH" ]]; then
     ok "fzf shell integration exists ($FZF_ZSH)"
 else
-    warn "fzf shell integration not found ($FZF_ZSH) — run: \$(brew --prefix)/opt/fzf/install"
+    warn "fzf shell integration not found ($FZF_ZSH) — run: \$(brew --prefix)/opt/fzf/install --all --no-bash --no-fish"
 fi
 
 # ----- Font -----
 section "Font"
 
 FONT_FOUND=false
-for dir in "$HOME/Library/Fonts" "/Library/Fonts" "/usr/share/fonts" "/usr/local/share/fonts"; do
+for dir in "$HOME/Library/Fonts" "/Library/Fonts" "$HOME/.local/share/fonts" "$HOME/.fonts" "/usr/share/fonts" "/usr/local/share/fonts"; do
     if [[ -d "$dir" ]]; then
-        if ls "$dir" 2>/dev/null | grep -qi "JetBrainsMono.*Nerd"; then
+        if find "$dir" -type f -iname '*JetBrainsMono*Nerd*' -print 2>/dev/null | grep . >/dev/null; then
             FONT_FOUND=true
             ok "JetBrainsMono Nerd Font found in $dir"
             break
@@ -422,7 +504,11 @@ for dir in "$HOME/Library/Fonts" "/Library/Fonts" "/usr/share/fonts" "/usr/local
 done
 
 if [[ "$FONT_FOUND" == false ]]; then
-    warn "JetBrainsMono Nerd Font not found — install from https://www.nerdfonts.com"
+    if [[ "$OS" == "Darwin" ]]; then
+        warn "JetBrainsMono Nerd Font not found — install with: brew install --cask font-jetbrains-mono-nerd-font"
+    else
+        warn "JetBrainsMono Nerd Font not found — install from https://www.nerdfonts.com"
+    fi
 fi
 
 # =====================================================================

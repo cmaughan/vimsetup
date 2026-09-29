@@ -36,6 +36,7 @@ echo.
 call :prepend_path_if_exists "%ProgramFiles%\OpenSCAD (Nightly)"
 call :prepend_path_if_exists "%ProgramFiles%\clang-uml\bin"
 call :prepend_path_if_exists "%ProgramFiles%\Graphviz\bin"
+call :prepend_path_if_exists "%ProgramFiles%\CMake\bin"
 
 :: Prefer the directories used by the official AI CLI installers.
 set "CODEX_NATIVE_BIN=%LOCALAPPDATA%\Programs\OpenAI\Codex\bin"
@@ -50,6 +51,7 @@ set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFI
 echo %BOLD%-- Core Tools ------------------------------------------------------%RESET%
 echo.
 
+call :check_tool winget     "winget --version"     1  "App Installer from https://aka.ms/getwinget"
 call :check_tool nvim       "nvim --version"       1  "winget install Neovim.Neovim"
 call :check_tool git        "git --version"        1  "winget install Git.Git"
 call :check_tool gh         "gh --version"         1  "winget install GitHub.cli"
@@ -88,10 +90,10 @@ call :check_tool glslc      "glslc --version"      1  "winget install KhronosGro
 call :check_vulkan_sdk_env
 call :check_tool ffmpeg     "ffmpeg -version"      1  "winget install Gyan.FFmpeg"
 call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
-call :check_tool claude     "claude --version"     1  "PowerShell: irm https://claude.ai/install.ps1 | iex"
-call :check_tool codex      "codex --version"      1  "PowerShell: irm https://chatgpt.com/codex/install.ps1 | iex"
-call :check_tool agy        "agy --version"        1  "PowerShell: irm https://antigravity.google/cli/install.ps1 | iex"
-call :check_tool grok       "grok --version"       1  "PowerShell: irm https://x.ai/cli/install.ps1 | iex"
+call :check_website_cli "claude" "%USERPROFILE%\.local\bin\claude.exe" "PowerShell: irm https://claude.ai/install.ps1 | iex"
+call :check_website_cli "codex" "%CODEX_NATIVE_BIN%\codex.exe" "PowerShell: irm https://chatgpt.com/codex/install.ps1 | iex"
+call :check_website_cli "agy" "%LOCALAPPDATA%\agy\bin\agy.exe" "PowerShell: irm https://antigravity.google/cli/install.ps1 | iex"
+call :check_website_cli "grok" "%GROK_NATIVE_BIN%\grok.exe" "PowerShell: irm https://x.ai/cli/install.ps1 | iex"
 call :check_tool gemini     "gemini --version"     1  "npm install -g @google/gemini-cli"
 
 call :check_winget_package "Codex App"             "9PLM9XGG6VKS"                  "winget install --source msstore --id 9PLM9XGG6VKS"
@@ -117,30 +119,33 @@ if !errorlevel! equ 0 (
     set /a FAIL+=1 >nul
 )
 
-:: Check Python 3.12 via python-global
-set "PYGLOBAL=%LOCALAPPDATA%\python-global\Scripts\python.exe"
-if exist "!PYGLOBAL!" (
-    for /f "tokens=*" %%v in ('"!PYGLOBAL!" --version 2^>^&1') do set "PYVER=%%v"
-    echo   %GREEN%[OK]%RESET%      python-global: !PYVER!
-    set /a PASS+=1 >nul
-) else (
-    :: Fallback: check uv python list for 3.12
-    where uv >nul 2>&1
+:: Check installed Python, not uv's catalog of downloadable versions.
+where uv >nul 2>&1
+if !errorlevel! equ 0 (
+    uv python list --only-installed 2>nul | findstr /b /c:"cpython-3.12." >nul
     if !errorlevel! equ 0 (
-        set "PY312_FOUND="
-        for /f "tokens=*" %%l in ('uv python list 2^>nul ^| findstr "3.12"') do set "PY312_FOUND=%%l"
-        if defined PY312_FOUND (
-            echo   %YELLOW%[WARN]%RESET%    Python 3.12 available via uv, but python-global not set up
-            echo              %DIM%Expected: !PYGLOBAL!%RESET%
-            set /a WARN+=1 >nul
-        ) else (
-            echo   %RED%[MISSING]%RESET%  Python 3.12 --run: uv python install 3.12
-            set /a FAIL+=1 >nul
-        )
+        echo   %GREEN%[OK]%RESET%      Python 3.12 installed via uv
+        set /a PASS+=1 >nul
     ) else (
-        echo   %RED%[MISSING]%RESET%  Python 3.12 --install uv first, then: uv python install 3.12
+        echo   %RED%[MISSING]%RESET%  Python 3.12 --run: uv python install 3.12
         set /a FAIL+=1 >nul
     )
+)
+
+:: The installer creates this venv separately from the managed Python install.
+set "PYGLOBAL=%LOCALAPPDATA%\python-global\Scripts\python.exe"
+if exist "!PYGLOBAL!" (
+    "!PYGLOBAL!" -c "import sys; sys.exit(0 if sys.version_info[:2] == (3, 12) else 1)" >nul 2>&1
+    if !errorlevel! equ 0 (
+        echo   %GREEN%[OK]%RESET%      python-global uses Python 3.12
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %YELLOW%[OUTDATED]%RESET% python-global is not using Python 3.12
+        set /a WARN+=1 >nul
+    )
+) else (
+    echo   %RED%[MISSING]%RESET%  python-global --run install.bat to create !PYGLOBAL!
+    set /a FAIL+=1 >nul
 )
 
 :: Check pynvim
@@ -261,6 +266,19 @@ if exist "%LOCALAPPDATA%\nvim-data\mason\bin" (
 echo.
 
 :: ---------------------------------------------------------------------
+::  Section: psmux plugins
+:: ---------------------------------------------------------------------
+echo %BOLD%-- psmux plugins ---------------------------------------------------%RESET%
+if exist "%USERPROFILE%\.psmux\plugins\" (
+    echo   %GREEN%[OK]%RESET%      psmux plugins directory exists
+    set /a PASS+=1 >nul
+) else (
+    echo   %RED%[MISSING]%RESET%  psmux plugins directory --run install.bat
+    set /a FAIL+=1 >nul
+)
+echo.
+
+:: ---------------------------------------------------------------------
 ::  Section: Font
 :: ---------------------------------------------------------------------
 echo %BOLD%-- Font ------------------------------------------------------------%RESET%
@@ -269,12 +287,12 @@ echo.
 set "FONT_FOUND="
 :: Check user fonts
 if exist "%LOCALAPPDATA%\Microsoft\Windows\Fonts" (
-    for %%f in ("%LOCALAPPDATA%\Microsoft\Windows\Fonts\JetBrains*Nerd*") do set "FONT_FOUND=%%~nxf"
+    for %%f in ("%LOCALAPPDATA%\Microsoft\Windows\Fonts\JetBrainsMonoNerdFont*") do if exist "%%f" set "FONT_FOUND=%%~nxf"
 )
 :: Check system fonts
 if not defined FONT_FOUND (
     if exist "%WINDIR%\Fonts" (
-        for %%f in ("%WINDIR%\Fonts\JetBrains*Nerd*") do set "FONT_FOUND=%%~nxf"
+        for %%f in ("%WINDIR%\Fonts\JetBrainsMonoNerdFont*") do if exist "%%f" set "FONT_FOUND=%%~nxf"
     )
 )
 
@@ -283,7 +301,7 @@ if defined FONT_FOUND (
     set /a PASS+=1 >nul
 ) else (
     echo   %YELLOW%[WARN]%RESET%    JetBrainsMono Nerd Font not found
-    echo              %DIM%Install from: https://www.nerdfonts.com/font-downloads%RESET%
+    echo              %DIM%Install with: winget install DEVCOM.JetBrainsMonoNerdFont%RESET%
     set /a WARN+=1 >nul
 )
 
@@ -340,6 +358,21 @@ if !FAIL! gtr 0 (
     echo !PATH! | find /I "!_PATHDIR!" >nul 2>&1
     if !errorlevel! equ 0 exit /b
     set "PATH=!_PATHDIR!;!PATH!"
+    exit /b
+
+:: :check_website_cli <name> <native_binary> <install_hint>
+::   Match the native path checked by website_cli_install in install.bat.
+:check_website_cli
+    set "AI_NAME=%~1"
+    set "AI_BINARY=%~2"
+    set "AI_INSTALL=%~3"
+    if exist "!AI_BINARY!" (
+        echo   %GREEN%[OK]%RESET%      !AI_NAME! website installation --!AI_BINARY!
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %RED%[MISSING]%RESET%  !AI_NAME! website installation --install with: !AI_INSTALL!
+        set /a FAIL+=1 >nul
+    )
     exit /b
 
 :: :check_tool <name> <version_cmd> <version_line> <install_hint>
@@ -516,6 +549,9 @@ if !FAIL! gtr 0 (
     if not defined ACTUAL (
         echo   %RED%[MISSING]%RESET%  git %ALIAS_NAME% --run install.bat to configure
         set /a FAIL+=1 >nul
+    ) else if "!ACTUAL!" neq "!EXPECTED!" (
+        echo   %YELLOW%[OUTDATED]%RESET% git %ALIAS_NAME% differs from install.bat --run install.bat to configure
+        set /a WARN+=1 >nul
     ) else (
         echo   %GREEN%[OK]%RESET%      git %ALIAS_NAME%
         set /a PASS+=1 >nul
