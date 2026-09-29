@@ -4,7 +4,7 @@ Cross-platform development environment — Neovim, shell, terminal multiplexer, 
 
 ## Quick Start
 
-Clone the repo and run the bootstrap script. It installs every tool, sets up Python/Node/Rust, copies config templates, and installs fonts — all idempotently (safe to re-run).
+Clone the repo and run the bootstrap script for your platform. It installs development tools, sets up Python/Node/Rust, and configures your shell and terminal. Re-running it skips existing installations where supported.
 
 **Windows** (run in an elevated `cmd.exe`):
 ```bat
@@ -22,12 +22,17 @@ cd ~/.config/nvim
 
 ### What `install` does
 
-1. **Installs CLI tools** — Neovim, Git, GitHub CLI, PowerShell 7, Node, ripgrep, fd, fzf, Starship, eza, bat, btop, hexyl, 7-Zip, zoxide, uv, Rust, CMake, Ninja, Doxygen, Graphviz, clang-uml, PlantUML, ffmpeg (via winget/choco on Windows, brew on Mac)
-2. **Sets up Python** — installs Python 3.12 via `uv`, creates a dedicated `python-global` venv, installs `pynvim` and `PyYAML`
-3. **Sets up Node / AI tools** — installs the `neovim` npm provider, Codex CLI/App, Claude Code/App, Google Antigravity, and Gemini CLI
-4. **Copies config templates** — PowerShell profile / `.zshrc`, `starship.toml`, `.tmux.conf` (backs up existing files that differ)
-5. **Installs JetBrainsMono Nerd Font**
-6. **Installs PowerShell modules** — PSFzf for fzf shell integration
+1. **Installs development tools** — Neovim, Git/GitHub CLI, Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
+2. **Sets up Python** — installs Python 3.12 via `uv`, creates `~/.local/share/nvim-venv` on macOS/Linux or `%LOCALAPPDATA%\python-global` on Windows, and installs `pynvim` and `PyYAML` there.
+3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), and uses npm for Gemini CLI. See [AI CLI installers](#ai-cli-installers-all-platforms).
+4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Claude, and Antigravity. Windows includes VS Code, Cursor, OpenSCAD Nightly, Codex App, Claude, and Antigravity.
+5. **Sets up configuration** — symlinks `.zshrc`, `starship.toml`, and `.tmux.conf` on macOS/Linux; copies the PowerShell profile, Starship, and psmux templates on Windows. Also configures the `git lol` and `git lola` aliases.
+6. **Sets up fonts and terminal integration** — installs JetBrainsMono Nerd Font, configures fzf and TPM on macOS/Linux, and installs PSFzf and creates the psmux plugin directory on Windows. Terminal plugin installation still requires the manual steps printed by the installer.
+7. **Checks macOS developer tools** — installs Xcode Command Line Tools; selects Xcode.app and downloads the Metal toolchain when Xcode.app is present.
+
+Linux uses Homebrew for CLI packages and snap for PowerShell, VS Code, and OpenSCAD when snap is available. The current font step still invokes a macOS Homebrew cask, so the Linux bootstrap needs that step adapted before it can complete.
+
+On Windows, the current installer skips the Gemini npm step if the Neovim npm provider is already installed. If doctor reports Gemini missing, run `npm install -g @google/gemini-cli`.
 
 After install, open Neovim — lazy.nvim bootstraps itself, installs all plugins, and Mason auto-installs LSP servers, formatters, and linters on first launch.
 
@@ -45,7 +50,11 @@ doctor.bat
 ./doctor.sh
 ```
 
-It verifies every tool is on PATH (with versions), checks that config files match their templates, confirms the Python/Node providers work, validates lazy.nvim and Mason are installed, and checks for the Nerd Font. Each check shows `[OK]`, `[WARN]`, or `[MISSING]` with install instructions for anything that's absent.
+Doctor covers the tools, apps, and configuration listed by the installer, plus Neovim's first-launch setup. It checks CLI availability, desktop packages, installed Python 3.12 and the dedicated venv, Python/Node providers, config templates, Git alias values, the Vulkan environment, fonts, and terminal integration. macOS also checks Xcode/Metal, glslang, and Vulkan validation layers; Windows checks PSFzf and the psmux plugin directory.
+
+The four AI CLI checks require binaries in the website installers' native locations. An older Homebrew, npm, or WinGet copy elsewhere on PATH does not satisfy these checks. `CODEX_INSTALL_DIR` and `GROK_BIN_DIR` overrides are respected by both install and doctor.
+
+Results show `[OK]`, `[WARN]`, `[OUTDATED]`, or `[MISSING]`, with repair hints where applicable. Doctor exits with status 1 when errors are found; warnings alone return status 0.
 
 ---
 
@@ -143,15 +152,25 @@ brew install graphviz      # dot / dependency graph rendering
 brew install clang-uml     # UML diagram generation from C++ source
 brew install plantuml      # PlantUML renderer (used by gen_uml.py)
 brew install cmake         # build system
+brew install ninja doxygen quarto ccache
+brew install pre-commit clang-format
+brew install vulkan-tools vulkan-validationlayers shaderc glslang
+```
+
+#### Desktop apps (Mac)
+
+These desktop packages are installed by `install.sh`. AI CLIs use the separate [website installers](#ai-cli-installers-all-platforms).
+
+```sh
+brew install --cask openscad@snapshot
+brew install --cask visual-studio-code cursor db-browser-for-sqlite blackhole-2ch
+brew install --cask chatgpt claude antigravity
 ```
 
 #### Optional (Mac)
 
 ```sh
 brew install mactex        # for vimtex / LaTeX support
-brew install --cask openscad@snapshot # latest OpenSCAD snapshot for vim-openscad support
-brew install --cask visual-studio-code cursor
-brew install --cask codex-app codex claude claude-code antigravity antigravity-cli
 ```
 
 ---
@@ -179,7 +198,7 @@ winget install 7zip.7zip
 winget install BurntSushi.ripgrep.MSVC   # telescope live_grep
 winget install sharkdp.fd                # telescope file search
 winget install junegunn.fzf              # fzf integration
-winget install OpenJS.NodeJS             # LSP servers
+winget install OpenJS.NodeJS.LTS         # LSP servers
 winget install Starship.Starship         # shell prompt
 winget install eza-community.eza         # ls replacement
 winget install sharkdp.bat              # cat replacement
@@ -191,26 +210,30 @@ winget install Gyan.FFmpeg               # video capture / encoding support
 winget install Graphviz.Graphviz         # dot / dependency graph rendering
 winget install bkryza.clang-uml         # UML diagram generation from C++ source
 winget install OpenSCAD.OpenSCAD.Nightly # latest OpenSCAD beta/nightly
-winget install OpenAI.Codex              # Codex CLI
 winget install --source msstore --id 9PLM9XGG6VKS # Codex App
-winget install Anthropic.ClaudeCode      # Claude CLI
 winget install Anthropic.Claude          # Claude App
 winget install Google.Antigravity        # Google Antigravity App
-winget install Google.AntigravityCLI     # Google Antigravity CLI
 choco install plantuml                   # PlantUML renderer (used by gen_uml.py)
 winget install Kitware.CMake             # build system
+winget install Ninja-build.Ninja
+winget install DimitriVanHeesch.Doxygen
+winget install Posit.Quarto
+winget install Ccache.Ccache
+winget install KhronosGroup.VulkanSDK
+winget install LLVM.LLVM
+uv tool install pre-commit
 ```
 
 Install [psmux](https://github.com/marlocarlo/psmux) for terminal multiplexing (tmux-compatible, written in Rust):
 
 ```powershell
-winget install psmux
+cargo install psmux
 ```
 
 Install the PSFzf PowerShell module for fzf shell integration:
 
 ```powershell
-Install-Module PSFzf
+Install-Module PSFzf -Scope CurrentUser -Force -AllowClobber
 ```
 
 #### Optional (Windows)
@@ -225,19 +248,18 @@ winget install MiKTeX.MiKTeX     # for vimtex / LaTeX support
 
 Python is managed by [uv](https://github.com/astral-sh/uv) — a fast Rust-based tool that replaces pyenv, pip, and virtualenv.
 
-Install Python 3.12.9 and set it as the global default:
+Install Python 3.12, matching the bootstrap scripts:
 
 ```sh
-uv python install 3.12.9
-uv python pin 3.12.9
+uv python install 3.12
 ```
 
-Create a global virtualenv, install the Neovim Python packages into it, and add its `Scripts` dir to your PATH:
+Create the dedicated Neovim virtualenv and install its Python packages:
 
 **Windows:**
 ```powershell
-uv venv --python 3.12.9 "$env:LOCALAPPDATA\python-global"
-uv pip install --python "$env:LOCALAPPDATA\python-global\Scripts\python.exe" pip pynvim PyYAML
+uv venv --python 3.12 "$env:LOCALAPPDATA\python-global"
+uv pip install --python "$env:LOCALAPPDATA\python-global\Scripts\python.exe" pynvim PyYAML
 # Add to PATH (run once):
 $p = [System.Environment]::GetEnvironmentVariable("PATH","User") -split ";"
 [System.Environment]::SetEnvironmentVariable("PATH", ("$env:LOCALAPPDATA\python-global\Scripts;" + ($p -join ";")), "User")
@@ -245,8 +267,8 @@ $p = [System.Environment]::GetEnvironmentVariable("PATH","User") -split ";"
 
 **Mac / Linux:**
 ```sh
-uv venv --python 3.12.9 ~/.local/share/nvim-venv
-uv pip install --python ~/.local/share/nvim-venv/bin/python pip pynvim PyYAML
+uv venv --python 3.12 ~/.local/share/nvim-venv
+uv pip install --python ~/.local/share/nvim-venv/bin/python pynvim PyYAML
 ```
 
 The venv bin is already on PATH via the `zshrc.template` (`~/.local/share/nvim-venv/bin`).
@@ -257,10 +279,42 @@ On macOS/Linux, add a `py` alias to your shell config so `py` works like on Wind
 alias py=python3
 ```
 
+### AI CLI installers (all platforms)
+
+The bootstrap scripts use these official website installers and skip a CLI when its native binary already exists.
+
+**Mac / Linux:**
+
+```sh
+curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+curl -fsSL https://antigravity.google/cli/install.sh | bash
+curl -fsSL https://x.ai/cli/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
+irm https://antigravity.google/cli/install.ps1 | iex
+irm https://x.ai/cli/install.ps1 | iex
+```
+
+Default binary locations checked by doctor:
+
+| CLI | macOS / Linux | Windows |
+| --- | --- | --- |
+| `claude` | `~/.local/bin/claude` | `%USERPROFILE%\.local\bin\claude.exe` |
+| `codex` | `~/.local/bin/codex` | `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin\codex.exe` |
+| `agy` | `~/.local/bin/agy` | `%LOCALAPPDATA%\agy\bin\agy.exe` |
+| `grok` | `~/.grok/bin/grok` | `%USERPROFILE%\.grok\bin\grok.exe` |
+
 ### npm packages (all platforms)
 
 ```sh
-npm install -g neovim      # Neovim Node.js provider
+npm install -g neovim             # Neovim Node.js provider
+npm install -g @google/gemini-cli  # Gemini CLI
 ```
 
 ---
@@ -381,7 +435,7 @@ Copy `zshrc.template` to `~/.zshrc`. Dropbox path is auto-detected from `~/.drop
 After installing `fzf` via brew, run the shell integration installer:
 
 ```sh
-$(brew --prefix)/opt/fzf/install
+$(brew --prefix)/opt/fzf/install --all --no-bash --no-fish
 ```
 
 This creates `~/.fzf.zsh` which is sourced by the `.zshrc` template.
@@ -497,7 +551,7 @@ Prefix is bound to `Ctrl-s`. Key highlights:
 [psmux](https://github.com/marlocarlo/psmux) is a native Windows terminal multiplexer written in Rust. It is tmux-compatible (76 tmux commands supported), reads your existing `.tmux.conf`, and ships `tmux`/`pmux` aliases so muscle memory transfers directly from Mac.
 
 ```powershell
-winget install psmux
+cargo install psmux
 ```
 
 Install [PPM](https://github.com/marlocarlo/psmux-plugins) and plugins:
