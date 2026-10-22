@@ -95,15 +95,15 @@ call :check_tool glslc      "glslc --version"      1  "winget install KhronosGro
 call :check_vulkan_sdk_env
 call :check_tool ffmpeg     "ffmpeg -version"      1  "winget install Gyan.FFmpeg"
 call :check_tool choco      "choco --version"      1  "winget install Chocolatey.Chocolatey"
-call :check_website_cli "claude" "%USERPROFILE%\.local\bin\claude.exe" "PowerShell: irm https://claude.ai/install.ps1 | iex"
-call :check_website_cli "codex" "%CODEX_NATIVE_BIN%\codex.exe" "PowerShell: irm https://chatgpt.com/codex/install.ps1 | iex"
+call :check_website_cli "claude" "%USERPROFILE%\.local\bin\claude.exe" "PowerShell: iex ((New-Object Net.WebClient).DownloadString('https://claude.ai/install.ps1'))"
+call :check_website_cli "codex" "%CODEX_NATIVE_BIN%\codex.exe" "PowerShell: iex ((New-Object Net.WebClient).DownloadString('https://chatgpt.com/codex/install.ps1'))"
 call :check_website_cli "agy" "%LOCALAPPDATA%\agy\bin\agy.exe" "PowerShell: irm https://antigravity.google/cli/install.ps1 | iex"
 call :check_website_cli "grok" "%GROK_NATIVE_BIN%\grok.exe" "PowerShell: irm https://x.ai/cli/install.ps1 | iex"
 call :check_website_cli "abtop" "%ABTOP_NATIVE_BIN%\abtop.exe" "PowerShell: irm https://github.com/graykode/abtop/releases/latest/download/abtop-installer.ps1 | iex"
 call :check_tool gemini     "gemini --version"     1  "npm install -g @google/gemini-cli"
 
 call :check_winget_package "Codex App"             "9PLM9XGG6VKS"                  "winget install --source msstore --id 9PLM9XGG6VKS"
-call :check_winget_package "Claude App"            "Anthropic.Claude"              "winget install Anthropic.Claude"
+call :check_winget_package "Claude App"            "Anthropic.Claude"              "run install.bat to download the latest release from https://claude.com/download"
 call :check_winget_package "Google Antigravity"    "Google.Antigravity"            "winget install Google.Antigravity"
 call :check_command_path_contains "OpenSCAD Nightly path" "openscad" "Nightly" "winget install OpenSCAD.OpenSCAD.Nightly"
 

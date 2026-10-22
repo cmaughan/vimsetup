@@ -357,11 +357,17 @@ if [[ "$OS" == "Darwin" ]]; then
     check_brew_cask "db-browser-for-sqlite" "DB Browser for SQLite"
     check_brew_cask "blackhole-2ch" "BlackHole 2ch"
     check_brew_cask "chatgpt" "ChatGPT"
+    check_brew_cask "codex-app" "Codex App"
     check_brew_cask "claude" "Claude Desktop"
     check_brew_cask "antigravity" "Google Antigravity"
     check_brew_cask "openscad@snapshot" "OpenSCAD snapshot"
 else
-    warn "ChatGPT and Claude Desktop are not officially available on Linux; CLI checks cover Linux."
+    if command -v dpkg &>/dev/null && dpkg -s claude-desktop &>/dev/null; then
+        ok "Claude Desktop is installed"
+    else
+        missing "Claude Desktop — install.sh configures Anthropic's apt repository on Ubuntu/Debian"
+    fi
+    warn "Codex App is not available on Linux; CLI checks cover Linux."
 fi
 
 # ----- Python Environment -----
