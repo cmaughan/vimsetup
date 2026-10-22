@@ -68,3 +68,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # NemoClaw PATH setup
 export PATH="/Users/cmaughan/.local/bin:$PATH"
 # end NemoClaw PATH setup
+
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<

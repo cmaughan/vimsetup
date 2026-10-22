@@ -60,6 +60,7 @@ call :check_tool winget     "winget --version"     1  "App Installer from https:
 call :check_tool nvim       "nvim --version"       1  "winget install Neovim.Neovim"
 call :check_tool git        "git --version"        1  "winget install Git.Git"
 call :check_tool gh         "gh --version"         1  "winget install GitHub.cli"
+call :check_tool glab       "glab --version"       1  "winget install glab.glab"
 call :check_tool pwsh       "pwsh --version"       1  "winget install Microsoft.PowerShell"
 call :check_tool code       "code --version"       1  "winget install Microsoft.VisualStudioCode"
 call :check_tool cursor     "cursor --version"     1  "winget install Anysphere.Cursor"
@@ -105,6 +106,7 @@ call :check_tool gemini     "gemini --version"     1  "npm install -g @google/ge
 call :check_winget_package "Codex App"             "9PLM9XGG6VKS"                  "winget install --source msstore --id 9PLM9XGG6VKS"
 call :check_winget_package "Claude App"            "Anthropic.Claude"              "winget install Anthropic.Claude"
 call :check_winget_package "Google Antigravity"    "Google.Antigravity"            "winget install Google.Antigravity"
+call :check_winget_package "Obsidian"              "Obsidian.Obsidian"             "winget install Obsidian.Obsidian"
 call :check_command_path_contains "OpenSCAD Nightly path" "openscad" "Nightly" "winget install OpenSCAD.OpenSCAD.Nightly"
 
 echo.

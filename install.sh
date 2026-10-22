@@ -170,7 +170,7 @@ section "Installing CLI tools via Homebrew"
 ensure_neovim
 ensure_cmake
 
-BREW_PACKAGES=(git gh node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
+BREW_PACKAGES=(git gh glab node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -304,7 +304,7 @@ fi
 section "GUI desktop applications"
 
 if [[ "$OS" == "Darwin" ]]; then
-    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity)
+    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity obsidian)
 
     for cask in "${BREW_CASKS[@]}"; do
         if brew list --cask "$cask" &>/dev/null; then
@@ -323,6 +323,16 @@ fi
 
 if [[ "$OS" == "Linux" ]]; then
     section "Linux desktop extras"
+
+    if command -v obsidian &>/dev/null || { command -v snap &>/dev/null && snap list obsidian &>/dev/null; }; then
+        skip "Obsidian already available"
+    elif command -v snap &>/dev/null; then
+        info "Installing Obsidian via snap ..."
+        sudo snap install obsidian --classic
+        ok "Obsidian installed"
+    else
+        info "Obsidian requires snap or a manual installation from https://obsidian.md/download on Linux."
+    fi
 
     if command -v pwsh &>/dev/null; then
         skip "PowerShell 7 already available"

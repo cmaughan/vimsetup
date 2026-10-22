@@ -22,15 +22,15 @@ cd ~/.config/nvim
 
 ### What `install` does
 
-1. **Installs development tools** — Neovim, Git/GitHub CLI, Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
+1. **Installs development tools** — Neovim, Git, GitHub CLI (`gh`), GitLab CLI (`glab`), Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
 2. **Sets up Python** — installs Python 3.12 via `uv`, creates `~/.local/share/nvim-venv` on macOS/Linux or `%LOCALAPPDATA%\python-global` on Windows, and installs `pynvim` and `PyYAML` there.
 3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), installs [abtop](https://github.com/graykode/abtop) to monitor coding-agent sessions, and uses npm for Gemini CLI. See [AI CLI installers](#ai-cli-installers-all-platforms).
-4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Claude, and Antigravity. Windows includes VS Code, Cursor, OpenSCAD Nightly, Codex App, Claude, and Antigravity.
+4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Claude, Antigravity, and Obsidian. Windows includes VS Code, Cursor, OpenSCAD Nightly, Codex App, Claude, Antigravity, and Obsidian.
 5. **Sets up configuration** — symlinks `.zshrc`, `starship.toml`, and `.tmux.conf` on macOS/Linux; copies the PowerShell profile, Starship, and psmux templates on Windows. Also configures the `git lol` and `git lola` aliases.
 6. **Sets up fonts and terminal integration** — installs JetBrainsMono Nerd Font, configures fzf and TPM on macOS/Linux, and installs PSFzf and creates the psmux plugin directory on Windows. Terminal plugin installation still requires the manual steps printed by the installer.
 7. **Checks macOS developer tools** — installs Xcode Command Line Tools; selects Xcode.app and downloads the Metal toolchain when Xcode.app is present.
 
-Linux uses Homebrew for CLI packages and snap for PowerShell, VS Code, and OpenSCAD when snap is available. The current font step still invokes a macOS Homebrew cask, so the Linux bootstrap needs that step adapted before it can complete.
+Linux uses Homebrew for CLI packages and snap for PowerShell, VS Code, OpenSCAD, and Obsidian when snap is available. Obsidian can also be installed manually from [its download page](https://obsidian.md/download); the snap command is `sudo snap install obsidian --classic`. The current font step still invokes a macOS Homebrew cask, so the Linux bootstrap needs that step adapted before it can complete.
 
 On Windows, the current installer skips the Gemini npm step if the Neovim npm provider is already installed. If doctor reports Gemini missing, run `npm install -g @google/gemini-cli`.
 
@@ -134,6 +134,7 @@ Install packages via [Homebrew](https://brew.sh):
 brew install neovim
 brew install git
 brew install gh             # GitHub CLI
+brew install glab           # GitLab CLI
 brew install ripgrep       # telescope live_grep
 brew install fd            # telescope file search
 brew install fzf           # fzf.zsh shell integration
@@ -164,7 +165,7 @@ These desktop packages are installed by `install.sh`. AI CLIs use the separate [
 ```sh
 brew install --cask openscad@snapshot
 brew install --cask visual-studio-code cursor db-browser-for-sqlite blackhole-2ch
-brew install --cask chatgpt claude antigravity
+brew install --cask chatgpt claude antigravity obsidian
 ```
 
 #### Optional (Mac)
@@ -191,6 +192,7 @@ Install packages via [winget](https://learn.microsoft.com/en-us/windows/package-
 winget install Neovim.Neovim
 winget install Git.Git
 winget install GitHub.cli
+winget install glab.glab                 # GitLab CLI
 winget install Microsoft.PowerShell
 winget install Microsoft.VisualStudioCode
 winget install Anysphere.Cursor
@@ -213,6 +215,7 @@ winget install OpenSCAD.OpenSCAD.Nightly # latest OpenSCAD beta/nightly
 winget install --source msstore --id 9PLM9XGG6VKS # Codex App
 winget install Anthropic.Claude          # Claude App
 winget install Google.Antigravity        # Google Antigravity App
+winget install Obsidian.Obsidian          # Markdown notes and knowledge base
 choco install plantuml                   # PlantUML renderer (used by gen_uml.py)
 winget install Kitware.CMake             # build system
 winget install Ninja-build.Ninja

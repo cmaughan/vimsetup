@@ -293,6 +293,7 @@ section "Core Tools"
 check_nvim
 check_tool git       "brew install git"
 check_tool gh        "brew install gh"
+check_tool glab      "brew install glab"
 if [[ "$OS" == "Linux" ]]; then
     check_tool pwsh  "sudo snap install powershell --classic"
 fi
@@ -359,9 +360,15 @@ if [[ "$OS" == "Darwin" ]]; then
     check_brew_cask "chatgpt" "ChatGPT"
     check_brew_cask "claude" "Claude Desktop"
     check_brew_cask "antigravity" "Google Antigravity"
+    check_brew_cask "obsidian" "Obsidian"
     check_brew_cask "openscad@snapshot" "OpenSCAD snapshot"
 else
     warn "ChatGPT and Claude Desktop are not officially available on Linux; CLI checks cover Linux."
+    if command -v obsidian &>/dev/null || { command -v snap &>/dev/null && snap list obsidian &>/dev/null; }; then
+        ok "Obsidian installed"
+    else
+        missing "Obsidian — install with: sudo snap install obsidian --classic (or https://obsidian.md/download)"
+    fi
 fi
 
 # ----- Python Environment -----
