@@ -13,6 +13,8 @@ cd "%LOCALAPPDATA%\nvim"
 install.bat
 ```
 
+Close the elevated installer terminal when setup finishes and open a normal, non-elevated terminal before running `codex`. Run `codex app-server daemon bootstrap` once there to establish durable, non-elevated daemon management. The Windows shared Codex daemon deliberately refuses to start with administrator privileges. If you intentionally need an elevated Codex session, use `codex --no-daemon` (and include `--no-daemon` when using `resume` or `fork`).
+
 **Mac / Linux:**
 ```sh
 git clone <repo-url> ~/.config/nvim
@@ -24,15 +26,13 @@ cd ~/.config/nvim
 
 1. **Installs development tools** — Neovim, Git, GitHub CLI (`gh`), GitLab CLI (`glab`), Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
 2. **Sets up Python** — installs Python 3.12 via `uv`, creates `~/.local/share/nvim-venv` on macOS/Linux or `%LOCALAPPDATA%\python-global` on Windows, and installs `pynvim` and `PyYAML` there.
-3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), installs [abtop](https://github.com/graykode/abtop) to monitor coding-agent sessions, and uses npm for Gemini CLI. See [AI CLI installers](#ai-cli-installers-all-platforms).
-4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Claude, Antigravity, and Obsidian. Windows includes VS Code, Cursor, OpenSCAD Nightly, Codex App, Claude, Antigravity, and Obsidian.
+3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), installs [abtop](https://github.com/graykode/abtop) to monitor coding-agent sessions, and uses npm for Gemini CLI. Claude Code and Codex are refreshed to the latest release whenever the bootstrap is rerun. See [AI CLI installers](#ai-cli-installers-all-platforms).
+4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Codex, Claude, Antigravity, and Obsidian. Windows installs Obsidian, installs or updates Codex App through its official Microsoft Store product, and installs Claude from Anthropic's current website download. Ubuntu/Debian installs Claude Desktop from Anthropic's apt repository.
 5. **Sets up configuration** — symlinks `.zshrc`, `starship.toml`, and `.tmux.conf` on macOS/Linux; copies the PowerShell profile, Starship, and psmux templates on Windows. Also configures the `git lol` and `git lola` aliases.
 6. **Sets up fonts and terminal integration** — installs JetBrainsMono Nerd Font, configures fzf and TPM on macOS/Linux, and installs PSFzf and creates the psmux plugin directory on Windows. Terminal plugin installation still requires the manual steps printed by the installer.
 7. **Checks macOS developer tools** — installs Xcode Command Line Tools; selects Xcode.app and downloads the Metal toolchain when Xcode.app is present.
 
 Linux uses Homebrew for CLI packages and snap for PowerShell, VS Code, OpenSCAD, and Obsidian when snap is available. Obsidian can also be installed manually from [its download page](https://obsidian.md/download); the snap command is `sudo snap install obsidian --classic`. The current font step still invokes a macOS Homebrew cask, so the Linux bootstrap needs that step adapted before it can complete.
-
-On Windows, the current installer skips the Gemini npm step if the Neovim npm provider is already installed. If doctor reports Gemini missing, run `npm install -g @google/gemini-cli`.
 
 After install, open Neovim — lazy.nvim bootstraps itself, installs all plugins, and Mason auto-installs LSP servers, formatters, and linters on first launch.
 
@@ -165,7 +165,7 @@ These desktop packages are installed by `install.sh`. AI CLIs use the separate [
 ```sh
 brew install --cask openscad@snapshot
 brew install --cask visual-studio-code cursor db-browser-for-sqlite blackhole-2ch
-brew install --cask chatgpt claude antigravity obsidian
+brew install --cask chatgpt codex-app claude antigravity obsidian
 ```
 
 #### Optional (Mac)
@@ -213,7 +213,10 @@ winget install Graphviz.Graphviz         # dot / dependency graph rendering
 winget install bkryza.clang-uml         # UML diagram generation from C++ source
 winget install OpenSCAD.OpenSCAD.Nightly # latest OpenSCAD beta/nightly
 winget install --source msstore --id 9PLM9XGG6VKS # Codex App
-winget install Anthropic.Claude          # Claude App
+$claudeSetup = Join-Path $env:TEMP 'ClaudeSetup.exe'
+irm https://claude.ai/api/desktop/win32/x64/setup/latest/redirect -OutFile $claudeSetup
+Start-Process $claudeSetup -ArgumentList '--silent' -Wait # latest Claude App
+Remove-Item $claudeSetup
 winget install Google.Antigravity        # Google Antigravity App
 winget install Obsidian.Obsidian          # Markdown notes and knowledge base
 choco install plantuml                   # PlantUML renderer (used by gen_uml.py)
@@ -284,7 +287,7 @@ alias py=python3
 
 ### AI CLI installers (all platforms)
 
-The bootstrap scripts use these official website installers and skip a tool when its native binary already exists. This includes abtop, a terminal monitor for Claude Code, Codex CLI, and OpenCode sessions.
+The bootstrap scripts use these official website installers. Claude Code and Codex are upgraded to the latest release on every run; the other tools are skipped when their native binary already exists. This includes abtop, a terminal monitor for Claude Code, Codex CLI, and OpenCode sessions. On Windows, legacy `Anthropic.ClaudeCode` and `OpenAI.Codex` WinGet CLI packages are removed first so their shims cannot shadow the website installations.
 
 **Mac / Linux:**
 
@@ -299,8 +302,8 @@ curl -fsSL https://github.com/graykode/abtop/releases/latest/download/abtop-inst
 **Windows (PowerShell):**
 
 ```powershell
-irm https://claude.ai/install.ps1 | iex
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
+iex ((New-Object Net.WebClient).DownloadString('https://claude.ai/install.ps1'))
+iex ((New-Object Net.WebClient).DownloadString('https://chatgpt.com/codex/install.ps1'))
 irm https://antigravity.google/cli/install.ps1 | iex
 irm https://x.ai/cli/install.ps1 | iex
 irm https://github.com/graykode/abtop/releases/latest/download/abtop-installer.ps1 | iex

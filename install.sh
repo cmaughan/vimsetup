@@ -262,13 +262,17 @@ npm_global_install() {
 
 # Check the native path so a package-manager copy does not suppress installation.
 website_cli_install() {
-    local cmd="$1" url="$2" interpreter="$3" binary="$4"
-    if [[ -x "$binary" ]]; then
+    local cmd="$1" url="$2" interpreter="$3" binary="$4" mode="${5:-install}"
+    if [[ "$mode" != "latest" && -x "$binary" ]]; then
         skip "$cmd (website installation already present at $binary)"
         return
     fi
 
-    info "Installing $cmd from $url ..."
+    if [[ -x "$binary" ]]; then
+        info "Updating $cmd from $url ..."
+    else
+        info "Installing $cmd from $url ..."
+    fi
     if ! curl -fsSL "$url" | "$interpreter"; then
         err "$cmd website installer failed"
         return 1
@@ -277,11 +281,11 @@ website_cli_install() {
         err "$cmd installer did not create $binary"
         return 1
     fi
-    ok "$cmd installed ($binary)"
+    ok "$cmd installed or updated from its official website ($binary)"
 }
 
-website_cli_install "claude" "https://claude.ai/install.sh" bash "$HOME/.local/bin/claude"
-website_cli_install "codex" "https://chatgpt.com/codex/install.sh" sh "${CODEX_INSTALL_DIR:-$HOME/.local/bin}/codex"
+website_cli_install "claude" "https://claude.ai/install.sh" bash "$HOME/.local/bin/claude" latest
+website_cli_install "codex" "https://chatgpt.com/codex/install.sh" sh "${CODEX_INSTALL_DIR:-$HOME/.local/bin}/codex" latest
 website_cli_install "agy" "https://antigravity.google/cli/install.sh" bash "$HOME/.local/bin/agy"
 website_cli_install "grok" "https://x.ai/cli/install.sh" bash "${GROK_BIN_DIR:-$HOME/.grok/bin}/grok"
 website_cli_install "abtop" "https://github.com/graykode/abtop/releases/latest/download/abtop-installer.sh" sh "$ABTOP_NATIVE_BIN/abtop"
@@ -304,11 +308,18 @@ fi
 section "GUI desktop applications"
 
 if [[ "$OS" == "Darwin" ]]; then
-    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity obsidian)
+    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt codex-app claude antigravity obsidian)
+    LATEST_CASKS=(codex-app claude)
 
     for cask in "${BREW_CASKS[@]}"; do
         if brew list --cask "$cask" &>/dev/null; then
-            skip "$cask (already installed)"
+            if [[ " ${LATEST_CASKS[*]} " == *" $cask "* ]]; then
+                info "Updating $cask to the latest official release ..."
+                brew upgrade --cask --greedy "$cask"
+                ok "$cask is current"
+            else
+                skip "$cask (already installed)"
+            fi
         else
             info "Installing $cask ..."
             brew install --cask "$cask"
@@ -317,7 +328,7 @@ if [[ "$OS" == "Darwin" ]]; then
     done
 else
     info "Skipping macOS-only desktop casks on Linux."
-    info "ChatGPT and Claude Desktop are not officially available on Linux; CLI tools were installed instead."
+    info "Codex App is not available on Linux; the Codex CLI was installed instead."
     info "Install VS Code/Cursor/Antigravity desktop from their official Linux packages if you want GUI apps on Linux."
 fi
 
@@ -332,6 +343,17 @@ if [[ "$OS" == "Linux" ]]; then
         ok "Obsidian installed"
     else
         info "Obsidian requires snap or a manual installation from https://obsidian.md/download on Linux."
+    fi
+
+    if command -v apt-get &>/dev/null; then
+        info "Installing or updating Claude Desktop from Anthropic's apt repository ..."
+        sudo curl -fsSLo /usr/share/keyrings/claude-desktop-archive-keyring.asc https://downloads.claude.ai/claude-desktop/key.asc
+        echo "deb [signed-by=/usr/share/keyrings/claude-desktop-archive-keyring.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main" | sudo tee /etc/apt/sources.list.d/claude-desktop.list >/dev/null
+        sudo apt-get update
+        sudo apt-get install -y claude-desktop
+        ok "Claude Desktop is current"
+    else
+        info "Claude Desktop requires Ubuntu or Debian; see https://claude.com/download"
     fi
 
     if command -v pwsh &>/dev/null; then

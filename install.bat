@@ -93,8 +93,8 @@ call :winget_install "ccache"            "Ccache.Ccache"
 call :winget_install "Vulkan SDK"        "KhronosGroup.VulkanSDK"
 call :winget_install "FFmpeg"            "Gyan.FFmpeg"
 call :winget_install "LLVM - clang-format" "LLVM.LLVM"
-call :winget_store_install "Codex App"   "9PLM9XGG6VKS"
-call :winget_install "Claude App"        "Anthropic.Claude"
+call :winget_store_upgrade_or_install "Codex App" "9PLM9XGG6VKS"
+call :website_app_upgrade "Claude App" "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect" "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect"
 call :winget_install "Google Antigravity" "Google.Antigravity"
 call :winget_install "Obsidian"          "Obsidian.Obsidian"
 call :winget_install "Chocolatey"        "Chocolatey.Chocolatey"
@@ -117,8 +117,10 @@ if defined CODEX_INSTALL_DIR set "CODEX_NATIVE_BIN=%CODEX_INSTALL_DIR%"
 set "GROK_NATIVE_BIN=%USERPROFILE%\.grok\bin"
 if defined GROK_BIN_DIR set "GROK_NATIVE_BIN=%GROK_BIN_DIR%"
 set "PATH=%CODEX_NATIVE_BIN%;%GROK_NATIVE_BIN%;%LOCALAPPDATA%\agy\bin;%USERPROFILE%\.local\bin;%ABTOP_NATIVE_BIN%;%PATH%"
-call :website_cli_install "claude" "https://claude.ai/install.ps1" "%USERPROFILE%\.local\bin"
-call :website_cli_install "codex" "https://chatgpt.com/codex/install.ps1" "%CODEX_NATIVE_BIN%"
+call :remove_legacy_winget_cli "Claude Code" "Anthropic.ClaudeCode"
+call :remove_legacy_winget_cli "Codex CLI" "OpenAI.Codex"
+call :website_cli_install "claude" "https://claude.ai/install.ps1" "%USERPROFILE%\.local\bin" "latest"
+call :website_cli_install "codex" "https://chatgpt.com/codex/install.ps1" "%CODEX_NATIVE_BIN%" "latest"
 call :website_cli_install "agy" "https://antigravity.google/cli/install.ps1" "%LOCALAPPDATA%\agy\bin"
 call :website_cli_install "grok" "https://x.ai/cli/install.ps1" "%GROK_NATIVE_BIN%"
 call :website_cli_install "abtop" "https://github.com/graykode/abtop/releases/latest/download/abtop-installer.ps1" "%ABTOP_NATIVE_BIN%"
@@ -379,7 +381,10 @@ echo.
 echo   1. %CYAN%Set your terminal font%RESET% to %BOLD%JetBrainsMono Nerd Font Mono%RESET%
 echo      (Windows Terminal: Settings ^> Profiles ^> Defaults ^> Appearance ^> Font face)
 echo.
-echo   2. %CYAN%Restart your terminal%RESET% so new PATH and VULKAN_SDK entries take effect.
+echo   2. %CYAN%Close this Administrator terminal%RESET%, then open a normal, non-elevated terminal.
+echo      This refreshes PATH and VULKAN_SDK and lets Codex start its shared daemon safely.
+echo      Run once: %BOLD%codex app-server daemon bootstrap%RESET%
+echo      If Codex must run elevated, use: %BOLD%codex --no-daemon%RESET%
 echo.
 echo   3. %CYAN%Launch Neovim%RESET% and let it auto-install plugins, LSP servers,
 echo      and formatters on first launch. This may take a few minutes.
@@ -391,29 +396,77 @@ endlocal
 exit /b 0
 
 :: ============================================================================
-::  Helper: website_cli_install <cmd> <installer_url> <native_bin_directory>
+::  Helper: website_cli_install <cmd> <installer_url> <native_bin_directory> [latest]
+::  Passing "latest" reruns the vendor installer even when the binary exists.
 :: ============================================================================
 :website_cli_install
 set "_AICMD=%~1"
 set "_AIURL=%~2"
 set "_AIBIN=%~3"
-if exist "!_AIBIN!\!_AICMD!.exe" (
+set "_AIMODE=%~4"
+if /i not "!_AIMODE!"=="latest" if exist "!_AIBIN!\!_AICMD!.exe" (
     echo %GREEN%  [SKIP] !_AICMD! website installation already present.%RESET%
     set "SKIPPED=!SKIPPED! !_AICMD!"
     goto :eof
 )
-echo   Installing !_AICMD! from !_AIURL!...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; try { Invoke-RestMethod '%_AIURL%' | Invoke-Expression } catch { Write-Error $_; exit 1 }"
+if exist "!_AIBIN!\!_AICMD!.exe" (
+    echo   Updating !_AICMD! from !_AIURL!...
+) else (
+    echo   Installing !_AICMD! from !_AIURL!...
+)
+:: DownloadString avoids content-type-dependent byte arrays in Windows PowerShell.
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; try { $script = (New-Object Net.WebClient).DownloadString('%_AIURL%'); & ([ScriptBlock]::Create($script)) } catch { Write-Error $_; exit 1 }"
 if errorlevel 1 goto :_website_cli_failed
 if not exist "!_AIBIN!\!_AICMD!.exe" goto :_website_cli_failed
 call :prepend_path_if_exists "!_AIBIN!"
-echo %GREEN%  [OK]   !_AICMD! installed.%RESET%
+call :prepend_user_path "!_AIBIN!"
+echo %GREEN%  [OK]   !_AICMD! installed or updated from its official website.%RESET%
 set "INSTALLED=!INSTALLED! !_AICMD!"
 goto :eof
 :_website_cli_failed
 echo %RED%  [FAIL] !_AICMD! website installation failed.%RESET%
 set "FAILED=!FAILED! !_AICMD!"
 set /a ERRORS+=1 >nul
+goto :eof
+
+:: ============================================================================
+::  Helper: remove_legacy_winget_cli <display_name> <package_id>
+::  Migrates old package-manager CLIs before the official website installer.
+:: ============================================================================
+:remove_legacy_winget_cli
+set "_LEGACY_NAME=%~1"
+set "_LEGACY_ID=%~2"
+winget list --id "!_LEGACY_ID!" --exact >nul 2>&1
+if !errorlevel! neq 0 goto :eof
+echo   Removing legacy !_LEGACY_NAME! WinGet package ^(!_LEGACY_ID!^)...
+winget uninstall --id "!_LEGACY_ID!" --exact --silent --accept-source-agreements
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] Could not remove legacy !_LEGACY_NAME! package.%RESET%
+    set "FAILED=!FAILED! !_LEGACY_NAME!-migration"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   Legacy !_LEGACY_NAME! package removed.%RESET%
+)
+goto :eof
+
+:: ============================================================================
+::  Helper: website_app_upgrade <display_name> <x64_url> <arm64_url>
+::  Downloads the vendor's current Windows setup executable and runs it silently.
+:: ============================================================================
+:website_app_upgrade
+set "_APP_NAME=%~1"
+set "_APP_X64_URL=%~2"
+set "_APP_ARM64_URL=%~3"
+echo   Installing or updating !_APP_NAME! from its official website...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; $url = '%_APP_X64_URL%'; if ([Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq [Runtime.InteropServices.Architecture]::Arm64) { $url = '%_APP_ARM64_URL%' }; $installer = Join-Path ([IO.Path]::GetTempPath()) ('claude-setup-' + [guid]::NewGuid().ToString('N') + '.exe'); try { Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $installer; $process = Start-Process -FilePath $installer -ArgumentList '--silent' -Wait -PassThru; if ($process.ExitCode -ne 0) { throw ('installer exited with code ' + $process.ExitCode) } } finally { Remove-Item -LiteralPath $installer -Force -ErrorAction SilentlyContinue }"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] !_APP_NAME! website installation failed.%RESET%
+    set "FAILED=!FAILED! !_APP_NAME!"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   !_APP_NAME! installed or updated.%RESET%
+    set "INSTALLED=!INSTALLED! !_APP_NAME!"
+)
 goto :eof
 
 :: ============================================================================
@@ -572,6 +625,40 @@ if !errorlevel! neq 0 (
 goto :eof
 
 :: ============================================================================
+::  Helper: winget_store_upgrade_or_install <display_name> <store_product_id>
+:: ============================================================================
+:winget_store_upgrade_or_install
+set "DISPLAY_NAME=%~1"
+set "PKG_ID=%~2"
+
+winget list --source msstore --id "%PKG_ID%" --exact >nul 2>&1
+if !errorlevel! equ 0 (
+    echo   Checking %DISPLAY_NAME% for Microsoft Store updates...
+    winget upgrade --source msstore --accept-package-agreements --accept-source-agreements --include-unknown --disable-interactivity -e --id "%PKG_ID%"
+    if !errorlevel! neq 0 (
+        echo %RED%  [FAIL] %DISPLAY_NAME% update check failed.%RESET%
+        set "FAILED=!FAILED! %DISPLAY_NAME%"
+        set /a ERRORS+=1 >nul
+    ) else (
+        echo %GREEN%  [OK]   %DISPLAY_NAME% is current.%RESET%
+        set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+    )
+    goto :eof
+)
+
+echo   Installing %DISPLAY_NAME% (%PKG_ID%) from Microsoft Store...
+winget install --source msstore --accept-package-agreements --accept-source-agreements --disable-interactivity -e --id "%PKG_ID%"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] %DISPLAY_NAME% installation failed.%RESET%
+    set "FAILED=!FAILED! %DISPLAY_NAME%"
+    set /a ERRORS+=1 >nul
+) else (
+    echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
+    set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+)
+goto :eof
+
+:: ============================================================================
 ::  Helper: winget_store_install <display_name> <store_product_id>
 :: ============================================================================
 :winget_store_install
@@ -594,6 +681,21 @@ if !errorlevel! neq 0 (
 ) else (
     echo %GREEN%  [OK]   %DISPLAY_NAME% installed.%RESET%
     set "INSTALLED=!INSTALLED! %DISPLAY_NAME%"
+)
+goto :eof
+
+:: ============================================================================
+::  Helper: prepend_user_path <directory>
+::  Puts official standalone CLIs ahead of old package-manager shims.
+:: ============================================================================
+:prepend_user_path
+set "_USER_PATH_DIR=%~1"
+if not exist "!_USER_PATH_DIR!" goto :eof
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$dir = $env:_USER_PATH_DIR.TrimEnd('\'); $parts = @([Environment]::GetEnvironmentVariable('Path', 'User') -split ';' | Where-Object { $_ -and $_.TrimEnd('\') -ine $dir }); [Environment]::SetEnvironmentVariable('Path', (@($dir) + $parts -join ';'), 'User')"
+if !errorlevel! neq 0 (
+    echo %RED%  [FAIL] Could not prioritize !_USER_PATH_DIR! on the user PATH.%RESET%
+    set "FAILED=!FAILED! PATH-!_AICMD!"
+    set /a ERRORS+=1 >nul
 )
 goto :eof
 
