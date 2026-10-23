@@ -303,13 +303,55 @@ else
     ok "JetBrainsMono Nerd Font installed"
 fi
 
-# ── 10. GUI desktop applications (brew casks) ───────────────────────
+# ── 10. GUI desktop applications ───────────────────────
+
+# Use OpenAI's disk image for fresh installs; existing apps update themselves.
+install_codex_app() (
+    local app_dir
+    for app_dir in /Applications "$HOME/Applications"; do
+        if [[ -d "$app_dir/Codex.app" ]]; then
+            skip "Codex App (already installed at $app_dir/Codex.app; use its updater)"
+            return
+        fi
+    done
+
+    local work_dir mounted=0
+    work_dir="$(mktemp -d)" || return 1
+    cleanup_codex_app() {
+        if [[ "$mounted" == 1 ]]; then
+            if ! hdiutil detach "$work_dir/mount" -quiet; then
+                err "Could not unmount Codex installer at $work_dir/mount"
+                return 1
+            fi
+        fi
+        rm -rf "$work_dir"
+    }
+    trap cleanup_codex_app EXIT
+
+    info "Installing Codex App from OpenAI ..."
+    curl -fSL --retry 2 "https://persistent.oaistatic.com/codex-app-prod/Codex.dmg" -o "$work_dir/Codex.dmg" || return 1
+    mkdir "$work_dir/mount" || return 1
+    hdiutil attach "$work_dir/Codex.dmg" -nobrowse -readonly -mountpoint "$work_dir/mount" -quiet || return 1
+    mounted=1
+    if [[ ! -d "$work_dir/mount/Codex.app" ]]; then
+        err "OpenAI's disk image did not contain Codex.app"
+        return 1
+    fi
+    if [[ -w /Applications ]]; then
+        ditto "$work_dir/mount/Codex.app" /Applications/Codex.app || return 1
+    else
+        sudo ditto "$work_dir/mount/Codex.app" /Applications/Codex.app || return 1
+    fi
+    ok "Codex App installed from OpenAI"
+)
 
 section "GUI desktop applications"
 
 if [[ "$OS" == "Darwin" ]]; then
-    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt codex-app claude antigravity obsidian)
-    LATEST_CASKS=(codex-app claude)
+    install_codex_app
+
+    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity obsidian)
+    LATEST_CASKS=(claude)
 
     for cask in "${BREW_CASKS[@]}"; do
         if brew list --cask "$cask" &>/dev/null; then

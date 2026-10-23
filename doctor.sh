@@ -358,7 +358,11 @@ if [[ "$OS" == "Darwin" ]]; then
     check_brew_cask "db-browser-for-sqlite" "DB Browser for SQLite"
     check_brew_cask "blackhole-2ch" "BlackHole 2ch"
     check_brew_cask "chatgpt" "ChatGPT"
-    check_brew_cask "codex-app" "Codex App"
+    if [[ -d /Applications/Codex.app || -d "$HOME/Applications/Codex.app" ]]; then
+        ok "Codex App installed"
+    else
+        missing "Codex App — run install.sh or download https://persistent.oaistatic.com/codex-app-prod/Codex.dmg"
+    fi
     check_brew_cask "claude" "Claude Desktop"
     check_brew_cask "antigravity" "Google Antigravity"
     check_brew_cask "obsidian" "Obsidian"

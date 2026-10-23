@@ -160,12 +160,14 @@ brew install vulkan-tools vulkan-validationlayers shaderc glslang
 
 #### Desktop apps (Mac)
 
-These desktop packages are installed by `install.sh`. AI CLIs use the separate [website installers](#ai-cli-installers-all-platforms).
+`install.sh` installs Codex App directly from [OpenAI's disk image](https://persistent.oaistatic.com/codex-app-prod/Codex.dmg). If `/Applications/Codex.app` or `~/Applications/Codex.app` already exists, it keeps that installation; use the app's updater for updates. Doctor checks the app bundle without requiring a Homebrew receipt.
+
+The remaining desktop packages use Homebrew. AI CLIs use the separate [website installers](#ai-cli-installers-all-platforms).
 
 ```sh
 brew install --cask openscad@snapshot
 brew install --cask visual-studio-code cursor db-browser-for-sqlite blackhole-2ch
-brew install --cask chatgpt codex-app claude antigravity obsidian
+brew install --cask chatgpt claude antigravity obsidian
 ```
 
 #### Optional (Mac)
