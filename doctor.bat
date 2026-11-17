@@ -232,6 +232,21 @@ echo.
 
 call :check_git_alias "lol"  "log --graph --decorate --pretty=oneline --abbrev-commit"
 call :check_git_alias "lola" "log --graph --decorate --pretty=oneline --abbrev-commit --all"
+git lfs version >nul 2>&1
+if errorlevel 1 (
+    echo   %RED%[MISSING]%RESET%  git-lfs --install with: winget install Git.Git ^(Git for Windows bundles Git LFS^)
+    set /a FAIL+=1 >nul
+) else (
+    set "LFS_PROCESS="
+    for /f "tokens=*" %%v in ('git config --global filter.lfs.process 2^>nul') do set "LFS_PROCESS=%%v"
+    if "!LFS_PROCESS!"=="git-lfs filter-process" (
+        echo   %GREEN%[OK]%RESET%      git lfs hooks
+        set /a PASS+=1 >nul
+    ) else (
+        echo   %RED%[MISSING]%RESET%  git lfs hooks --run: git lfs install
+        set /a FAIL+=1 >nul
+    )
+)
 
 echo.
 

@@ -329,6 +329,10 @@ echo %GREEN%  [OK] git lol%RESET%
 
 git config --global alias.lola "log --graph --decorate --pretty=oneline --abbrev-commit --all"
 echo %GREEN%  [OK] git lola%RESET%
+
+:: Git LFS ships with Git for Windows; install its hooks so LFS files check out as their content.
+git lfs install --skip-repo >nul
+echo %GREEN%  [OK] git lfs install%RESET%
 echo.
 
 :: ============================================================================
