@@ -24,11 +24,11 @@ cd ~/.config/nvim
 
 ### What `install` does
 
-1. **Installs development tools** — Neovim, Git, GitHub CLI (`gh`), GitLab CLI (`glab`), Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
+1. **Installs development tools** — Neovim, Git, Git LFS, GitHub CLI (`gh`), GitLab CLI (`glab`), Node, shell utilities, Rust, CMake/Ninja, Doxygen, Quarto, ccache, Graphviz/clang-uml/PlantUML, pre-commit, clang-format, FFmpeg, and Vulkan/shader tools. Uses Homebrew for macOS/Linux CLI packages and WinGet/Chocolatey on Windows; Windows uses `cargo install psmux` for its terminal multiplexer.
 2. **Sets up Python** — installs Python 3.12 via `uv`, creates `~/.local/share/nvim-venv` on macOS/Linux or `%LOCALAPPDATA%\python-global` on Windows, and installs `pynvim` and `PyYAML` there.
 3. **Sets up Node / AI tools** — installs the `neovim` npm provider, uses the official website installers for Claude Code (`claude`), Codex (`codex`), Antigravity CLI (`agy`), and Grok (`grok`), installs [abtop](https://github.com/graykode/abtop) to monitor coding-agent sessions, and uses npm for Gemini CLI. Claude Code and Codex are refreshed to the latest release whenever the bootstrap is rerun. See [AI CLI installers](#ai-cli-installers-all-platforms).
 4. **Installs desktop apps** — macOS includes VS Code, Cursor, DB Browser for SQLite, BlackHole 2ch, OpenSCAD snapshot, ChatGPT, Codex, Claude, Antigravity, and Obsidian. Windows installs Obsidian, installs or updates Codex App through its official Microsoft Store product, and installs Claude from Anthropic's current website download. Ubuntu/Debian installs Claude Desktop from Anthropic's apt repository.
-5. **Sets up configuration** — symlinks `.zshrc`, `starship.toml`, and `.tmux.conf` on macOS/Linux; copies the PowerShell profile, Starship, and psmux templates on Windows. Also configures the `git lol` and `git lola` aliases.
+5. **Sets up configuration** — symlinks `.zshrc`, `starship.toml`, and `.tmux.conf` on macOS/Linux; copies the PowerShell profile, Starship, and psmux templates on Windows. Also configures the `git lol` and `git lola` aliases and installs the Git LFS hooks (`git lfs install`).
 6. **Sets up fonts and terminal integration** — installs JetBrainsMono Nerd Font, configures fzf and TPM on macOS/Linux, and installs PSFzf and creates the psmux plugin directory on Windows. Terminal plugin installation still requires the manual steps printed by the installer.
 7. **Checks macOS developer tools** — installs Xcode Command Line Tools; selects Xcode.app and downloads the Metal toolchain when Xcode.app is present.
 
@@ -133,6 +133,7 @@ Install packages via [Homebrew](https://brew.sh):
 ```sh
 brew install neovim
 brew install git
+brew install git-lfs        # Git LFS (then: git lfs install)
 brew install gh             # GitHub CLI
 brew install glab           # GitLab CLI
 brew install ripgrep       # telescope live_grep
@@ -192,7 +193,7 @@ Install packages via [winget](https://learn.microsoft.com/en-us/windows/package-
 
 ```powershell
 winget install Neovim.Neovim
-winget install Git.Git
+winget install Git.Git                  # includes Git LFS (then: git lfs install)
 winget install GitHub.cli
 winget install glab.glab                 # GitLab CLI
 winget install Microsoft.PowerShell

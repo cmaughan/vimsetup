@@ -170,7 +170,7 @@ section "Installing CLI tools via Homebrew"
 ensure_neovim
 ensure_cmake
 
-BREW_PACKAGES=(git gh glab node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
+BREW_PACKAGES=(git git-lfs gh glab node ripgrep fd fzf starship eza bat zoxide uv tmux graphviz clang-uml plantuml pre-commit clang-format ninja doxygen quarto ccache vulkan-tools vulkan-validationlayers shaderc glslang ffmpeg btop hexyl sevenzip)
 
 for pkg in "${BREW_PACKAGES[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
@@ -506,6 +506,10 @@ ok "git lol"
 
 git config --global alias.lola "log --graph --decorate --pretty=oneline --abbrev-commit --all"
 ok "git lola"
+
+# Git LFS hooks, so a repo's LFS files check out as their content rather than pointer files.
+git lfs install --skip-repo >/dev/null
+ok "git lfs install"
 
 # ── 15. Tmux Plugin Manager (TPM) ────────────────────────────────────────
 

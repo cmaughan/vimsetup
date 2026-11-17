@@ -294,6 +294,7 @@ check_nvim
 check_tool git       "brew install git"
 check_tool gh        "brew install gh"
 check_tool glab      "brew install glab"
+check_tool git-lfs   "brew install git-lfs"
 if [[ "$OS" == "Linux" ]]; then
     check_tool pwsh  "sudo snap install powershell --classic"
 fi
@@ -440,6 +441,11 @@ check_config "$HOME/.tmux.conf"          "$SCRIPT_DIR/tmux.conf.template"      "
 section "Git aliases"
 check_git_alias "lol" "log --graph --decorate --pretty=oneline --abbrev-commit"
 check_git_alias "lola" "log --graph --decorate --pretty=oneline --abbrev-commit --all"
+if [[ "$(git config --global --get filter.lfs.process 2>/dev/null)" == "git-lfs filter-process" ]]; then
+    ok "git lfs hooks installed"
+else
+    missing "git lfs hooks — run: git lfs install"
+fi
 
 # ----- Neovim Config Link -----
 section "Neovim Config Link"
