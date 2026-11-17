@@ -135,6 +135,7 @@ brew install neovim
 brew install git
 brew install gh             # GitHub CLI
 brew install glab           # GitLab CLI
+brew install --cask p4      # Perforce CLI (macOS)
 brew install ripgrep       # telescope live_grep
 brew install fd            # telescope file search
 brew install fzf           # fzf.zsh shell integration
@@ -195,6 +196,7 @@ winget install Neovim.Neovim
 winget install Git.Git
 winget install GitHub.cli
 winget install glab.glab                 # GitLab CLI
+winget install Perforce.P4V              # includes the p4 CLI
 winget install Microsoft.PowerShell
 winget install Microsoft.VisualStudioCode
 winget install Anysphere.Cursor
@@ -603,3 +605,34 @@ Prefix is bound to `Ctrl-s`. Key highlights:
 - `prefix + h/j/k/l` — navigate panes (vim-style)
 - `prefix + Enter` — enter copy mode; `v` to select, `y` to copy to clipboard
 - `prefix + Ctrl-s` / `prefix + Ctrl-r` — save / restore session (psmux-resurrect)
+
+
+## Perforce in Neovim
+
+`BigLittle/nvim-p4` is installed through lazy.nvim with `nui.nvim` and `mini.icons`.
+The installers include the `p4` prerequisite on Windows and macOS; on Linux,
+install the Perforce CLI using its official distribution. Doctor checks `p4 -V`.
+
+- `,p4c` or `:P4Changes`: show the workspace's pending changelists and files.
+- `,p4o`: the same changelist tree, for browsing opened files.
+- `,p4e` or `:P4Edit`: check out the current file for editing.
+- `,p4d` or `:P4Diff`: diff the current file against the depot.
+- `:P4Clients`: switch workspace; `:P4Blame`: show current-line attribution.
+
+To load every file in a changelist into buffers, put the cursor on the
+**changelist heading** and press **o**. To open one file, press **o** on that file.
+Use **Space** to expand/collapse a changelist, **F5** to refresh, and **q** to close.
+Use `:ls` to list buffers and `:bnext` / `:bprevious` to switch between them.
+
+Connection settings normally come from the Perforce environment / P4CONFIG.
+For machine-specific defaults, create `perforce-local.json` beside `init.lua`
+(ignored by Git):
+
+```json
+{ "port": "p4sw:2006", "client": "your-workspace-name" }
+```
+
+Existing `P4PORT` and `P4CLIENT` environment variables take precedence. Check
+`:P4Info` in Neovim and use `p4 login` in a terminal if authentication is needed.
+The previous `SrMrBurchick/perforce.nvim` plugin and its Telescope adapter have
+been removed. Perforce now uses its own changelist tree.

@@ -292,6 +292,7 @@ fi
 section "Core Tools"
 check_nvim
 check_tool git       "brew install git"
+check_tool p4        "macOS: brew install --cask p4; Linux: install the Perforce CLI"
 check_tool gh        "brew install gh"
 check_tool glab      "brew install glab"
 if [[ "$OS" == "Linux" ]]; then

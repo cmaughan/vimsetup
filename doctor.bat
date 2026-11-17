@@ -59,6 +59,7 @@ echo.
 call :check_tool winget     "winget --version"     1  "App Installer from https://aka.ms/getwinget"
 call :check_tool nvim       "nvim --version"       1  "winget install Neovim.Neovim"
 call :check_tool git        "git --version"        1  "winget install Git.Git"
+call :check_tool p4         "p4 -V"               1  "winget install Perforce.P4V"
 call :check_tool gh         "gh --version"         1  "winget install GitHub.cli"
 call :check_tool glab       "glab --version"       1  "winget install glab.glab"
 call :check_tool pwsh       "pwsh --version"       1  "winget install Microsoft.PowerShell"

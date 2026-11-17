@@ -82,6 +82,22 @@ require("lazy").setup({
         end,
     },
 
+    -- Perforce changelist tree (independent of Telescope).
+    {
+        'BigLittle/nvim-p4',
+        lazy = false,
+        dependencies = { 'MunifTanjim/nui.nvim', 'nvim-mini/mini.icons' },
+        cmd = { 'P4Changes', 'P4Clients', 'P4Info', 'P4Edit', 'P4Diff', 'P4Blame', 'P4Revert', 'P4RevertIfUnchanged' },
+        init = function() require('plugin_config.perforce').environment() end,
+        config = function() require('plugin_config.perforce').setup() end,
+        keys = {
+            { '<leader>p4c', '<cmd>P4Changes<cr>', desc = '[P]erforce [4] [C]hangelists' },
+            { '<leader>p4o', '<cmd>P4Changes<cr>', desc = '[P]erforce [4] [O]pened files' },
+            { '<leader>p4e', '<cmd>P4Edit<cr>', desc = '[P]erforce [4] [E]dit file' },
+            { '<leader>p4d', '<cmd>P4Diff<cr>', desc = '[P]erforce [4] [D]iff file' },
+        },
+    },
+
     -- Harpoon
     {
         'ThePrimeagen/harpoon',

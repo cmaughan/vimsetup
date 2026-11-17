@@ -350,7 +350,7 @@ section "GUI desktop applications"
 if [[ "$OS" == "Darwin" ]]; then
     install_codex_app
 
-    BREW_CASKS=(visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity obsidian)
+    BREW_CASKS=(p4 visual-studio-code cursor db-browser-for-sqlite blackhole-2ch openscad@snapshot chatgpt claude antigravity obsidian)
     LATEST_CASKS=(claude)
 
     for cask in "${BREW_CASKS[@]}"; do
@@ -370,6 +370,7 @@ if [[ "$OS" == "Darwin" ]]; then
     done
 else
     info "Skipping macOS-only desktop casks on Linux."
+    command -v p4 &>/dev/null || info "Install the Perforce CLI for Linux from https://www.perforce.com/downloads/helix-command-line-client-p4"
     info "Codex App is not available on Linux; the Codex CLI was installed instead."
     info "Install VS Code/Cursor/Antigravity desktop from their official Linux packages if you want GUI apps on Linux."
 fi
